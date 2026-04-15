@@ -3,674 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Micron - Digital Solutions</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-        }
-
-        /* Header Styles */
-        header {
-            background-color: #ffffff;
-            padding: 1rem 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 2rem;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        .nav-buttons {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .signup-btn, .login-btn, .menu-btn {
-            padding: 0.5rem 1.2rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-
-        .signup-btn {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .signup-btn:hover {
-            background-color: #0056b3;
-        }
-
-        .login-btn {
-            background-color: #6c757d;
-            color: white;
-        }
-
-        .login-btn:hover {
-            background-color: #5a6268;
-        }
-
-        .menu-btn {
-            background-color: #f8f9fa;
-            color: #333;
-            border: 1px solid #ddd;
-        }
-
-        .menu-btn:hover {
-            background-color: #e2e6ea;
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 2rem;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 450px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 1.5rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .close:hover {
-            color: #000;
-        }
-
-        .modal h2 {
-            margin-bottom: 1.5rem;
-            color: #007bff;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: #333;
-        }
-
-        .form-group input, .form-group textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0,123,255,0.3);
-        }
-
-        .form-btn {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .form-btn:hover {
-            background-color: #0056b3;
-        }
-
-        .form-btn:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-
-        .success-message {
-            background-color: #d4edda;
-            color: #155724;
-            padding: 1rem;
-            border-radius: 5px;
-            margin-bottom: 1rem;
-            display: none;
-            text-align: center;
-        }
-
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-            color: white;
-            padding: 5rem 2rem;
-            text-align: center;
-        }
-
-        .hero-content {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            line-height: 1.8;
-        }
-
-        .cta-btn {
-            display: inline-block;
-            padding: 1rem 2rem;
-            background-color: #fff;
-            color: #007bff;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        .cta-btn:hover {
-            background-color: #f0f0f0;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        /* Section Styles */
-        .section {
-            padding: 4rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: #007bff;
-            text-align: center;
-        }
-
-        .section-divider {
-            width: 100px;
-            height: 4px;
-            background-color: #007bff;
-            margin: 0 auto 2rem;
-        }
-
-        .section p {
-            font-size: 1rem;
-            line-height: 1.8;
-            color: #666;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-
-        /* About Section */
-        #about {
-            background-color: #f8f9fa;
-        }
-
-        /* Why Choose Us */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .feature-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-        }
-
-        .feature-card h3 {
-            color: #007bff;
-            margin-bottom: 1rem;
-        }
-
-        /* Mission & Vision */
-        .mission-vision {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .mission-card, .vision-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .mission-card h3, .vision-card h3 {
-            color: #007bff;
-            margin-bottom: 1rem;
-        }
-
-        /* Login Section */
-        #login-section {
-            background-color: #f8f9fa;
-            display: none;
-        }
-
-        .login-container {
-            max-width: 400px;
-            margin: 0 auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .login-container h2 {
-            color: #007bff;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        .forgot-password {
-            text-align: right;
-            margin-top: 1rem;
-        }
-
-        .forgot-password a {
-            color: #007bff;
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-
-        .forgot-password a:hover {
-            text-decoration: underline;
-        }
-
-        .signup-link {
-            text-align: center;
-            margin-top: 1.5rem;
-            color: #666;
-        }
-
-        .signup-link a {
-            color: #007bff;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .signup-link a:hover {
-            text-decoration: underline;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #333;
-            color: white;
-            padding: 2rem;
-            text-align: center;
-            margin-top: 4rem;
-        }
-
-        .footer-links {
-            margin-bottom: 1rem;
-        }
-
-        .footer-links a {
-            color: #007bff;
-            text-decoration: none;
-            margin: 0 1rem;
-            transition: color 0.3s ease;
-        }
-
-        .footer-links a:hover {
-            color: #fff;
-        }
-
-        .footer-copyright {
-            font-size: 0.9rem;
-            color: #aaa;
-        }
-
-        /* Dashboard */
-        #dashboard {
-            display: none;
-            padding: 2rem;
-        }
-
-        .dashboard-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .logout-btn {
-            padding: 0.5rem 1.2rem;
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .logout-btn:hover {
-            background-color: #c82333;
-        }
-
-        .user-info {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .user-info h3 {
-            color: #007bff;
-            margin-bottom: 1rem;
-        }
-
-        .user-detail {
-            margin-bottom: 0.5rem;
-        }
-
-        /* Privacy & Terms Modal */
-        .terms-modal-content {
-            max-height: 600px;
-            overflow-y: auto;
-        }
-
-        .terms-modal-content h3 {
-            color: #007bff;
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .terms-modal-content p {
-            margin-bottom: 1rem;
-            line-height: 1.8;
-        }
-
-        .terms-modal-content a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        .terms-modal-content a:hover {
-            text-decoration: underline;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .mission-vision {
-                grid-template-columns: 1fr;
-            }
-
-            .modal-content {
-                width: 95%;
-                padding: 1.5rem;
-            }
-
-            .header-container {
-                padding: 0 1rem;
-            }
-
-            .nav-buttons {
-                gap: 0.5rem;
-            }
-
-            .signup-btn, .login-btn {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.8rem;
-            }
-        }
-
-        /* Loading spinner */
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #007bff;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-            margin-right: 10px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
+    <title>Micron - Your Gateway to Success</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="header-container">
-            <a href="#" class="logo">🔷 Micron</a>
-            <div class="nav-buttons">
-                <button class="signup-btn" onclick="openSignupModal()">Sign Up</button>
-                <button class="login-btn" onclick="openLoginModal()">Login</button>
-                <button class="menu-btn" onclick="openMenuModal()">☰ Menu</button>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="logo.png" alt="Micron Logo" class="logo-img">
+                    <span class="logo-text">Micron</span>
+                </div>
+                <div class="header-right">
+                    <button class="signup-btn" onclick="openSignupModal()">Sign Up</button>
+                    <div class="menu-btn" onclick="toggleMenu()">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+            <!-- 3-DOT MENU DROPDOWN -->
+            <div id="menuDropdown" class="menu-dropdown">
+                <a href="#terms">Terms & Conditions</a>
+                <a href="#privacy">Privacy Policy</a>
+                <a href="#about">About Us</a>
+                <a href="#contact">Contact Us</a>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main id="main-content">
-        <!-- Hero Section -->
-        <section class="hero">
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="container">
             <div class="hero-content">
                 <h1>Welcome to Micron</h1>
-                <p>Transform Your Digital Presence</p>
-                <p>Innovative solutions for modern businesses. Streamline operations, enhance productivity, and achieve excellence.</p>
-                <button class="cta-btn" onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})">Get Started</button>
+                <p>Empowering your business growth with innovative solutions</p>
+                <p>Join thousands of satisfied customers who trust us</p>
+                <button class="cta-btn" onclick="document.getElementById('login-section').scrollIntoView({behavior: 'smooth'})">Get Started</button>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- About Section -->
-        <section id="about" class="section">
-            <h2>About Micron</h2>
-            <div class="section-divider"></div>
-            <p>Micron is a leading digital solutions provider dedicated to transforming businesses through innovative technology and strategic digital transformation.</p>
-            <p>We specialize in creating scalable, secure, and user-centric solutions that drive growth and efficiency.</p>
-            <p>Our team of expert developers and consultants work collaboratively with clients to understand their unique challenges.</p>
-            <p>With years of industry experience, we've helped countless organizations achieve their digital transformation goals.</p>
-            <p>Join us today and experience the difference that cutting-edge technology and dedicated support can make.</p>
-        </section>
+    <!-- ABOUT SECTION -->
+    <section class="about" id="about">
+        <div class="container">
+            <h2>What is Micron?</h2>
+            <p>Micron is a comprehensive platform designed to streamline your business operations and maximize productivity. We provide cutting-edge tools and resources to help you achieve your business goals efficiently. Our platform is built with user experience at its core, ensuring seamless integration with your existing workflow. We believe in empowering businesses through technology and innovation. Join the Micron community today and transform your business journey.</p>
+        </div>
+    </section>
 
-        <!-- Why Choose Us Section -->
-        <section id="why-choose" class="section">
-            <h2>Why Choose Us</h2>
-            <div class="section-divider"></div>
-            <div class="features">
+    <!-- WHY CHOOSE US SECTION -->
+    <section class="why-choose-us">
+        <div class="container">
+            <h2>Why Choose Us?</h2>
+            <div class="features-grid">
                 <div class="feature-card">
-                    <h3>🚀 Innovation</h3>
-                    <p>We stay ahead of technological trends, delivering innovative solutions that give you a competitive advantage in the digital marketplace.</p>
+                    <h3>Reliable & Secure</h3>
+                    <p>Enterprise-grade security ensures your data is always protected and accessible only to authorized users.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>🛡️ Security</h3>
-                    <p>Your data security is our top priority. We implement enterprise-grade security measures to protect your sensitive information.</p>
+                    <h3>24/7 Support</h3>
+                    <p>Our dedicated support team is available round the clock to assist you with any queries or issues.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>⚡ Performance</h3>
-                    <p>Our solutions are optimized for speed and reliability, ensuring seamless operation and minimal downtime for your business.</p>
+                    <h3>Easy Integration</h3>
+                    <p>Seamlessly integrate Micron with your existing tools and systems without any technical hassle.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>🤝 Support</h3>
-                    <p>Dedicated support team available 24/7 to assist with any issues and ensure your satisfaction with our services.</p>
+                    <h3>Scalable Solutions</h3>
+                    <p>Our platform grows with your business, offering scalability that adapts to your changing needs.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>💡 Expertise</h3>
-                    <p>Our experienced team brings years of industry knowledge and best practices to every project we undertake.</p>
+                    <h3>Cost Effective</h3>
+                    <p>Maximize your ROI with our affordable pricing plans designed for businesses of all sizes.</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Mission & Vision Section -->
-        <section id="mission-vision" class="section">
-            <h2>Our Mission & Vision</h2>
-            <div class="section-divider"></div>
-            <div class="mission-vision">
-                <div class="mission-card">
-                    <h3>🎯 Our Mission</h3>
-                    <p>To empower businesses with cutting-edge digital solutions that enhance efficiency, drive growth, and create lasting value.</p>
-                    <p>We are committed to delivering excellence through innovation, integrity, and customer-focused service.</p>
-                    <p>Our mission guides every decision and action we take in serving our clients.</p>
-                </div>
-                <div class="vision-card">
-                    <h3>🌟 Our Vision</h3>
-                    <p>To be the leading provider of digital transformation solutions, recognized globally for innovation and excellence.</p>
-                    <p>We envision a world where technology empowers every business to reach its full potential.</p>
-                    <p>Our vision is to create a positive impact through technology and strategic partnership with our clients.</p>
+    <!-- MISSION & VISION SECTION -->
+    <section class="mission-vision">
+        <div class="container">
+            <div class="mission">
+                <h3>Our Mission</h3>
+                <p>To empower businesses worldwide by providing innovative, reliable, and user-friendly solutions that drive growth and success. We are committed to delivering exceptional value through cutting-edge technology.</p>
+            </div>
+            <div class="vision">
+                <h3>Our Vision</h3>
+                <p>To be the global leader in business solutions, transforming how organizations operate and compete in the digital economy. We envision a world where technology enables every business to reach its full potential.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- LOGIN SECTION -->
+    <section class="login-section" id="login-section">
+        <div class="container">
+            <div class="login-form-wrapper">
+                <h2>Login to Your Account</h2>
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="userId">User ID</label>
+                        <input type="text" id="userId" name="userId" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="login-btn">Login</button>
+                </form>
+                <div class="login-links">
+                    <a href="#" onclick="openForgotPasswordModal()">Forgot Password?</a>
+                    <p>Don't have an account? <a href="#" onclick="openSignupModal()">Sign Up</a></p>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
 
-    <!-- Dashboard (Hidden initially) -->
-    <div id="dashboard">
-        <div class="dashboard-container">
-            <div class="dashboard-header">
-                <h1>Welcome, <span id="dashboard-username"></span>!</h1>
-                <button class="logout-btn" onclick="logout()">Logout</button>
-            </div>
-            <div class="user-info">
-                <h3>Your Profile Information</h3>
-                <div class="user-detail"><strong>Full Name:</strong> <span id="dash-fullname"></span></div>
-                <div class="user-detail"><strong>Date of Birth:</strong> <span id="dash-dob"></span></div>
-                <div class="user-detail"><strong>Email:</strong> <span id="dash-email"></span></div>
-                <div class="user-detail"><strong>Contact:</strong> <span id="dash-contact"></span></div>
-                <div class="user-detail"><strong>Referral Code:</strong> <span id="dash-referral"></span></div>
+    <!-- SIGNUP MODAL -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSignupModal()">&times;</span>
+            <h2>Sign Up</h2>
+            <form id="signupForm" onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" id="dob" name="dob" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact">Contact Number</label>
+                    <input type="tel" id="contact" name="contact" required>
+                </div>
+                <div class="form-group">
+                    <label for="referralCode">Referral Code (Optional)</label>
+                    <input type="text" id="referralCode" name="referralCode">
+                </div>
+                <div class="form-group">
+                    <label for="setPassword">Set Password</label>
+                    <input type="password" id="setPassword" name="setPassword" required>
+                </div>
+                <button type="submit" class="signup-submit-btn">Sign Up</button>
+            </form>
+            <div id="successMessage" class="success-message" style="display: none;">
+                <p>Successfully Registered!</p>
+                <button onclick="closeSignupModal()">Done</button>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-links">
-            <a href="#" onclick="openPrivacyModal(); return false;">Privacy & Policy</a>
-            <span>|</span>
-            <a href="#" onclick="openTermsModal(); return false;">Terms & Conditions</a>
+    <!-- FORGOT PASSWORD MODAL -->
+    <div id="forgotPasswordModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeForgotPasswordModal()">&times;</span>
+            <h2>Reset Password</h2>
+            <form id="forgotPasswordForm" onsubmit="handleForgotPassword(event)">
+                <div class="form-group">
+                    <label for="resetEmail">Enter Your Email</label>
+                    <input type="email" id="resetEmail" name="resetEmail" required>
+                </div>
+                <button type="submit" class="reset-btn">Send Reset Link</button>
+            </form>
+            <div id="resetSuccessMessage" class="success-message" style="display: none;">
+                <p>Reset link has been sent to your email!</p>
+                <button onclick="closeForgotPasswordModal()">Close</button>
+            </div>
         </div>
-        <div class="footer-copyright">
-            © 2026 Micron | All Rights Reserved
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="#privacy" onclick="showPrivacyPolicy()">Privacy Policy</a>
+                    <span class="divider">|</span>
+                    <a href="#terms" onclick="showTermsConditions()">Terms & Conditions</a>
+                </div>
+                <p class="copyright">© 2026 Micron | All Rights Reserved</p>
+            </div>
         </div>
     </footer>
 
-    <!-- Signup Modal -->
-    <div id="signupModal" class="modal">
+    <!-- MODAL FOR TERMS/PRIVACY -->
+    <div id="contentModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeSignupModal()">&times;</span>
-            <h2>Create Account</h2>
-            <div class="success-message" id="signup-success">
-                Successfully Registered! 
-                <button class="cta-btn" style="margin-top: 1rem;" onclick="closeSignupModal(); openLoginModal();">Login Now</button>
-            </div>
-            <form id="signupForm" style="display: block;">
-                <div class="form-group">
-                    <label for="signup-fullname">Full Name</label>
-                    <input type="text" id="signup-fullname" required>
-                </div>
-                <div class="form-group">
-                    <label for="signup-dob">Date of Birth</label>
-                    <input type="date" id="signup-dob" required>
-                </div>
-                <div class="form-group">
-                    <label for="signup-email">Email</label>
-                    <input type="email" id="signup-email" required>
-                </div>
-                <div class="form-group">
-                    <label for="signup-contact">Contact Number</label>
-                    <input type="tel" id="signup-contact" required>
-                </div>
-                <div class="form-group">
-                    <label for="signup-referral">Referral Code (Optional)</label>
-                    <input type="text" id="signup-referral">
-                </div>
-                <div class=
+            <span class="close" onclick="closeContentModal()">&times;</span>
+            <div id="contentBody"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
