@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    :root {
+      --sky-blue: #e0f2fe;
+      --orange: #ff8c00;
+      --white: #ffffff;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, var(--white), var(--sky-blue));
+      color: #333;
+    }
+    header {
+      background: var(--white);
+      padding: 15px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo img { height: 40px; }
+    
+    .btn-orange {
+      background: var(--white);
+      border: 2px solid var(--orange);
+      color: var(--orange);
+      padding: 8px 20px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .btn-orange:active {
+      background: var(--orange);
+      color: var(--white);
+    }
+
+    /* Hero Section */
+    .hero { text-align: center; padding: 100px 20px; }
+    .hero h1 { font-size: 2.5rem; margin-bottom: 20px; }
+    
+    /* Forms */
+    .form-container {
+      background: var(--white);
+      max-width: 400px;
+      margin: 20px auto;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .form-container h2 { color: var(--orange); }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    /* Popup */
+    #signupPopup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      z-index: 1001;
+      border: 2px solid var(--orange);
+    }
+    #overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+    }
+
+    /* Floating Chat */
+    .chat-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--orange);
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: 24px;
+    }
+
+    footer {
+      background: var(--white);
+      text-align: center;
+      padding: 20px;
+      border-top: 1px solid #ddd;
+    }
+    .orange-text { color: var(--orange); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <img src="https://via.placeholder.com/150x50?text=MICRON+LOGO" alt="Micron Logo">
+  </div>
+  <div>
+    <button class="btn-orange" onclick="togglePopup('signupPopup', true)">Signup</button>
+    <button class="btn-orange" style="border:none; font-size:20px;">⋮</button>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>Welcome to MICRON</h1>
+  <p>Innovating your future with AI.<br>Explore courses and grow your career.<br>Start your journey today with us.</p>
+  <button class="btn-orange">Get Started</button>
+</section>
+
+<section style="padding: 50px 10%; background: rgba(255,255,255,0.5);">
+  <h2 class="orange-text">What is MICRON?</h2>
+  <p>MICRON is a leading digital platform designed to provide high-quality education and career resources. We offer a wide range of interactive courses, gaming experiences, and AI-driven tools. Our goal is to bridge the gap between learning and professional success. Users can access personalized dashboards to track their growth. We believe in empowering every individual through accessible technology.</p>
+  
+  <h2 class="orange-text">Why Choose Us?</h2>
+  <p>We provide industry-standard AI tools for resume building and career guidance. Our platform is user-friendly and aesthetically designed for a smooth experience. You get access to exclusive content and a supportive community. We offer real-time progress tracking and certified achievements. Our security and privacy protocols ensure your data is always safe.</p>
+  
+  <div style="display: flex; gap: 20px;">
+    <div>
+      <h3 class="orange-text">Our Mission</h3>
+      <p>To democratize education by providing cutting-edge AI tools and resources to learners worldwide, ensuring no one is left behind in the digital age.</p>
+    </div>
+    <div>
+      <h3 class="orange-text">Our Vision</h3>
+      <p>To become the world's most trusted platform for career development, where technology meets human potential to create endless possibilities.</p>
+    </div>
+  </div>
+</section>
+
+<div class="form-container" id="loginArea">
+  <h2 style="text-align:center">Login</h2>
+  <input type="text" id="loginId" placeholder="User ID">
+  <input type="password" id="loginPass" placeholder="Password">
+  <button class="btn-orange" style="width:100%" onclick="login()">Login</button>
+  <p style="text-align:center; font-size: 14px;">
+    <a href="#" class="orange-text">Forgot Password?</a><br>
+    Don't have an account? <span class="orange-text" style="cursor:pointer" onclick="togglePopup('signupPopup', true)">Signup</span>
+  </p>
+</div>
+
+<div id="overlay"></div>
+<div id="signupPopup" class="form-container">
+  <h2>Create Account</h2>
+  <div id="signupFields">
+    <input type="text" id="sName" placeholder="Full Name">
+    <input type="date" id="sDob">
+    <input type="email" id="sEmail" placeholder="Email">
+    <input type="text" id="sContact" placeholder="Contact">
+    <input type="text" id="sRef" placeholder="Referral Code">
+    <input type="password" id="sPass" placeholder="Set Password">
+    <button class="btn-orange" style="width:100%" onclick="signup()">Register</button>
+  </div>
+  <div id="successMsg" style="display:none; text-align:center">
+    <h3>Successfully Registered!</h3>
+    <button class="btn-orange" onclick="location.reload()">Done</button>
+  </div>
+</div>
+
+<div class="chat-btn">💬</div>
+
+<footer>
+  <p>
+    <a href="#" class="orange-text">Privacy & Policy</a> | 
+    <a href="#" class="orange-text">Terms & Conditions</a>
+  </p>
+  <p>©2026 Micron | All Rights Reserved</p>
+</footer>
+
+<script>
+  function togglePopup(id, show) {
+    document.getElementById(id).style.display = show ? 'block' : 'none';
+    document.getElementById('overlay').style.display = show ? 'block' : 'none';
+  }
+
+  function signup() {
+    const data = {
+      fullName: document.getElementById('sName').value,
+      dob: document.getElementById('sDob').value,
+      email: document.getElementById('sEmail').value,
+      contact: document.getElementById('sContact').value,
+      referral: document.getElementById('sRef').value,
+      password: document.getElementById('sPass').value
+    };
+    
+    google.script.run.withSuccessHandler(function(res) {
+      document.getElementById('signupFields').style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+    }).processSignup(data);
+  }
+
+  function login() {
+    const id = document.getElementById('loginId').value;
+    const pass = document.getElementById('loginPass').value;
+    
+    google.script.run.withSuccessHandler(function(res) {
+      if(res.status === 'success') {
+        alert('Redirecting to Dashboard...');
+        // Here you would redirect to your dashboard page
+      } else {
+        alert('Invalid Credentials!');
+      }
+    }).processLogin(id, pass);
+  }
+</script>
+
+</body>
+</html>
+
