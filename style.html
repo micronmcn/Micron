@@ -1,0 +1,17 @@
+<style>
+body { font-family: Arial; margin: 0; background: #f9f9f9; color: #333; }
+.white-bg { background: white; }
+.orange-bg { background: #FF9500; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+.yellow-bg { background: #FFD700; color: #333; border: none; padding: 15px 30px; border-radius: 5px; font-size: 18px; }
+.header { display: flex; justify-content: space-between; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; }
+.logo { font-size: 24px; font-weight: bold; color: #FF9500; }
+.hero { text-align: center; padding: 100px 20px; background: linear-gradient(135deg, white, #fff8e1); }
+.about, .why-us, .mission-vision, .login { padding: 50px 20px; max-width: 1200px; margin: auto; }
+.mission-vision { display: flex; gap: 50px; }
+.login input { display: block; width: 100%; max-width: 300px; margin: 10px auto; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+.popup { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+.popup-content { background: white; margin: 15% auto; padding: 30px; width: 90%; max-width: 400px; border-radius: 10px; position: relative; }
+.close { position: absolute; right: 15px; top: 10px; font-size: 28px; cursor: pointer; }
+footer { background: #333; color: white; text-align: center; padding: 20px; }
+@media (max-width: 768px) { .mission-vision { flex-direction: column; } }
+</style>
