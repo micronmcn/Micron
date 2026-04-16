@@ -1,207 +1,213 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="te">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Micron - Your Gateway to Success</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Micron</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { line-height: 1.6; color: #333; }
+        header { background: white; padding: 1rem 5%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: fixed; width: 100%; top: 0; z-index: 1000; }
+        nav { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: bold; color: #007bff; }
+        .btn { padding: 0.5rem 1rem; border: none; border-radius: 5px; cursor: pointer; margin-left: 1rem; }
+        .signup-btn { background: #28a745; color: white; }
+        .menu-btn { background: none; font-size: 1.5rem; cursor: pointer; }
+        .hero { background: linear-gradient(to right, #007bff, #0056b3); color: white; text-align: center; padding: 150px 5% 100px; }
+        .hero h1 { font-size: 3rem; margin-bottom: 1rem; }
+        .hero p { font-size: 1.2rem; margin-bottom: 2rem; }
+        .cta-btn { background: #ff6b35; color: white; padding: 1rem 2rem; font-size: 1.2rem; border-radius: 50px; text-decoration: none; }
+        section { padding: 80px 5%; }
+        .about, .why, .mission { max-width: 800px; margin: 0 auto; }
+        .about p, .why p { margin-bottom: 1rem; }
+        .login-form { max-width: 400px; margin: 0 auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .login-form input { width: 100%; padding: 1rem; margin-bottom: 1rem; border: 1px solid #ddd; border-radius: 5px; }
+        .login-btn { background: #007bff; color: white; width: 100%; padding: 1rem; border: none; border-radius: 5px; cursor: pointer; }
+        footer { background: #333; color: white; text-align: center; padding: 2rem; }
+        footer a { color: #007bff; text-decoration: none; }
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .modal-content { background: white; margin: 10% auto; padding: 2rem; width: 90%; max-width: 400px; border-radius: 10px; position: relative; }
+        .close { position: absolute; right: 1rem; top: 1rem; font-size: 2rem; cursor: pointer; }
+        .menu-modal { position: fixed; background: white; right: -300px; top: 70px; width: 300px; height: calc(100vh - 70px); box-shadow: -2px 0 5px rgba(0,0,0,0.1); transition: right 0.3s; padding: 2rem; z-index: 1500; }
+        .menu-modal.open { right: 0; }
+        .menu-list { list-style: none; }
+        .menu-list li { margin-bottom: 1rem; }
+        .dashboard { padding: 150px 5% 50px; min-height: 80vh; }
+        .success-msg { text-align: center; color: green; font-size: 1.2rem; }
+        .hidden { display: none; }
+        @media (max-width: 768px) { .hero h1 { font-size: 2rem; } }
+    </style>
 </head>
 <body>
-    <!-- HEADER -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <img src="logo.png" alt="Micron Logo" class="logo-img">
-                    <span class="logo-text">Micron</span>
-                </div>
-                <div class="header-right">
-                    <button class="signup-btn" onclick="openSignupModal()">Sign Up</button>
-                    <div class="menu-btn" onclick="toggleMenu()">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                </div>
+    <header id="header" class="hidden">
+        <nav>
+            <div class="logo">Micron</div>
+            <div>
+                <button class="btn signup-btn" onclick="openSignup()">Sign Up</button>
+                <button class="btn login-btn" onclick="openLogin()">Login</button>
+                <button class="menu-btn" onclick="toggleMenu()">⋮⋮⋮</button>
             </div>
-            <!-- 3-DOT MENU DROPDOWN -->
-            <div id="menuDropdown" class="menu-dropdown">
-                <a href="#terms">Terms & Conditions</a>
-                <a href="#privacy">Privacy Policy</a>
-                <a href="#about">About Us</a>
-                <a href="#contact">Contact Us</a>
-            </div>
-        </div>
+        </nav>
     </header>
 
-    <!-- HERO SECTION -->
+    <div class="menu-modal" id="menuModal">
+        <ul class="menu-list">
+            <li><a href="#" onclick="showTerms('privacy')">Privacy Policy</a></li>
+            <li><a href="#" onclick="showTerms('terms')">Terms & Conditions</a></li>
+            <li>Help</li>
+            <li>Contact</li>
+        </ul>
+    </div>
+
     <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <h1>Welcome to Micron</h1>
-                <p>Empowering your business growth with innovative solutions</p>
-                <p>Join thousands of satisfied customers who trust us</p>
-                <button class="cta-btn" onclick="document.getElementById('login-section').scrollIntoView({behavior: 'smooth'})">Get Started</button>
-            </div>
+        <h1>Welcome to Micron</h1>
+        <p>Revolutionary platform for referrals and rewards.</p>
+        <p>Join thousands earning through referrals.</p>
+        <p>Get started today!</p>
+        <a href="#" class="cta-btn" onclick="openSignup()">Get Started</a>
+    </section>
+
+    <section id="about" class="about">
+        <h2>What is Micron?</h2>
+        <p>Micron is a referral platform connecting users for rewards.</p>
+        <p>Sign up with referral code for bonuses.</p>
+        <p>Track earnings in personal dashboard.</p>
+        <p>Secure and user-friendly interface.</p>
+        <p>Trusted by millions worldwide.</p>
+    </section>
+
+    <section id="why" class="why">
+        <h2>Why Choose Us?</h2>
+        <p>Easy signup and instant rewards.</p>
+        <p>Secure data protection guaranteed.</p>
+        <p>24/7 customer support available.</p>
+        <p>Proven track record of payouts.</p>
+        <p>User-friendly mobile responsive design.</p>
+    </section>
+
+    <section id="mission" class="mission">
+        <h2>Our Mission</h2>
+        <p>Empower users with referral opportunities.</p>
+        <p>Build global community of earners.</p>
+        <p>Innovate reward systems continuously.</p>
+        <h2>Our Vision</h2>
+        <p>World's leading referral ecosystem.</p>
+        <p>Seamless earning for everyone.</p>
+        <p>Sustainable growth for all users.</p>
+    </section>
+
+    <section id="login-section">
+        <div class="login-form">
+            <h2>Login</h2>
+            <input type="text" id="userId" placeholder="User ID (Email)">
+            <input type="password" id="password" placeholder="Password">
+            <button class="login-btn" onclick="login()">Login</button>
+            <p><a href="#" onclick="openSignup()">Don't have account? Sign Up</a></p>
+            <p><a href="#">Forgot Password?</a></p>
         </div>
     </section>
 
-    <!-- ABOUT SECTION -->
-    <section class="about" id="about">
-        <div class="container">
-            <h2>What is Micron?</h2>
-            <p>Micron is a comprehensive platform designed to streamline your business operations and maximize productivity. We provide cutting-edge tools and resources to help you achieve your business goals efficiently. Our platform is built with user experience at its core, ensuring seamless integration with your existing workflow. We believe in empowering businesses through technology and innovation. Join the Micron community today and transform your business journey.</p>
-        </div>
-    </section>
-
-    <!-- WHY CHOOSE US SECTION -->
-    <section class="why-choose-us">
-        <div class="container">
-            <h2>Why Choose Us?</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <h3>Reliable & Secure</h3>
-                    <p>Enterprise-grade security ensures your data is always protected and accessible only to authorized users.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>24/7 Support</h3>
-                    <p>Our dedicated support team is available round the clock to assist you with any queries or issues.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Easy Integration</h3>
-                    <p>Seamlessly integrate Micron with your existing tools and systems without any technical hassle.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Scalable Solutions</h3>
-                    <p>Our platform grows with your business, offering scalability that adapts to your changing needs.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Cost Effective</h3>
-                    <p>Maximize your ROI with our affordable pricing plans designed for businesses of all sizes.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- MISSION & VISION SECTION -->
-    <section class="mission-vision">
-        <div class="container">
-            <div class="mission">
-                <h3>Our Mission</h3>
-                <p>To empower businesses worldwide by providing innovative, reliable, and user-friendly solutions that drive growth and success. We are committed to delivering exceptional value through cutting-edge technology.</p>
-            </div>
-            <div class="vision">
-                <h3>Our Vision</h3>
-                <p>To be the global leader in business solutions, transforming how organizations operate and compete in the digital economy. We envision a world where technology enables every business to reach its full potential.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- LOGIN SECTION -->
-    <section class="login-section" id="login-section">
-        <div class="container">
-            <div class="login-form-wrapper">
-                <h2>Login to Your Account</h2>
-                <form id="loginForm" onsubmit="handleLogin(event)">
-                    <div class="form-group">
-                        <label for="userId">User ID</label>
-                        <input type="text" id="userId" name="userId" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password" required>
-                    </div>
-                    <button type="submit" class="login-btn">Login</button>
-                </form>
-                <div class="login-links">
-                    <a href="#" onclick="openForgotPasswordModal()">Forgot Password?</a>
-                    <p>Don't have an account? <a href="#" onclick="openSignupModal()">Sign Up</a></p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SIGNUP MODAL -->
-    <div id="signupModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeSignupModal()">&times;</span>
-            <h2>Sign Up</h2>
-            <form id="signupForm" onsubmit="handleSignup(event)">
-                <div class="form-group">
-                    <label for="fullName">Full Name</label>
-                    <input type="text" id="fullName" name="fullName" required>
-                </div>
-                <div class="form-group">
-                    <label for="dob">Date of Birth</label>
-                    <input type="date" id="dob" name="dob" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="contact">Contact Number</label>
-                    <input type="tel" id="contact" name="contact" required>
-                </div>
-                <div class="form-group">
-                    <label for="referralCode">Referral Code (Optional)</label>
-                    <input type="text" id="referralCode" name="referralCode">
-                </div>
-                <div class="form-group">
-                    <label for="setPassword">Set Password</label>
-                    <input type="password" id="setPassword" name="setPassword" required>
-                </div>
-                <button type="submit" class="signup-submit-btn">Sign Up</button>
-            </form>
-            <div id="successMessage" class="success-message" style="display: none;">
-                <p>Successfully Registered!</p>
-                <button onclick="closeSignupModal()">Done</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- FORGOT PASSWORD MODAL -->
-    <div id="forgotPasswordModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeForgotPasswordModal()">&times;</span>
-            <h2>Reset Password</h2>
-            <form id="forgotPasswordForm" onsubmit="handleForgotPassword(event)">
-                <div class="form-group">
-                    <label for="resetEmail">Enter Your Email</label>
-                    <input type="email" id="resetEmail" name="resetEmail" required>
-                </div>
-                <button type="submit" class="reset-btn">Send Reset Link</button>
-            </form>
-            <div id="resetSuccessMessage" class="success-message" style="display: none;">
-                <p>Reset link has been sent to your email!</p>
-                <button onclick="closeForgotPasswordModal()">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-links">
-                    <a href="#privacy" onclick="showPrivacyPolicy()">Privacy Policy</a>
-                    <span class="divider">|</span>
-                    <a href="#terms" onclick="showTermsConditions()">Terms & Conditions</a>
-                </div>
-                <p class="copyright">© 2026 Micron | All Rights Reserved</p>
-            </div>
-        </div>
+    <footer>
+        <p><a href="#" onclick="showTerms('privacy')">Privacy & Policy</a> | <a href="#" onclick="showTerms('terms')">Terms & Conditions</a></p>
+        <p>&copy;2026 Micron | All Rights Reserved</p>
+        <p>Links: <a href="#">About</a> | <a href="#">Contact</a> | <a href="#">Support</a></p>
     </footer>
 
-    <!-- MODAL FOR TERMS/PRIVACY -->
-    <div id="contentModal" class="modal">
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeContentModal()">&times;</span>
-            <div id="contentBody"></div>
+            <span class="close" onclick="closeSignup()">&times;</span>
+            <h2>Sign Up</h2>
+            <form id="signupForm">
+                <input type="text" id="fullName" placeholder="Full Name" required>
+                <input type="date" id="dob" required>
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="tel" id="contact" placeholder="Contact" required>
+                <input type="text" id="referralCode" placeholder="Referral Code (Optional)">
+                <input type="password" id="newPassword" placeholder="Set Password" required>
+                <button type="button" class="login-btn" onclick="signup()">Register</button>
+            </form>
+            <div id="successMsg" class="success-msg hidden">Successfully Registered! <button class="btn" onclick="closeSignup()">Done</button></div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Terms Modal -->
+    <div id="termsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeTerms()">&times;</span>
+            <div id="termsContent"></div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard hidden">
+        <h1>Welcome, <span id="dashUser"></span>!</h1>
+        <p>Your Dashboard: Referral earnings, profile, etc.</p>
+        <button class="btn" onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        function openSignup() { document.getElementById('signupModal').style.display = 'block'; }
+        function closeSignup() { document.getElementById('signupModal').style.display = 'none'; document.getElementById('successMsg').classList.add('hidden'); }
+        function toggleMenu() {
+            const modal = document.getElementById('menuModal');
+            modal.classList.toggle('open');
+        }
+        function openLogin() { document.getElementById('login-section').scrollIntoView(); }
+        function signup() {
+            const data = {
+                fullName: document.getElementById('fullName').value,
+                dob: document.getElementById('dob').value,
+                email: document.getElementById('email').value,
+                contact: document.getElementById('contact').value,
+                referralCode: document.getElementById('referralCode').value,
+                password: document.getElementById('newPassword').value,
+                userId: Date.now() // Simple unique ID
+            };
+            localStorage.setItem('user_' + data.userId, JSON.stringify(data));
+            document.getElementById('signupForm').classList.add('hidden');
+            document.getElementById('successMsg').classList.remove('hidden');
+        }
+        function login() {
+            const userId = document.getElementById('userId').value;
+            const pass = document.getElementById('password').value;
+            const user = JSON.parse(localStorage.getItem('user_' + userId));
+            if (user && user.password === pass) {
+                localStorage.setItem('currentUser', userId);
+                showDashboard(user);
+            } else {
+                alert('Invalid credentials');
+            }
+        }
+        function showDashboard(user) {
+            document.getElementById('dashUser').textContent = user.fullName;
+            document.getElementById('dashboard').classList.remove('hidden');
+            document.body.scrollTop = 0;
+            document.getElementById('header').classList.remove('hidden');
+        }
+        function logout() {
+            localStorage.removeItem('currentUser');
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('header').classList.add('hidden');
+        }
+        function showTerms(type) {
+            const content = type === 'privacy' ? 'Your privacy is protected. We collect minimal data for services.' : 'By using Micron, you agree to our terms.';
+            document.getElementById('termsContent').innerHTML = `<h2>${type.toUpperCase()}</h2><p>${content}</p>`;
+            document.getElementById('termsModal').style.display = 'block';
+        }
+        function closeTerms() { document.getElementById('termsModal').style.display = 'none'; }
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) closeSignup();
+            if (event.target.classList.contains('modal')) closeTerms();
+        }
+        // Check if logged in
+        window.onload = function() {
+            const current = localStorage.getItem('currentUser');
+            if (current) {
+                const user = JSON.parse(localStorage.getItem('user_' + current));
+                showDashboard(user);
+            }
+        };
+    </script>
 </body>
 </html>
