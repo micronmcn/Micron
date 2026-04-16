@@ -195,6 +195,51 @@
                 document.getElementById('menuDropdown').classList.remove('active');
             }
         }
+     <script>
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx0oXjlraxstJwKrQbZxG4iSRubFKfFN-4nDVGgSTJDkVBiXISIGDiWwyv9UteXNk8n/exec";
+
+async function submitSignup() {
+    const formData = {
+        fullName: document.querySelector('input[placeholder="Full Name"]').value,
+        dob: document.querySelector('input[placeholder="Date of Birth"]').value,
+        email: document.querySelector('input[placeholder="Email"]').value,
+        contact: document.querySelector('input[placeholder="Contact"]').value,
+        referral: document.querySelector('input[placeholder="Referral Code"]').value,
+        password: document.querySelector('input[placeholder="Set Password"]').value
+    };
+
+    const response = await fetch(`${SCRIPT_URL}?action=signup`, {
+        method: 'POST',
+        body: JSON.stringify(formData)
+    });
+
+    const result = await response.json();
+    if (result.result === "success") {
+        document.getElementById('signupForm').classList.add('hidden');
+        document.getElementById('successMsg').classList.remove('hidden');
+    }
+}
+
+async function handleLogin() {
+    const loginData = {
+        userId: document.querySelector('input[placeholder="User ID"]').value,
+        password: document.querySelector('input[placeholder="Password"]').value
+    };
+
+    const response = await fetch(`${SCRIPT_URL}?action=login`, {
+        method: 'POST',
+        body: JSON.stringify(loginData)
+    });
+
+    const result = await response.json();
+    if (result.result === "success") {
+        alert("Welcome, " + result.user + "! Redirecting...");
+        // window.location.href = "dashboard.html";
+    } else {
+        alert("Login Failed: " + result.message);
+    }
+}
     </script>
+    
 </body>
 </html>
