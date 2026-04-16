@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Micron Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .btn-gradient {
+            background: linear-gradient(135deg, #ff8c00 0%, #ffdb01 100%);
+            color: white;
+            transition: transform 0.2s;
+        }
+        .btn-gradient:hover {
+            transform: scale(1.02);
+            filter: brightness(1.1);
+        }
+        .marquee {
+            white-space: nowrap;
+            overflow: hidden;
+            display: inline-block;
+            animation: marquee 15s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <header class="bg-white shadow-sm sticky top-0 z-50 px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center">
+            <div class="h-10 w-10 bg-orange-500 rounded-lg flex items-center justify-center text-white font-bold">M</div>
+            <span class="ml-2 font-bold text-xl text-gray-800">MICRON</span>
+        </div>
+        
+        <div class="flex items-center gap-3">
+            <button onclick="toggleModal('subscribeModal')" class="btn-gradient px-4 py-2 rounded-full text-sm font-semibold shadow-md">
+                Subscribe
+            </button>
+            <div class="relative">
+                <button onclick="toggleDropdown('menuDropdown')" class="p-2 text-gray-600">
+                    <i data-lucide="more-vertical"></i>
+                </button>
+                <div id="menuDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-xl py-2">
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 text-sm">Help Center</a>
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 text-sm">Community Guidelines</a>
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 text-sm">About Micron</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="p-4 flex justify-between items-center bg-white border-b">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800">Hi, <span id="userName" class="text-orange-500">User123</span></h1>
+            <p class="text-gray-500 text-xs">Welcome back to your dashboard</p>
+        </div>
+        <div class="flex gap-4">
+            <div class="relative">
+                <i data-lucide="bell" class="text-gray-600"></i>
+                <span class="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
+            </div>
+            <i data-lucide="circle-user" class="text-gray-600"></i>
+        </div>
+    </section>
+
+    <div class="bg-orange-100 py-2 border-y overflow-hidden flex items-center">
+        <span class="bg-orange-500 text-white text-[10px] px-2 py-1 z-10 font-bold ml-2">NEWS</span>
+        <div class="marquee flex items-center gap-8">
+            <span class="flex items-center gap-2 italic text-sm">
+                <img src="https://via.placeholder.com/20" class="rounded-full"> New AI Course Launched! Get 50% off.
+            </span>
+            <span class="flex items-center gap-2 italic text-sm">
+                <img src="https://via.placeholder.com/20" class="rounded-full"> Tournament starts at 6 PM today!
+            </span>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-3 p-4">
+        <div class="bg-white p-3 rounded-xl shadow-sm border text-center">
+            <p class="text-xs text-gray-500 uppercase">Courses</p>
+            <p class="text-xl font-bold text-orange-600">12</p>
+        </div>
+        <div class="bg-white p-3 rounded-xl shadow-sm border text-center">
+            <p class="text-xs text-gray-500 uppercase">Earnings</p>
+            <p class="text-xl font-bold text-green-600">$450</p>
+        </div>
+        <div class="bg-white p-3 rounded-xl shadow-sm border text-center">
+            <p class="text-xs text-gray-500 uppercase">Certificates</p>
+            <p class="text-xl font-bold text-blue-600">05</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 p-4">
+        <button class="btn-gradient p-4 rounded-2xl flex flex-col items-center gap-2 shadow-lg">
+            <i data-lucide="graduation-cap"></i> <span>Courses</span>
+        </button>
+        <button class="btn-gradient p-4 rounded-2xl flex flex-col items-center gap-2 shadow-lg">
+            <i data-lucide="gamepad-2"></i> <span>Games</span>
+        </button>
+        <button class="btn-gradient p-4 rounded-2xl flex flex-col items-center gap-2 shadow-lg">
+            <i data-lucide="file-text"></i> <span>AI Resume/CV</span>
+        </button>
+        <button class="btn-gradient p-4 rounded-2xl flex flex-col items-center gap-2 shadow-lg">
+            <i data-lucide="compass"></i> <span>Guidance</span>
+        </button>
+    </div>
+
+    <div class="grid grid-cols-4 gap-2 px-4 pb-6">
+        <button class="flex flex-col items-center p-2 bg-white rounded-lg border text-[10px]">
+            <i data-lucide="play-circle" class="w-5 text-orange-500"></i> Playlist
+        </button>
+        <button class="flex flex-col items-center p-2 bg-white rounded-lg border text-[10px]">
+            <i data-lucide="video" class="w-5 text-orange-500"></i> Videos
+        </button>
+        <button class="flex flex-col items-center p-2 bg-white rounded-lg border text-[10px]">
+            <i data-lucide="wallet" class="w-5 text-orange-500"></i> Wallet
+        </button>
+        <button class="flex flex-col items-center p-2 bg-white rounded-lg border text-[10px]">
+            <i data-lucide="share-2" class="w-5 text-orange-500"></i> Refer
+        </button>
+        <button class="flex flex-col items-center p-2 bg-white rounded-lg border text-[10px]">
+            <i data-lucide="tag" class="w-5 text-orange-500"></i> Offers
+        </button>
+        <button class="flex flex-col items-center p-2 bg-white rounded-lg border text-[10px]">
+            <i data-lucide="trophy" class="w-5 text-orange-500"></i> Rank
+        </button>
+        <button class="flex flex-col items-center p-2 bg-white rounded-lg border text-[10px]">
+            <i data-lucide="settings" class="w-5 text-orange-500"></i> Settings
+        </button>
+        <button class="flex flex-col items-center p-2 bg-white rounded-lg border text-[10px]">
+            <i data-lucide="log-out" class="w-5 text-gray-400"></i> Exit
+        </button>
+    </div>
+
+    <footer class="bg-gray-100 p-6 mt-4 text-center border-t">
+        <div class="flex justify-center gap-4 text-xs text-blue-600 mb-4">
+            <a href="javascript:void(0)" onclick="alert('Privacy Policy Content')">Privacy & Policy</a>
+            <span class="text-gray-300">|</span>
+            <a href="javascript:void(0)" onclick="alert('Terms Content')">Terms & Conditions</a>
+        </div>
+        <p class="text-gray-500 text-xs">&copy; 2026 Micron | All Rights Reserved</p>
+    </footer>
+
+    <div id="subscribeModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] px-4">
+        <div class="bg-white rounded-3xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
+            <div id="formContent">
+                <h2 class="text-xl font-bold mb-4 text-center">Premium Subscription</h2>
+                <div class="bg-gray-100 p-4 rounded-xl mb-4 text-center">
+                    <p class="text-xs text-gray-500 mb-2">Scan to Pay (UPI)</p>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=micron@upi" class="mx-auto w-32 h-32 mb-2">
+                    <p class="text-sm font-mono font-bold">micron@upi</p>
+                </div>
+                
+                <form onsubmit="handleSubscription(event)" class="space-y-3">
+                    <input type="text" placeholder="Full Name" required class="w-full border p-2 rounded-lg text-sm">
+                    <input type="email" placeholder="Email" required class="w-full border p-2 rounded-lg text-sm">
+                    <input type="tel" placeholder="Contact Number" required class="w-full border p-2 rounded-lg text-sm">
+                    <input type="text" placeholder="Referral Code (Optional)" class="w-full border p-2 rounded-lg text-sm">
+                    <button type="submit" class="w-full btn-gradient py-3 rounded-xl font-bold mt-4">Pay & Subscribe</button>
+                    <button type="button" onclick="toggleModal('subscribeModal')" class="w-full text-gray-500 text-sm">Cancel</button>
+                </form>
+            </div>
+
+            <div id="successContent" class="hidden text-center py-10">
+                <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="check-circle-2" class="w-12 h-12"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Successfully Subscribed!</h2>
+                <p class="text-gray-600 mb-6">Enjoy the Refers and unlimited Courses and Games!</p>
+                <button onclick="toggleModal('subscribeModal')" class="btn-gradient px-10 py-3 rounded-xl font-bold">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Toggle UI Elements
+        function toggleModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.toggle('hidden');
+            // Reset form if opening
+            if(!modal.classList.contains('hidden')) {
+                document.getElementById('formContent').classList.remove('hidden');
+                document.getElementById('successContent').classList.add('hidden');
+            }
+        }
+
+        function toggleDropdown(id) {
+            document.getElementById(id).classList.toggle('hidden');
+        }
+
+        // Form Logic
+        function handleSubscription(e) {
+            e.preventDefault();
+            document.getElementById('formContent').classList.add('hidden');
+            document.getElementById('successContent').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        // Close dropdown when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.closest('.relative')) {
+                document.getElementById('menuDropdown').classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
