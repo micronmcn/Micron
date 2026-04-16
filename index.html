@@ -1,398 +1,121 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="te">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Micron</title>
-  <style>
-    :root{
-      --white:#ffffff;
-      --bg:#fffdf7;
-      --orange:#ff8a00;
-      --yellow:#ffd54a;
-      --text:#222;
-      --muted:#666;
-      --border:#eee2c6;
-      --shadow:0 12px 30px rgba(0,0,0,.08);
-      --ok:#1f9d55;
-      --danger:#d64545;
-      --radius:18px;
-      --max:1180px;
-    }
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0;
-      font-family:Arial, Helvetica, sans-serif;
-      color:var(--text);
-      background:linear-gradient(180deg,#fff 0%, #fffdf7 100%);
-    }
-    a{text-decoration:none;color:inherit}
-    .container{max-width:var(--max);margin:auto;padding:0 20px}
-    .btn{
-      border:none;
-      cursor:pointer;
-      padding:12px 18px;
-      border-radius:999px;
-      font-weight:700;
-      transition:.2s ease;
-    }
-    .btn:hover{transform:translateY(-1px)}
-    .btn-primary{background:linear-gradient(90deg,var(--orange),var(--yellow));color:#111}
-    .btn-outline{background:#fff;border:1px solid var(--border)}
-    .section{padding:72px 0}
-    .card{
-      background:var(--white);
-      border:1px solid #f1ead9;
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-    }
-    header{
-      position:sticky;top:0;z-index:20;
-      background:var(--white);
-      border-bottom:1px solid #f2f2f2;
-    }
-    .nav{
-      height:76px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-    }
-    .logo{
-      display:flex;align-items:center;gap:10px;font-size:22px;font-weight:900;
-    }
-    .logo-badge{
-      width:38px;height:38px;border-radius:12px;
-      background:linear-gradient(135deg,var(--orange),var(--yellow));
-      display:grid;place-items:center;color:#111;font-weight:900;
-    }
-    .nav-actions{display:flex;align-items:center;gap:10px}
-    .menu-btn{
-      width:46px;height:46px;border-radius:50%;
-      background:#fff;border:1px solid var(--border);
-      font-size:22px;
-    }
-    .hero{
-      padding:90px 0 70px;
-      background:
-        radial-gradient(circle at top right, rgba(255,213,74,.35), transparent 30%),
-        radial-gradient(circle at left, rgba(255,138,0,.15), transparent 30%);
-    }
-    .hero-grid{
-      display:grid;
-      grid-template-columns:1.2fr .8fr;
-      gap:28px;
-      align-items:center;
-    }
-    h1{font-size:56px;line-height:1.05;margin:0 0 16px}
-    .lead{font-size:18px;color:var(--muted);line-height:1.7;margin:0 0 24px}
-    .hero-box{padding:28px}
-    .mini-list{display:grid;gap:12px;margin-top:18px}
-    .mini-item{
-      padding:14px 16px;border-radius:14px;background:#fff8e8;border:1px solid #f5e1ad;
-    }
-    h2{font-size:34px;margin:0 0 12px}
-    .sub{color:var(--muted);line-height:1.8}
-    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-    .feature,.info{
-      padding:24px;
-    }
-    .feature h3,.info h3{margin:0 0 10px}
-    .feature p,.info p{margin:0;color:var(--muted);line-height:1.7}
-    .line-card{padding:24px}
-    .line-card ul{margin:0;padding-left:18px;color:var(--muted);line-height:1.8}
-    .login-wrap{
-      display:grid;grid-template-columns:.9fr 1.1fr;gap:22px;align-items:start;
-    }
-    form{
-      display:grid;gap:12px;
-    }
-    input, select{
-      width:100%;
-      padding:13px 14px;
-      border:1px solid #ddd;
-      border-radius:12px;
-      outline:none;
-      font-size:15px;
-      background:#fff;
-    }
-    input:focus, select:focus{border-color:var(--orange)}
-    .form-card{padding:24px}
-    .helper-row{
-      display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
-      font-size:14px;color:var(--muted);
-    }
-    .link{color:var(--orange);font-weight:700;cursor:pointer}
-    footer{
-      margin-top:40px;
-      border-top:1px solid #f0e6cf;
-      background:#fff;
-    }
-    .footer-inner{
-      padding:24px 0;
-      display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
-      align-items:center;
-      color:var(--muted);
-    }
-    .footer-links{display:flex;gap:14px;flex-wrap:wrap}
-    .footer-links a{font-weight:700}
-    .modal,.overlay,.drawer{display:none}
-    .overlay{
-      position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40;
-    }
-    .modal{
-      position:fixed;inset:50% auto auto 50%;
-      transform:translate(-50%,-50%);
-      width:min(92vw,560px);
-      background:#fff;border-radius:22px;z-index:50;
-      box-shadow:0 24px 60px rgba(0,0,0,.25);
-      padding:24px;
-      max-height:90vh;overflow:auto;
-    }
-    .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-    .close{
-      border:none;background:#f4f4f4;width:40px;height:40px;border-radius:50%;
-      font-size:20px;cursor:pointer;
-    }
-    .toast{
-      display:none;margin-top:12px;padding:12px 14px;border-radius:12px;background:#eefaf1;color:var(--ok);font-weight:700;
-    }
-    .drawer{
-      position:fixed;top:0;right:0;height:100%;width:min(88vw,340px);
-      background:#fff;z-index:45;box-shadow:-20px 0 50px rgba(0,0,0,.18);
-      padding:22px;
-    }
-    .drawer a{display:block;padding:14px 0;border-bottom:1px solid #f1f1f1;color:#333;font-weight:700}
-    .show{display:block}
-    .dashboard{
-      display:none;
-      padding:24px;
-      border:1px solid #e8e2ce;
-      border-radius:18px;
-      background:linear-gradient(180deg,#fff, #fff9ea);
-      margin-top:18px;
-    }
-    .small{font-size:14px;color:var(--muted)}
-    @media (max-width:900px){
-      .hero-grid,.grid-2,.grid-3,.login-wrap{grid-template-columns:1fr}
-      h1{font-size:40px}
-    }
-  </style>
+  <script>var SCRIPT_URL = 'YOUR_WEB_APP_URL';</script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <?!= include('style'); ?>
 </head>
 <body>
+  <!-- Header -->
+  <header class="header white-bg">
+    <div class="logo">Micron</div>
+    <button class="signup-btn orange-bg">Sign Up</button>
+    <button class="menu-btn">⋮⋮⋮</button>
+  </header>
 
-<header>
-  <div class="container nav">
-    <div class="logo">
-      <div class="logo-badge">M</div>
-      <div>MICRON</div>
-    </div>
-    <div class="nav-actions">
-      <button class="btn btn-primary" onclick="openSignup()">Sign Up</button>
-      <button class="menu-btn" onclick="toggleDrawer()">⋮</button>
-    </div>
-  </div>
-</header>
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>మా వెబ్‌సైట్‌తో మీ లక్ష్యాలు సాధించండి</h1>
+    <p>సులభంగా మరియు వేగంగా.</p>
+    <p>మా ప్లాట్‌ఫారమ్ మీకు సహాయపడుతుంది.</p>
+    <button class="cta-btn yellow-bg">Get Started</button>
+  </section>
 
-<div class="overlay" id="overlay" onclick="closeAll()"></div>
+  <!-- About -->
+  <section class="about">
+    <h2>What is Micron?</h2>
+    <p>1. మా వెబ్‌సైట్ మీకు సేవలు అందిస్తుంది.</p>
+    <p>2. సులభమైన interface.</p>
+    <p>3. ఉచిత signup.</p>
+    <p>4. Secure login.</p>
+    <p>5. Personal dashboard.</p>
+  </section>
 
-<div class="drawer" id="drawer">
-  <div class="modal-head">
-    <strong>Menu</strong>
-    <button class="close" onclick="closeAll()">×</button>
-  </div>
-  <a href="#about">About</a>
-  <a href="#why">Why Choose Us</a>
-  <a href="#mission">Mission & Vision</a>
-  <a href="#login">Login</a>
-  <a href="#" onclick="openPolicy('privacy')">Privacy Policy</a>
-  <a href="#" onclick="openPolicy('terms')">Terms & Conditions</a>
-</div>
+  <!-- Why Choose Us -->
+  <section class="why-us">
+    <h2>Why Choose Us?</h2>
+    <ul>
+      <li>అధిక security</li>
+      <li>24/7 support</li>
+      <li>Easy to use</li>
+      <li>Affordable</li>
+      <li>Fast performance</li>
+    </ul>
+  </section>
 
-<div class="container hero">
-  <div class="hero-grid">
+  <!-- Mission Vision -->
+  <section class="mission-vision">
     <div>
-      <h1>Build your MICRON space with a clean, smart experience.</h1>
-      <p class="lead">
-        Register in seconds, get a personal dashboard automatically, and access your account from one simple website.
-      </p>
-      <button class="btn btn-primary" onclick="document.getElementById('login').scrollIntoView({behavior:'smooth'})">Get Started</button>
+      <h3>Our Mission</h3>
+      <p>1. మీకు best service.</p>
+      <p>2. Innovation promote.</p>
+      <p>3. Customer satisfaction.</p>
     </div>
-    <div class="card hero-box">
-      <h3 style="margin-top:0">3-line detail</h3>
-      <div class="mini-list">
-        <div class="mini-item">Easy sign up and secure login flow.</div>
-        <div class="mini-item">Personal dashboard for every registered user.</div>
-        <div class="mini-item">White, orange, and yellow theme for a bright look.</div>
-      </div>
+    <div>
+      <h3>Our Vision</h3>
+      <p>1. Global leader.</p>
+      <p>2. Tech advancement.</p>
+      <p>3. Sustainable growth.</p>
     </div>
-  </div>
-</div>
+  </section>
 
-<section class="section" id="about">
-  <div class="container">
-    <h2>What is MICRON</h2>
-    <p class="sub">
-      MICRON is a user-friendly website concept built for smooth registration, login, and personal dashboard access. It is designed with a simple visual style so users can understand everything quickly. The structure keeps important actions visible and easy to use. It also supports popups for sign up, policy details, and menu links. The goal is to create a clean and modern experience.
-    </p>
-  </div>
-</section>
+  <!-- Login -->
+  <section class="login">
+    <h2>Login</h2>
+    <input type="text" id="userId" placeholder="User ID">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <a href="#" onclick="showForgot()">Forgot Password?</a>
+    <p>Don't have account? <a href="#" onclick="showSignup()">Sign Up</a></p>
+  </section>
 
-<section class="section" id="why">
-  <div class="container">
-    <h2>Why choose us</h2>
-    <div class="grid-3">
-      <div class="card feature">
-        <h3>Simple design</h3>
-        <p>Clean layout with a white base and bright accent colors makes the site easy to read and attractive.</p>
-      </div>
-      <div class="card feature">
-        <h3>Fast onboarding</h3>
-        <p>Users can sign up through a popup form without leaving the page.</p>
-      </div>
-      <div class="card feature">
-        <h3>Auto dashboard</h3>
-        <p>Every signup can be connected to a unique dashboard area for that user.</p>
-      </div>
+  <!-- Signup Popup -->
+  <div id="signupPopup" class="popup">
+    <div class="popup-content">
+      <span class="close">&times;</span>
+      <h3>Sign Up</h3>
+      <input type="text" id="fullName" placeholder="Full Name">
+      <input type="date" id="dob">
+      <input type="email" id="email" placeholder="Email">
+      <input type="tel" id="contact" placeholder="Contact">
+      <input type="text" id="referralCode" placeholder="Referral Code">
+      <input type="password" id="newPassword" placeholder="Set Password">
+      <button onclick="signup()">Register</button>
     </div>
   </div>
-</section>
 
-<section class="section" id="mission">
-  <div class="container grid-2">
-    <div class="card line-card">
-      <h2>Our Mission</h2>
-      <ul>
-        <li>Make account creation fast and simple.</li>
-        <li>Give users a clean and friendly interface.</li>
-        <li>Support secure access and organized account flow.</li>
-      </ul>
-    </div>
-    <div class="card line-card">
-      <h2>Our Vision</h2>
-      <ul>
-        <li>Create a trusted platform for every user.</li>
-        <li>Provide a modern dashboard experience.</li>
-        <li>Build a website that feels easy from start to finish.</li>
-      </ul>
+  <!-- Forgot Popup -->
+  <div id="forgotPopup" class="popup">
+    <div class="popup-content">
+      <span class="close">&times;</span>
+      <h3>Forgot Password</h3>
+      <input type="email" id="forgotEmail" placeholder="Email">
+      <button onclick="sendOTP()">Send OTP</button>
+      <input type="text" id="otp" placeholder="Enter OTP" style="display:none;">
+      <input type="password" id="newPass" placeholder="New Password" style="display:none;">
+      <button id="verifyBtn" onclick="verifyOTP()" style="display:none;">Verify & Reset</button>
     </div>
   </div>
-</section>
 
-<section class="section" id="login">
-  <div class="container login-wrap">
-    <div class="card form-card">
-      <h2>Login</h2>
-      <form onsubmit="loginUser(event)">
-        <input type="text" id="loginUserId" placeholder="User ID" required>
-        <input type="password" id="loginPassword" placeholder="Password" required>
-        <div class="helper-row">
-          <span class="link" onclick="alert('Add your forgot password flow here.')">Forgot password?</span>
-          <span>Don't have an account? <span class="link" onclick="openSignup()">Sign Up</span></span>
-        </div>
-        <button class="btn btn-primary" type="submit">Login</button>
-      </form>
-      <div class="dashboard" id="dashboardBox">
-        <h3 style="margin-top:0">User Dashboard</h3>
-        <p class="small">Welcome, your personal dashboard is ready.</p>
-      </div>
-    </div>
-
-    <div class="card form-card">
-      <h2>How it works</h2>
-      <p class="sub">
-        Sign up first, then login with the same credentials. After successful login, you can redirect to the dashboard page or show the dashboard section here. This template is ready for GitHub and can be connected to a backend later.
-      </p>
+  <!-- Menu Popup -->
+  <div id="menuPopup" class="popup">
+    <div class="popup-content">
+      <h3>Menu</h3>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms & Conditions</a>
+      <a href="#">Contact</a>
     </div>
   </div>
-</section>
 
-<footer>
-  <div class="container footer-inner">
-    <div>©2026 Micron | All Rights Reserved</div>
-    <div class="footer-links">
-      <a href="#" onclick="openPolicy('privacy')">Privacy & Policy</a>
-      <a href="#" onclick="openPolicy('terms')">Terms & Conditions</a>
-      <a href="#about">About</a>
-      <a href="#login">Login</a>
-    </div>
-  </div>
-</footer>
+  <!-- Footer -->
+  <footer>
+    <a href="#">Privacy & Policy</a> | <a href="#">Terms & Conditions</a><br>
+    ©2026 Micron | All Rights Reserved
+  </footer>
 
-<div class="modal" id="signupModal">
-  <div class="modal-head">
-    <strong>Sign Up</strong>
-    <button class="close" onclick="closeAll()">×</button>
-  </div>
-  <form onsubmit="registerUser(event)">
-    <input type="text" id="fullName" placeholder="Full Name" required>
-    <input type="date" id="dob" required>
-    <input type="email" id="email" placeholder="Email" required>
-    <input type="tel" id="contact" placeholder="Contact" required>
-    <input type="text" id="referral" placeholder="Referral Code">
-    <input type="password" id="setPassword" placeholder="Set Password" required>
-    <button class="btn btn-primary" type="submit">Submit</button>
-  </form>
-  <div class="toast" id="signupToast">Successfully Registered! Done.</div>
-</div>
-
-<div class="modal" id="policyModal">
-  <div class="modal-head">
-    <strong id="policyTitle">Policy</strong>
-    <button class="close" onclick="closeAll()">×</button>
-  </div>
-  <div class="sub" id="policyBody"></div>
-</div>
-
-<script>
-  const overlay = document.getElementById('overlay');
-  const signupModal = document.getElementById('signupModal');
-  const drawer = document.getElementById('drawer');
-  const policyModal = document.getElementById('policyModal');
-  const toast = document.getElementById('signupToast');
-  const dashboardBox = document.getElementById('dashboardBox');
-
-  function closeAll(){
-    overlay.classList.remove('show');
-    signupModal.classList.remove('show');
-    drawer.classList.remove('show');
-    policyModal.classList.remove('show');
-    toast.style.display='none';
-  }
-  function openSignup(){
-    closeAll(); overlay.classList.add('show'); signupModal.classList.add('show');
-  }
-  function toggleDrawer(){
-    closeAll(); overlay.classList.add('show'); drawer.classList.add('show');
-  }
-  function openPolicy(type){
-    closeAll(); overlay.classList.add('show'); policyModal.classList.add('show');
-    document.getElementById('policyTitle').textContent = type === 'privacy' ? 'Privacy Policy' : 'Terms & Conditions';
-    document.getElementById('policyBody').innerHTML = type === 'privacy'
-      ? 'Add your privacy policy details here, including how data is collected, stored, and protected. You can also place useful links like contact support and help pages.'
-      : 'Add your terms and conditions details here, including account use, user responsibilities, and service rules. You can also place related links like FAQ and support.';
-  }
-  function registerUser(e){
-    e.preventDefault();
-    toast.style.display='block';
-    setTimeout(()=>{
-      closeAll();
-      alert('Successfully Registered! Done.');
-    }, 900);
-  }
-  function loginUser(e){
-    e.preventDefault();
-    const user = document.getElementById('loginUserId').value.trim();
-    const pass = document.getElementById('loginPassword').value.trim();
-    if(user && pass){
-      dashboardBox.style.display = 'block';
-      dashboardBox.innerHTML = '<h3 style="margin-top:0">User Dashboard</h3><p class="small">Welcome, '+user+'. Your dashboard is ready.</p>';
-      alert('Login successful. Redirect to dashboard page here.');
-    }
-  }
-</script>
-
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <?!= include('script'); ?>
 </body>
 </html>
