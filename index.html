@@ -1,121 +1,186 @@
 <!DOCTYPE html>
 <html lang="te">
 <head>
-  <meta charset="UTF-8">
-  <title>Micron</title>
-  <script>var SCRIPT_URL = 'YOUR_WEB_APP_URL';</script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <?!= include('style'); ?>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Micron</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        header { background: white; padding: 1rem 5%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: fixed; width: 100%; top: 0; z-index: 1000; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; }
+        .logo { font-size: 1.5rem; font-weight: bold; color: #FF8C00; }
+        .btn { padding: 0.5rem 1rem; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .signup-btn { background: #FF8C00; color: white; }
+        .menu-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+        .hero { background: linear-gradient(135deg, #fff 0%, #FFD700 100%); padding: 120px 5% 80px; text-align: center; }
+        .hero h1 { font-size: 3rem; margin-bottom: 1rem; color: #333; }
+        .hero p { font-size: 1.2rem; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .cta-btn { background: #FF8C00; color: white; padding: 1rem 2rem; font-size: 1.2rem; }
+        section { padding: 80px 5%; max-width: 1200px; margin: 0 auto; }
+        .section-title { text-align: center; font-size: 2.5rem; margin-bottom: 3rem; color: #FF8C00; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .card { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); text-align: center; }
+        .login-form, .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; }
+        .modal-content { background: white; margin: 10% auto; padding: 2rem; width: 90%; max-width: 400px; border-radius: 10px; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: #333; }
+        .form-group input { width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; }
+        footer { background: #333; color: white; text-align: center; padding: 2rem; }
+        .menu-panel { position: fixed; top: 80px; right: 5%; background: white; padding: 1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: none; }
+        @media (max-width: 768px) { .hero h1 { font-size: 2rem; } }
+    </style>
 </head>
 <body>
-  <!-- Header -->
-  <header class="header white-bg">
-    <div class="logo">Micron</div>
-    <button class="signup-btn orange-bg">Sign Up</button>
-    <button class="menu-btn">⋮⋮⋮</button>
-  </header>
+    <header>
+        <div class="header-content">
+            <div class="logo">Micron</div>
+            <button class="btn signup-btn" onclick="openSignup()">Sign Up</button>
+            <button class="menu-btn" onclick="toggleMenu()">⋮⋮⋮</button>
+        </div>
+        <div id="menuPanel" class="menu-panel">
+            <p>Terms & Conditions</p>
+            <p>Privacy Policy</p>
+            <p>About Us</p>
+        </div>
+    </header>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <h1>మా వెబ్‌సైట్‌తో మీ లక్ష్యాలు సాధించండి</h1>
-    <p>సులభంగా మరియు వేగంగా.</p>
-    <p>మా ప్లాట్‌ఫారమ్ మీకు సహాయపడుతుంది.</p>
-    <button class="cta-btn yellow-bg">Get Started</button>
-  </section>
+    <section class="hero">
+        <h1>Welcome to Micron</h1>
+        <p>మా ప్లాట్‌ఫాం మీ అవసరాలకు అనుగుణంగా రూపొందించబడింది.<br>సులభంగా ఉపయోగించవచ్చు మరియు భద్రంగా ఉంటుంది.<br>ఇప్పుడే ప్రారంభించండి.</p>
+        <button class="cta-btn btn" onclick="scrollToLogin()">Get Started</button>
+    </section>
 
-  <!-- About -->
-  <section class="about">
-    <h2>What is Micron?</h2>
-    <p>1. మా వెబ్‌సైట్ మీకు సేవలు అందిస్తుంది.</p>
-    <p>2. సులభమైన interface.</p>
-    <p>3. ఉచిత signup.</p>
-    <p>4. Secure login.</p>
-    <p>5. Personal dashboard.</p>
-  </section>
+    <section id="about">
+        <h2 class="section-title">What is Micron?</h2>
+        <div class="grid">
+            <div class="card"><p>1. మా వెబ్‌సైట్ యూజర్ రిజిస్ట్రేషన్ & లాగిన్‌తో పని చేస్తుంది.</p></div>
+            <div class="card"><p>2. ప్రతి యూజర్‌కు ప్రత్యేక డాష్‌బోర్డ్ ఉంటుంది.</p></div>
+            <div class="card"><p>3. భద్రత మరియు సులభత్వం మా ప్రధాన లక్ష్యం.</p></div>
+            <div class="card"><p>4. రెఫరల్ కోడ్ సిస్టమ్‌తో షేర్ చేయవచ్చు.</p></div>
+            <div class="card"><p>5. మొబైల్ రెస్పాన్సివ్ డిజైన్.</p></div>
+        </div>
+    </section>
 
-  <!-- Why Choose Us -->
-  <section class="why-us">
-    <h2>Why Choose Us?</h2>
-    <ul>
-      <li>అధిక security</li>
-      <li>24/7 support</li>
-      <li>Easy to use</li>
-      <li>Affordable</li>
-      <li>Fast performance</li>
-    </ul>
-  </section>
+    <section id="why">
+        <h2 class="section-title">Why Choose Us?</h2>
+        <div class="grid">
+            <div class="card"><p>1. వేగవంతమైన & సురక్షితమైన సర్వర్.</p></div>
+            <div class="card"><p>2. 24/7 సపోర్ట్ అందుబాటులో.</p></div>
+            <div class="card"><p>3. ఉచిత రిజిస్ట్రేషన్.</p></div>
+            <div class="card"><p>4. యూజర్ ఫ్రెండ్లీ ఇంటర్‌ఫేస్.</p></div>
+            <div class="card"><p>5. రెగ్యులర్ అప్‌డేట్స్.</p></div>
+        </div>
+    </section>
 
-  <!-- Mission Vision -->
-  <section class="mission-vision">
-    <div>
-      <h3>Our Mission</h3>
-      <p>1. మీకు best service.</p>
-      <p>2. Innovation promote.</p>
-      <p>3. Customer satisfaction.</p>
+    <section id="mission">
+        <h2 class="section-title">Our Mission & Vision</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Mission</h3>
+                <p>1. ప్రతి యూజర్‌కు ఉత్తమ సేవలు అందించడం.<br>2. టెక్నాలజీ ద్వారా జీవితాలు మెరుగుపరచడం.<br>3. ఇన్నోవేషన్ ప్రోత్సహించడం.</p>
+            </div>
+            <div class="card">
+                <h3>Vision</h3>
+                <p>1. గ్లోబల్ లీడర్‌గా మారడం.<br>2. స్మార్ట్ సొల్యూషన్స్ అందించడం.<br>3. సస్టైనబుల్ గ్రోత్.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="login-section">
+        <h2 class="section-title">Login</h2>
+        <div style="max-width: 400px; margin: 0 auto;">
+            <div class="form-group"><input type="text" id="userId" placeholder="User ID"></div>
+            <div class="form-group"><input type="password" id="password" placeholder="Password"></div>
+            <button class="btn signup-btn" style="width:100%;" onclick="login()">Login</button>
+            <p style="text-align:center; margin-top:1rem;">
+                <a href="#" onclick="openForgot()">Forgot Password?</a> | 
+                <a href="#" onclick="openSignup()">Don't have account? Sign Up</a>
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        <p><a href="#" style="color:#FFD700;">Privacy & Policy</a> | <a href="#" style="color:#FFD700;">Terms & Conditions</a></p>
+        <p>&copy;2026 Micron | All Rights Reserved</p>
+    </footer>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <h2>Sign Up</h2>
+            <div class="form-group"><input type="text" id="fullName" placeholder="Full Name"></div>
+            <div class="form-group"><input type="date" id="dob"></div>
+            <div class="form-group"><input type="email" id="email" placeholder="Email"></div>
+            <div class="form-group"><input type="tel" id="contact" placeholder="Contact"></div>
+            <div class="form-group"><input type="text" id="referral" placeholder="Referral Code"></div>
+            <div class="form-group"><input type="password" id="setPassword" placeholder="Set Password"></div>
+            <button class="btn signup-btn" onclick="submitSignup()">Register</button>
+            <button onclick="closeSignup()">Close</button>
+        </div>
     </div>
-    <div>
-      <h3>Our Vision</h3>
-      <p>1. Global leader.</p>
-      <p>2. Tech advancement.</p>
-      <p>3. Sustainable growth.</p>
+
+    <!-- Forgot Modal (simple) -->
+    <div id="forgotModal" class="modal">
+        <div class="modal-content">
+            <h2>Forgot Password</h2>
+            <p>ఇమెయిల్‌కు రీసెట్ లింక్ పంపబడుతుంది.</p>
+            <button onclick="closeForgot()">Close</button>
+        </div>
     </div>
-  </section>
 
-  <!-- Login -->
-  <section class="login">
-    <h2>Login</h2>
-    <input type="text" id="userId" placeholder="User ID">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="login()">Login</button>
-    <a href="#" onclick="showForgot()">Forgot Password?</a>
-    <p>Don't have account? <a href="#" onclick="showSignup()">Sign Up</a></p>
-  </section>
+    <script>
+        const WEB_APP_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE'; // Apps Script URL ఇక్కడ పెట్టండి
 
-  <!-- Signup Popup -->
-  <div id="signupPopup" class="popup">
-    <div class="popup-content">
-      <span class="close">&times;</span>
-      <h3>Sign Up</h3>
-      <input type="text" id="fullName" placeholder="Full Name">
-      <input type="date" id="dob">
-      <input type="email" id="email" placeholder="Email">
-      <input type="tel" id="contact" placeholder="Contact">
-      <input type="text" id="referralCode" placeholder="Referral Code">
-      <input type="password" id="newPassword" placeholder="Set Password">
-      <button onclick="signup()">Register</button>
-    </div>
-  </div>
+        function openSignup() { document.getElementById('signupModal').style.display = 'block'; }
+        function closeSignup() { document.getElementById('signupModal').style.display = 'none'; }
+        function openForgot() { document.getElementById('forgotModal').style.display = 'block'; closeSignup(); }
+        function closeForgot() { document.getElementById('forgotModal').style.display = 'none'; }
+        function toggleMenu() {
+            const panel = document.getElementById('menuPanel');
+            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+        }
+        function scrollToLogin() { document.getElementById('login-section').scrollIntoView(); }
 
-  <!-- Forgot Popup -->
-  <div id="forgotPopup" class="popup">
-    <div class="popup-content">
-      <span class="close">&times;</span>
-      <h3>Forgot Password</h3>
-      <input type="email" id="forgotEmail" placeholder="Email">
-      <button onclick="sendOTP()">Send OTP</button>
-      <input type="text" id="otp" placeholder="Enter OTP" style="display:none;">
-      <input type="password" id="newPass" placeholder="New Password" style="display:none;">
-      <button id="verifyBtn" onclick="verifyOTP()" style="display:none;">Verify & Reset</button>
-    </div>
-  </div>
+        async function submitSignup() {
+            const data = {
+                fullName: document.getElementById('fullName').value,
+                dob: document.getElementById('dob').value,
+                email: document.getElementById('email').value,
+                contact: document.getElementById('contact').value,
+                referral: document.getElementById('referral').value,
+                password: document.getElementById('setPassword').value
+            };
+            try {
+                const response = await fetch(`${WEB_APP_URL}?action=signup`, {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('Successfully Registered!');
+                    closeSignup();
+                    window.location.href = `${WEB_APP_URL}?userId=${data.email}`;
+                } else {
+                    alert(result.message);
+                }
+            } catch (e) { alert('Error: ' + e); }
+        }
 
-  <!-- Menu Popup -->
-  <div id="menuPopup" class="popup">
-    <div class="popup-content">
-      <h3>Menu</h3>
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms & Conditions</a>
-      <a href="#">Contact</a>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <footer>
-    <a href="#">Privacy & Policy</a> | <a href="#">Terms & Conditions</a><br>
-    ©2026 Micron | All Rights Reserved
-  </footer>
-
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <?!= include('script'); ?>
+        async function login() {
+            const userId = document.getElementById('userId').value;
+            const password = document.getElementById('password').value;
+            try {
+                const response = await fetch(`${WEB_APP_URL}?action=login&userId=${userId}&password=${password}`);
+                const result = await response.json();
+                if (result.success) {
+                    window.location.href = `${WEB_APP_URL}?userId=${userId}`;
+                } else {
+                    alert(result.message);
+                }
+            } catch (e) { alert('Error: ' + e); }
+        }
+    </script>
 </body>
 </html>
