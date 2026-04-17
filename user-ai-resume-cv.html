@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Micron | AI Resume & CV Builder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+        }
+        .text-gradient-primary {
+            background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+        @media print {
+            .no-print { display: none !important; }
+            .print-area { display: block !important; width: 100%; }
+        }
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 5rem;
+            color: rgba(0,0,0,0.05);
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center text-white font-bold text-xl">M</div>
+                <span class="text-2xl font-bold text-gray-800 tracking-tight">Micron</span>
+            </div>
+            
+            <div class="relative group">
+                <button class="p-2 hover:bg-gray-100 rounded-full transition">
+                    <i class="fas fa-ellipsis-v text-xl text-gray-600"></i>
+                </button>
+                <div class="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-xl hidden group-hover:block">
+                    <a href="#" class="block px-4 py-2 hover:bg-orange-50 text-gray-700">Templates</a>
+                    <a href="#" class="block px-4 py-2 hover:bg-orange-50 text-gray-700">AI Optimization</a>
+                    <a href="#" class="block px-4 py-2 hover:bg-orange-50 text-gray-700">Help Center</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="container mx-auto px-6 py-12 no-print">
+        <nav class="text-sm text-gray-500 mb-8">
+            <span class="hover:text-orange-500 cursor-pointer">Home</span> 
+            <i class="fas fa-chevron-right text-[10px] mx-2"></i> 
+            <span class="text-orange-600 font-medium">AI Resume/CV</span>
+        </nav>
+
+        <div class="flex flex-col md:flex-row items-center justify-between gap-12">
+            <div class="md:w-1/2">
+                <h1 class="text-5xl font-extrabold text-gray-900 mb-6">
+                    Build a Professional <span class="text-gradient-primary">Resume</span> in Seconds.
+                </h1>
+                <p class="text-gray-600 text-lg mb-8 leading-relaxed">
+                    Select your document type below to start our AI-powered builder. Professional layouts designed to pass ATS filters.
+                </p>
+                
+                <div class="flex gap-6">
+                    <label onclick="openModal('resume')" class="flex-1 border-2 border-orange-200 p-6 rounded-2xl cursor-pointer hover:border-orange-500 hover:bg-orange-50 transition-all text-center group">
+                        <input type="radio" name="docType" class="hidden">
+                        <i class="fas fa-file-invoice text-4xl mb-4 text-orange-500"></i>
+                        <h3 class="font-bold text-gray-800">Build Resume</h3>
+                    </label>
+                    <label onclick="openModal('cv')" class="flex-1 border-2 border-orange-200 p-6 rounded-2xl cursor-pointer hover:border-orange-500 hover:bg-orange-50 transition-all text-center group">
+                        <input type="radio" name="docType" class="hidden">
+                        <i class="fas fa-id-card-alt text-4xl mb-4 text-orange-600"></i>
+                        <h3 class="font-bold text-gray-800">Build CV</h3>
+                    </label>
+                </div>
+            </div>
+            <div class="md:w-1/2 bg-orange-100 rounded-3xl p-8 relative">
+                <div class="bg-white h-64 rounded-xl shadow-lg transform -rotate-3 p-4">
+                    <div class="h-4 w-3/4 bg-gray-200 rounded mb-4"></div>
+                    <div class="h-4 w-1/2 bg-gray-100 rounded mb-8"></div>
+                    <div class="space-y-3">
+                        <div class="h-2 bg-gray-100 rounded"></div>
+                        <div class="h-2 bg-gray-100 rounded"></div>
+                        <div class="h-2 bg-gray-100 rounded w-5/6"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="formModal" class="modal-overlay fixed inset-0 z-[100] flex justify-center items-start overflow-y-auto pt-10 pb-10">
+        <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden relative">
+            <div class="bg-gradient-primary p-6 text-white flex justify-between items-center">
+                <h2 id="modalTitle" class="text-2xl font-bold">Document Details</h2>
+                <button onclick="closeModal()" class="text-white hover:text-gray-200 text-2xl">&times;</button>
+            </div>
+
+            <form id="docForm" class="p-8 space-y-8" onsubmit="generateDocument(event)">
+                <div>
+                    <h3 class="text-orange-600 font-bold border-b pb-2 mb-4 uppercase text-sm tracking-widest">1. Personal Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" id="fullName" placeholder="Full Name" required class="border p-3 rounded-lg focus:ring-2 focus:ring-orange-400 outline-none">
+                        <input type="number" id="phone" placeholder="Phone Number" required class="border p-3 rounded-lg focus:ring-2 focus:ring-orange-400 outline-none">
+                        <input type="email" id="email" placeholder="Email Address" required class="border p-3 rounded-lg focus:ring-2 focus:ring-orange-400 outline-none">
+                        <input type="text" id="location" placeholder="Location (City, State)" class="border p-3 rounded-lg focus:ring-2 focus:ring-orange-400 outline-none">
+                        <input type="url" id="linkedin" placeholder="LinkedIn Profile URL" class="border p-3 rounded-lg focus:ring-2 focus:ring-orange-400 outline-none">
+                        <input type="url" id="portfolio" placeholder="Portfolio / GitHub URL" class="border p-3 rounded-lg focus:ring-2 focus:ring-orange-400 outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-orange-600 font-bold border-b pb-2 mb-4 uppercase text-sm tracking-widest">2. Career Objective</h3>
+                    <textarea id="objective" maxlength="200" placeholder="Short Description (Max 200 words)" class="w-full border p-3 rounded-lg h-32 focus:ring-2 focus:ring-orange-400 outline-none"></textarea>
+                </div>
+
+                <div>
+                    <h3 class="text-orange-600 font-bold border-b pb-2 mb-4 uppercase text-sm tracking-widest">3. Education Details</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <input type="text" id="eduCourse" placeholder="Course/Degree" class="border p-3 rounded-lg focus:ring-2 focus:ring-orange-400 outline-none">
+                        <input type="text" id="eduCollege" placeholder="College/School Name" class="border p-3 rounded-lg focus:ring-2 focus:ring-orange-400 outline-none">
+                        <input type="text" id="eduUniv" placeholder="University/Board" class="border p-3 rounded-lg focus:ring-2 focus:ring-orange-400 outline-none">
+                        <input type="number" id="eduYear" placeholder="Year of Passing" class="border p-3 rounded-lg focus:ring-2 focus:ring-orange-400 outline-none">
+                        <input type="text" id="eduGrades" placeholder="Percentage/CGPA" class="border p-3 rounded-lg focus:ring-2 focus:ring-orange-400 outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-orange-600 font-bold border-b pb-2 mb-4 uppercase text-sm tracking-widest">4. Skills</h3>
+                    <div class="space-y-4">
+                        <textarea id="techSkills" placeholder="Technical Skills (e.g. Java, Python, React)" class="w-full border p-3 rounded-lg h-20 focus:ring-2 focus:ring-orange-400 outline-none"></textarea>
+                        <textarea id="tools" placeholder="Tools (e.g. VS Code, Git, Docker)" class="w-full border p-3 rounded-lg h-20 focus:ring-2 focus:ring-orange-400 outline-none"></textarea>
+                        <textarea id="softSkills" placeholder="Soft Skills (e.g. Leadership, Communication)" class="w-full border p-3 rounded-lg h-20 focus:ring-2 focus:ring-orange-400 outline-none"></textarea>
+                    </div>
+                </div>
+
+                <div class="flex flex-col space-y-4 pt-6">
+                    <label class="flex items-center space-x-3 cursor-pointer">
+                        <input type="checkbox" required class="w-5 h-5 text-orange-600 rounded">
+                        <span class="text-gray-700">I confirm that the above details are true and correct.</span>
+                    </label>
+                    <div class="flex gap-4">
+                        <button type="submit" onclick="setSubscription(false)" class="flex-1 bg-gray-800 text-white py-4 rounded-xl font-bold hover:bg-black transition">Generate with Watermark</button>
+                        <button type="submit" onclick="setSubscription(true)" class="flex-1 bg-gradient-primary text-white py-4 rounded-xl font-bold hover:opacity-90 transition">Generate Premium (No Watermark)</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="outputSection" class="hidden bg-white min-h-screen p-10 print-area">
+        <div id="watermarkBox" class="watermark hidden">MICRON AI BUILDER</div>
+        <div class="max-w-4xl mx-auto border p-12 relative shadow-sm" id="printableContent">
+            </div>
+        <div class="max-w-4xl mx-auto mt-8 flex justify-center space-x-4 no-print">
+            <button onclick="window.print()" class="bg-orange-600 text-white px-8 py-3 rounded-full font-bold">Print / Download PDF</button>
+            <button onclick="location.reload()" class="bg-gray-200 text-gray-800 px-8 py-3 rounded-full font-bold">Edit Details</button>
+        </div>
+    </div>
+
+    <footer class="bg-white border-t mt-20 no-print">
+        <div class="container mx-auto px-6 py-12">
+            <div class="flex flex-wrap justify-between items-center">
+                <div class="w-full md:w-auto mb-6 md:mb-0">
+                    <p class="text-gray-500">&copy; 2026 Micron | All Rights Reserved</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-600 hover:text-orange-500 transition">Privacy & Policy</a>
+                    <a href="#" class="text-gray-600 hover:text-orange-500 transition">Terms & Conditions</a>
+                    <a href="#" class="text-gray-600 hover:text-orange-500 transition">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let isPremium = false;
+        let currentType = 'resume';
+
+        function openModal(type) {
+            currentType = type;
+            document.getElementById('modalTitle').innerText = type === 'resume' ? 'Create Professional Resume' : 'Create Academic CV';
+            document.getElementById('formModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('formModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function setSubscription(status) {
+            isPremium = status;
+        }
+
+        function generateDocument(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('fullName').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const loc = document.getElementById('location').value;
+            const obj = document.getElementById('objective').value;
+            const skills = document.getElementById('techSkills').value;
+            const edu = document.getElementById('eduCourse').value + " from " + document.getElementById('eduCollege').value;
+
+            const html = `
+                <div class="text-center mb-8 border-b-2 border-orange-500 pb-6">
+                    <h1 class="text-4xl font-bold text-gray-800 mb-2">${name.toUpperCase()}</h1>
+                    <p class="text-gray-600">${loc} | ${phone} | ${email}</p>
+                </div>
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold text-orange-600 border-b mb-2 uppercase">Career Objective</h2>
+                    <p class="text-gray-700">${obj}</p>
+                </div>
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold text-orange-600 border-b mb-2 uppercase">Education</h2>
+                    <p class="text-gray-700">${edu}</p>
+                </div>
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold text-orange-600 border-b mb-2 uppercase">Skills</h2>
+                    <p class="text-gray-700">${skills}</p>
+                </div>
+                <div class="mt-20 pt-10 text-xs text-gray-400 italic">
+                    Declaration: I confirm that the above details are true and correct to the best of my knowledge.
+                </div>
+            `;
+
+            document.getElementById('printableContent').innerHTML = html;
+            document.getElementById('watermarkBox').style.display = isPremium ? 'none' : 'block';
+            
+            document.querySelector('header').classList.add('no-print');
+            document.getElementById('formModal').style.display = 'none';
+            document.querySelector('section').style.display = 'none';
+            document.getElementById('outputSection').classList.remove('hidden');
+            window.scrollTo(0,0);
+        }
+    </script>
+</body>
+  </html>
+
