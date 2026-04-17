@@ -197,51 +197,59 @@
             }
         }
     </script>
-    <script>
-      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx0oXjlraxstJwKrQbZxG4iSRubFKfFN-4nDVGgSTJDkVBiXISIGDiWwyv9UteXNk8n/exec";
+    <<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbxwH47ubpiw9KzjbcQX3alExiloY8taKUh9pVfmKPZJRsIxFJG__iL1elygkL9xvFCMsg/exec"; // 🔥 paste your API here
 
-async function submitSignup() {
-    const formData = {
-        fullName: document.querySelector('input[placeholder="Full Name"]').value,
-        dob: document.querySelector('input[placeholder="Date of Birth"]').value,
-        email: document.querySelector('input[placeholder="Email"]').value,
-        contact: document.querySelector('input[placeholder="Contact"]').value,
-        referral: document.querySelector('input[placeholder="Referral Code"]').value,
-        password: document.querySelector('input[placeholder="Set Password"]').value
-    };
+// 👉 Signup
+function signup(){
+  let name = document.getElementById("name").value;
+  let dob = document.getElementById("dob").value;
+  let email = document.getElementById("email").value;
+  let contact = document.getElementById("contact").value;
+  let ref = document.getElementById("ref").value;
+  let password = document.getElementById("password").value;
 
-    const response = await fetch(`${SCRIPT_URL}?action=signup`, {
-        method: 'POST',
-        body: JSON.stringify(formData)
-    });
-
-    const result = await response.json();
-    if (result.result === "success") {
-        document.getElementById('signupForm').classList.add('hidden');
-        document.getElementById('successMsg').classList.remove('hidden');
-    }
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "signup",
+      name: name,
+      dob: dob,
+      email: email,
+      contact: contact,
+      referral: ref,
+      password: password
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert("Signup Success ✅");
+  });
 }
 
-async function handleLogin() {
-    const loginData = {
-        userId: document.querySelector('input[placeholder="Email"]').value,
-        password: document.querySelector('input[placeholder="Password"]').value
-    };
+// 👉 Login
+function login(){
+  let email = document.getElementById("loginEmail").value;
+  let password = document.getElementById("loginPassword").value;
 
-    const response = await fetch(`${SCRIPT_URL}?action=login`, {
-        method: 'POST',
-        body: JSON.stringify(loginData)
-    });
-
-    const result = await response.json();
-    if (result.result === "success") {
-        alert("Welcome, " + result.user + "! Redirecting...");
-        // window.location.href = "dashboard.html";
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "login",
+      email: email,
+      password: password
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.status === "success"){
+      localStorage.setItem("userID", data.userID);
+      window.location = "dashboard.html";
     } else {
-        alert("Login Failed: " + result.message);
+      alert("Invalid Login ❌");
     }
+  });
 }
-    </script>
-    
+</script>
 </body>
 </html>
