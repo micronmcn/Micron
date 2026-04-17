@@ -3,291 +3,364 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Candy Match 3</title>
+    <title>Candy Match Mobile</title>
     <style>
         :root {
-            --bg-color: #fce4ec;
-            --header-bg: #ff8a65;
-            --cell-bg: rgba(255, 255, 255, 0.3);
+            --wood-gradient: linear-gradient(to bottom, #a67c52, #5d4037);
+            --bg-sky: linear-gradient(to bottom, #87ceeb, #e0f7fa);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Arial', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
         body {
-            background-color: var(--bg-color);
+            background: var(--bg-sky);
             height: 100vh;
             display: flex;
             flex-direction: column;
+            align-items: center;
             overflow: hidden;
-            touch-action: none; /* Prevents scrolling while playing */
+            font-family: 'Comic Sans MS', cursive, sans-serif;
         }
 
-        /* --- Header & UI --- */
+        /* --- UI HEADER --- */
         header {
-            background: var(--header-bg);
-            color: white;
-            padding: 15px;
+            width: 95%;
+            max-width: 500px;
+            margin-top: 10px;
+            background: var(--wood-gradient);
+            border: 3px solid #3e2723;
+            border-radius: 15px;
+            padding: 10px;
             display: flex;
-            justify-content: space-between;
+            justify-content: space-around;
             align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             z-index: 10;
         }
 
-        .stats { font-weight: bold; font-size: 1.2rem; }
+        .header-item { display: flex; align-items: center; gap: 5px; font-weight: bold; }
+        
+        .progress-container {
+            background: #3e2723;
+            width: 100px;
+            height: 15px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #ffd54f;
+        }
 
-        .settings-container { position: relative; }
+        .progress-bar {
+            background: #ffeb3b;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
 
         #settingsBtn {
-            background: #fff;
+            background: none;
             border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            font-size: 24px;
             cursor: pointer;
-            font-size: 20px;
+            filter: drop-shadow(0 2px 2px black);
         }
 
+        /* --- SETTINGS DROPDOWN --- */
         .dropdown {
             position: absolute;
-            top: 50px;
-            right: 0;
+            top: 70px;
+            right: 20px;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             display: none;
             flex-direction: column;
-            width: 150px;
-            overflow: hidden;
+            padding: 10px;
+            z-index: 100;
         }
 
-        .dropdown.show { display: flex; }
-
-        .dropdown-item {
-            padding: 12px;
+        .dropdown.active { display: flex; }
+        .dropdown-row {
+            padding: 10px;
             border-bottom: 1px solid #eee;
             display: flex;
             justify-content: space-between;
+            width: 150px;
             color: #333;
-            cursor: pointer;
         }
 
-        /* --- Game Board --- */
-        #game-container {
+        /* --- GAME GRID --- */
+        #game-board {
             flex-grow: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 10px;
+            width: 100%;
         }
 
         .grid {
             display: grid;
             grid-template-columns: repeat(8, 1fr);
             grid-template-rows: repeat(8, 1fr);
-            width: 100vw;
-            height: 100vw;
-            max-width: 500px;
-            max-height: 500px;
-            background: var(--cell-bg);
-            border: 4px solid #fff;
-            border-radius: 12px;
+            width: 95vw;
+            height: 95vw;
+            max-width: 450px;
+            max-height: 450px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 6px solid #5d4037;
+            border-radius: 10px;
             gap: 2px;
-            padding: 2px;
+            padding: 4px;
         }
 
         .cell {
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
             display: flex;
             justify-content: center;
             align-items: center;
-            cursor: pointer;
             position: relative;
         }
 
         .candy {
             width: 85%;
             height: 85%;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+            background-size: cover;
         }
 
-        /* Candy Visuals based on the image */
-        .candy-swirl { background-image: radial-gradient(circle, #ff00ff, #800080); border-radius: 50%; border: 3px solid #fff; }
-        .candy-blue { background-image: radial-gradient(circle, #00d2ff, #3a7bd5); border-radius: 50%; }
-        .candy-red { background-image: linear-gradient(135deg, #ff5f6d, #ffc371); border-radius: 50%; }
-        .candy-orange { background-image: radial-gradient(circle, #ff9966, #ff5e62); border-radius: 50%; }
-        .candy-green { background-image: radial-gradient(circle, #99ff66, #009933); border-radius: 10px; }
+        /* Candy styles mimicking the image shapes */
+        .candy-0 { background: radial-gradient(circle, #ff5252, #b71c1c); } /* Red Heart */
+        .candy-1 { background: radial-gradient(circle, #448aff, #0d47a1); } /* Blue Orb */
+        .candy-2 { background: radial-gradient(circle, #69f0ae, #1b5e20); } /* Green Jelly */
+        .candy-3 { background: radial-gradient(circle, #ffd740, #ff8f00); } /* Yellow Bell/Star */
+        .candy-4 { background: radial-gradient(circle, #e040fb, #7b1fa2); } /* Purple Swirl */
+        .candy-5 { background: radial-gradient(circle, #ffab40, #e65100); } /* Orange Drop */
 
-        .hidden { opacity: 0; transform: scale(0); }
+        .selected { transform: scale(1.1); outline: 3px solid white; z-index: 2; }
+        .match-anim { transform: scale(0); opacity: 0; }
+
     </style>
 </head>
 <body>
 
 <header>
-    <div class="stats">Level: <span id="level">1</span></div>
-    <div class="stats">Score: <span id="score">0</span></div>
-    <div class="settings-container">
-        <button id="settingsBtn">⚙️</button>
-        <div id="dropdownMenu" class="dropdown">
-            <div class="dropdown-item" onclick="toggleSetting('music')">Music <span>On</span></div>
-            <div class="dropdown-item" onclick="toggleSetting('sound')">Sound <span>On</span></div>
-        </div>
+    <div class="header-item">LEVEL 1</div>
+    <div class="header-item">
+        ⭐ <div class="progress-container"><div class="progress-bar" id="progress"></div></div> 
+        <span id="score-text">0/100</span>
     </div>
+    <div class="header-item">🏆 <span id="total-score">0</span></div>
+    <button id="settingsBtn">⚙️</button>
 </header>
 
-<div id="game-container">
+<div class="dropdown" id="settingsMenu">
+    <div class="dropdown-row" onclick="toggleAudio('music')">Music <span id="music-status">ON</span></div>
+    <div class="dropdown-row" onclick="toggleAudio('sound')">Sound <span id="sound-status">ON</span></div>
+</div>
+
+<div id="game-board">
     <div class="grid" id="grid"></div>
 </div>
 
 <script>
-    const gridDisplay = document.getElementById('grid');
-    const scoreDisplay = document.getElementById('score');
-    const settingsBtn = document.getElementById('settingsBtn');
-    const dropdownMenu = document.getElementById('dropdownMenu');
-    
     const width = 8;
-    const candyTypes = ['candy-swirl', 'candy-blue', 'candy-red', 'candy-orange', 'candy-green'];
-    let cells = [];
+    const grid = document.getElementById('grid');
+    const scoreText = document.getElementById('score-text');
+    const totalScoreText = document.getElementById('total-score');
+    const progressBar = document.getElementById('progress');
+    const settingsMenu = document.getElementById('settingsMenu');
+    
+    let candies = [];
     let score = 0;
+    let musicOn = true;
+    let soundOn = true;
 
-    // --- Core Logic ---
+    // --- Audio setup (Synthesized sounds for demo) ---
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playCrashSound() {
+        if (!soundOn) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.2);
+    }
 
+    // --- Initialization ---
     function createBoard() {
         for (let i = 0; i < width * width; i++) {
             const cell = document.createElement('div');
             cell.classList.add('cell');
-            cell.setAttribute('draggable', true);
-            cell.setAttribute('id', i);
-            
-            let randomCandy = candyTypes[Math.floor(Math.random() * candyTypes.length)];
             const candy = document.createElement('div');
-            candy.classList.add('candy', randomCandy);
+            candy.classList.add('candy');
+            candy.setAttribute('id', i);
+            setRandomCandy(candy);
             
             cell.appendChild(candy);
-            gridDisplay.appendChild(cell);
-            cells.push(cell);
+            grid.appendChild(cell);
+            candies.push(candy);
+
+            // Click interaction
+            candy.addEventListener('click', handleCandyClick);
         }
     }
 
-    // Drag & Swap Logic
-    let colorBeingDragged, colorBeingReplaced;
-    let cellIdBeingDragged, cellIdBeingReplaced;
+    function setRandomCandy(element) {
+        const type = Math.floor(Math.random() * 6);
+        element.className = `candy candy-${type}`;
+        element.dataset.type = type;
+    }
 
-    gridDisplay.addEventListener('dragstart', (e) => {
-        if (!e.target.classList.contains('candy')) return;
-        colorBeingDragged = e.target.classList[1];
-        cellIdBeingDragged = parseInt(e.target.parentElement.id);
-    });
+    // --- Interaction Logic ---
+    let firstSelected = null;
 
-    gridDisplay.addEventListener('dragover', (e) => e.preventDefault());
+    function handleCandyClick() {
+        if (firstSelected === this) {
+            this.classList.remove('selected');
+            firstSelected = null;
+            return;
+        }
 
-    gridDisplay.addEventListener('drop', (e) => {
-        let targetCell = e.target.classList.contains('cell') ? e.target : e.target.parentElement;
-        cellIdBeingReplaced = parseInt(targetCell.id);
-        colorBeingReplaced = targetCell.firstChild.classList[1];
-
-        // Valid Move Check (Adjacent only)
-        const validMoves = [
-            cellIdBeingDragged - 1, cellIdBeingDragged - width,
-            cellIdBeingDragged + 1, cellIdBeingDragged + width
-        ];
-
-        if (validMoves.includes(cellIdBeingReplaced)) {
-            cells[cellIdBeingDragged].firstChild.className = `candy ${colorBeingReplaced}`;
-            cells[cellIdBeingReplaced].firstChild.className = `candy ${colorBeingDragged}`;
+        if (!firstSelected) {
+            firstSelected = this;
+            this.classList.add('selected');
+        } else {
+            const id1 = parseInt(firstSelected.id);
+            const id2 = parseInt(this.id);
             
-            // Check for matches after swap
-            if (!checkMatches()) {
-                // Revert if no match
-                setTimeout(() => {
-                    cells[cellIdBeingDragged].firstChild.className = `candy ${colorBeingDragged}`;
-                    cells[cellIdBeingReplaced].firstChild.className = `candy ${colorBeingReplaced}`;
-                }, 200);
+            if (isAdjacent(id1, id2)) {
+                swapCandies(firstSelected, this);
+                if (!checkAndClearMatches()) {
+                    // Revert if no match
+                    setTimeout(() => swapCandies(candies[id1], candies[id2]), 300);
+                }
             }
+            firstSelected.classList.remove('selected');
+            firstSelected = null;
         }
-    });
+    }
 
-    // Check for Matches
-    function checkMatches() {
-        let hasMatch = false;
+    function isAdjacent(id1, id2) {
+        const row1 = Math.floor(id1 / width);
+        const col1 = id1 % width;
+        const row2 = Math.floor(id2 / width);
+        const col2 = id2 % width;
+        return (Math.abs(row1 - row2) + Math.abs(col1 - col2) === 1);
+    }
+
+    function swapCandies(c1, c2) {
+        const tempType = c1.dataset.type;
+        const tempClass = c1.className;
+
+        c1.className = c2.className;
+        c1.dataset.type = c2.dataset.type;
+        
+        c2.className = tempClass;
+        c2.dataset.type = tempType;
+    }
+
+    // --- Matching Logic ---
+    function checkAndClearMatches() {
+        let matchFound = false;
+        let toClear = new Set();
+
         // Check Rows
-        for (let i = 0; i < 64; i++) {
-            let rowOfThree = [i, i + 1, i + 2];
-            let decidedColor = cells[i].firstChild.classList[1];
-            const isRowEnd = i % width > width - 3;
-
-            if (isRowEnd) continue;
-
-            if (rowOfThree.every(index => cells[index].firstChild.classList.contains(decidedColor) && decidedColor !== '')) {
-                score += 30;
-                scoreDisplay.innerHTML = score;
-                rowOfThree.forEach(index => cells[index].firstChild.className = 'candy');
-                hasMatch = true;
+        for (let r = 0; r < width; r++) {
+            for (let c = 0; c < width - 2; c++) {
+                let idx = r * width + c;
+                if (candies[idx].dataset.type === candies[idx+1].dataset.type && 
+                    candies[idx].dataset.type === candies[idx+2].dataset.type) {
+                    toClear.add(idx); toClear.add(idx+1); toClear.add(idx+2);
+                }
             }
         }
+
         // Check Columns
-        for (let i = 0; i < 48; i++) {
-            let colOfThree = [i, i + width, i + width * 2];
-            let decidedColor = cells[i].firstChild.classList[1];
-
-            if (colOfThree.every(index => cells[index].firstChild.classList.contains(decidedColor) && decidedColor !== '')) {
-                score += 30;
-                scoreDisplay.innerHTML = score;
-                colOfThree.forEach(index => cells[index].firstChild.className = 'candy');
-                hasMatch = true;
+        for (let c = 0; c < width; c++) {
+            for (let r = 0; r < width - 2; r++) {
+                let idx = r * width + c;
+                if (candies[idx].dataset.type === candies[idx+width].dataset.type && 
+                    candies[idx].dataset.type === candies[idx+2*width].dataset.type) {
+                    toClear.add(idx); toClear.add(idx+width); toClear.add(idx+2*width);
+                }
             }
         }
-        if (hasMatch) {
-            setTimeout(moveDown, 300);
+
+        if (toClear.size > 0) {
+            matchFound = true;
+            score += toClear.size * 10;
+            updateUI();
+            playCrashSound();
+            toClear.forEach(idx => {
+                candies[idx].classList.add('match-anim');
+            });
+            
+            setTimeout(() => {
+                toClear.forEach(idx => {
+                    candies[idx].className = 'candy candy-hidden';
+                    candies[idx].dataset.type = '-1';
+                });
+                applyGravity();
+            }, 300);
         }
-        return hasMatch;
+        return matchFound;
     }
 
-    // Gravity / Move Down
-    function moveDown() {
-        for (let i = 0; i < 56; i++) {
-            if (cells[i + width].firstChild.classList.length === 1) {
-                cells[i + width].firstChild.className = cells[i].firstChild.className;
-                cells[i].firstChild.className = 'candy';
+    function applyGravity() {
+        for (let c = 0; c < width; c++) {
+            let emptyCells = 0;
+            for (let r = width - 1; r >= 0; r--) {
+                let idx = r * width + c;
+                if (candies[idx].dataset.type === '-1') {
+                    emptyCells++;
+                } else if (emptyCells > 0) {
+                    let targetIdx = (r + emptyCells) * width + c;
+                    swapCandies(candies[idx], candies[targetIdx]);
+                    candies[idx].dataset.type = '-1';
+                    candies[idx].className = 'candy candy-hidden';
+                }
+            }
+            // Fill new candies from top
+            for (let r = 0; r < emptyCells; r++) {
+                let idx = r * width + c;
+                setRandomCandy(candies[idx]);
+                candies[idx].classList.remove('match-anim');
             }
         }
-        // Refill top row
-        for (let i = 0; i < width; i++) {
-            if (cells[i].firstChild.classList.length === 1) {
-                let randomCandy = candyTypes[Math.floor(Math.random() * candyTypes.length)];
-                cells[i].firstChild.className = `candy ${randomCandy}`;
-            }
-        }
-        // Recursive check for cascading matches
-        setTimeout(checkMatches, 200);
+        // Chain reaction check
+        setTimeout(checkAndClearMatches, 400);
     }
 
-    // --- UI Interactions ---
+    function updateUI() {
+        totalScoreText.innerText = score;
+        let progress = Math.min((score / 500) * 100, 100);
+        progressBar.style.width = progress + '%';
+        scoreText.innerText = `${score}/500`;
+    }
 
-    settingsBtn.addEventListener('click', () => {
-        dropdownMenu.classList.toggle('show');
-    });
-
-    window.onclick = (e) => {
-        if (!e.target.matches('#settingsBtn')) {
-            dropdownMenu.classList.remove('show');
+    // --- Settings UI ---
+    document.getElementById('settingsBtn').onclick = () => settingsMenu.classList.toggle('active');
+    
+    window.toggleAudio = (type) => {
+        if (type === 'music') {
+            musicOn = !musicOn;
+            document.getElementById('music-status').innerText = musicOn ? 'ON' : 'OFF';
+        } else {
+            soundOn = !soundOn;
+            document.getElementById('sound-status').innerText = soundOn ? 'ON' : 'OFF';
         }
     };
 
-    function toggleSetting(type) {
-        const item = event.currentTarget.querySelector('span');
-        item.innerText = item.innerText === 'On' ? 'Off' : 'On';
-    }
-
     createBoard();
-    // Initial check to clear pre-existing matches
-    setTimeout(checkMatches, 500);
-
 </script>
 </body>
 </html>
-
