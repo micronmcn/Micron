@@ -338,6 +338,20 @@
             }
         }
     </script>
+    <script>
+    let user = JSON.parse(localStorage.getItem("userData"));
+
+user.data.wallet.balance += 50;
+
+fetch(API_URL, {
+  method: "POST",
+  body: JSON.stringify({
+    action: "updateUser",
+    userID: user.userID,
+    data: user.data
+  })
+});
+ </script>
 </body>
 </html>
 
