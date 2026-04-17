@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Micron | My Wallet</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #ff9a00, #ffce00);
+            --dark-text: #333;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+            --success: #28a745;
+            --error: #dc3545;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body { background-color: var(--light-bg); color: var(--dark-text); line-height: 1.6; }
+
+        /* Header */
+        header {
+            background: var(--white);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo { font-weight: bold; font-size: 1.5rem; color: #ff9a00; display: flex; align-items: center; gap: 10px; }
+        .logo i { font-size: 1.8rem; }
+
+        .menu-container { position: relative; }
+        .three-dot-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; padding: 5px; }
+        
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 40px;
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: none;
+            width: 200px;
+            overflow: hidden;
+        }
+        .dropdown-menu a {
+            display: block;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: var(--dark-text);
+            transition: 0.3s;
+        }
+        .dropdown-menu a:hover { background: #fff3e0; color: #ff9a00; }
+
+        /* Hero Section */
+        .hero {
+            background: var(--primary-gradient);
+            padding: 40px 5%;
+            color: white;
+            text-align: left;
+        }
+
+        .breadcrumb { font-size: 0.9rem; margin-bottom: 15px; opacity: 0.9; }
+
+        .wallet-card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .balance-info h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
+        .balance-amount { font-size: 2.5rem; font-weight: bold; }
+
+        .wallet-actions { display: flex; gap: 15px; }
+        
+        .btn {
+            padding: 12px 25px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .btn-white { background: var(--white); color: #ff9a00; }
+        .btn-outline { background: transparent; border: 2px solid var(--white); color: var(--white); }
+        .btn-white:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+
+        /* Transactions */
+        .container { padding: 40px 5%; max-width: 1200px; margin: auto; }
+        .section-title { margin-bottom: 20px; color: var(--dark-text); }
+
+        .transaction-list { background: var(--white); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .transaction-item {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .tx-details p { font-size: 0.85rem; color: #777; }
+        .tx-details h4 { color: #333; margin-bottom: 4px; }
+        .tx-amount.credit { color: var(--success); font-weight: bold; }
+
+        /* Modal Popups */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 450px;
+            position: relative;
+        }
+        .modal-header { margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--primary-gradient);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .support-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #ff9a00;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            z-index: 999;
+        }
+
+        /* Footer */
+        footer {
+            background: #f1f1f1;
+            padding: 40px 5%;
+            text-align: center;
+            margin-top: 50px;
+            color: #666;
+        }
+        .footer-links { margin-bottom: 15px; }
+        .footer-links a { color: #ff9a00; text-decoration: none; margin: 0 10px; }
+
+        @media (max-width: 600px) {
+            .wallet-card { flex-direction: column; text-align: center; }
+            .wallet-actions { flex-direction: column; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <i class="fas fa-wallet"></i> MICRON
+        </div>
+        <div class="menu-container">
+            <button class="three-dot-btn" onclick="toggleMenu()">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+            <div class="dropdown-menu" id="mainMenu">
+                <a href="#"><i class="fas fa-user"></i> Profile Settings</a>
+                <a href="#"><i class="fas fa-history"></i> Full Statement</a>
+                <a href="#"><i class="fas fa-shield-alt"></i> Security</a>
+                <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="breadcrumb">Home > My Wallet</div>
+        <div class="wallet-card">
+            <div class="balance-info">
+                <h2>Current Balance</h2>
+                <div class="balance-amount">₹ <span id="balanceDisplay">1250.00</span></div>
+            </div>
+            <div class="wallet-actions">
+                <button class="btn btn-outline" onclick="openModal('accountModal')">Account Details</button>
+                <button class="btn btn-white" onclick="openModal('withdrawModal')">Withdraw</button>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <h3 class="section-title">Recent Transactions</h3>
+        <div class="transaction-list">
+            <div class="transaction-item">
+                <div class="tx-details">
+                    <h4>Referral Bonus</h4>
+                    <p>17 April 2026, 02:30 PM</p>
+                </div>
+                <div class="tx-amount credit">+ ₹50.00</div>
+            </div>
+            <div class="transaction-item">
+                <div class="tx-details">
+                    <h4>Bank Transfer</h4>
+                    <p>15 April 2026, 11:15 AM</p>
+                    <p style="font-size: 10px; color: green;">Successfully credited to bank</p>
+                </div>
+                <div class="tx-amount credit">- ₹500.00</div>
+            </div>
+            <div class="transaction-item">
+                <div class="tx-details">
+                    <h4>Daily Reward</h4>
+                    <p>14 April 2026, 09:00 AM</p>
+                </div>
+                <div class="tx-amount credit">+ ₹10.00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="support-btn" title="Customer Support">
+        <i class="fas fa-headset fa-lg"></i>
+    </div>
+
+    <div class="modal" id="accountModal">
+        <div class="modal-content">
+            <div class="modal-header"><h3>Account Details</h3></div>
+            <input type="text" id="accName" value="John Doe" placeholder="Bank Holder Name">
+            <input type="text" id="accUpi" value="john@okaxis" placeholder="UPI ID">
+            <input type="email" id="accEmail" value="john@example.com" placeholder="Email">
+            <input type="text" id="accContact" value="+91 9876543210" placeholder="Contact">
+            <button class="btn-submit" onclick="closeModal('accountModal')">Save Changes</button>
+            <button style="background:none; border:none; width:100%; margin-top:10px; cursor:pointer;" onclick="closeModal('accountModal')">Cancel</button>
+        </div>
+    </div>
+
+    <div class="modal" id="withdrawModal">
+        <div class="modal-content">
+            <div class="modal-header"><h3>Withdraw Money</h3></div>
+            <input type="number" id="withdrawAmount" placeholder="Enter Amount ₹..">
+            <input type="text" id="withdrawUpi" placeholder="UPI ID">
+            <input type="text" id="withdrawUpiConfirm" placeholder="Re-Enter UPI ID">
+            <input type="text" placeholder="Bank Holder Name">
+            <input type="email" placeholder="Email">
+            <input type="text" placeholder="Contact">
+            <input type="password" placeholder="Password">
+            <button class="btn-submit" onclick="handleWithdraw()">Withdraw Now</button>
+            <button style="background:none; border:none; width:100%; margin-top:10px; cursor:pointer;" onclick="closeModal('withdrawModal')">Cancel</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#">Privacy & Policy</a> | 
+            <a href="#">Terms & Conditions</a> | 
+            <a href="#">Refund Policy</a>
+        </div>
+        <p>&copy; 2026 Micron | All Rights Reserved</p>
+    </footer>
+
+    <script>
+        let currentBalance = 1250.00;
+
+        function toggleMenu() {
+            const menu = document.getElementById('mainMenu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Close menu when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.matches('.three-dot-btn') && !event.target.matches('.fa-ellipsis-v')) {
+                document.getElementById('mainMenu').style.display = 'none';
+            }
+        }
+
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function handleWithdraw() {
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const upi = document.getElementById('withdrawUpi').value;
+            const upiConfirm = document.getElementById('withdrawUpiConfirm').value;
+
+            if (!amount || amount <= 0) {
+                alert("Please enter a valid amount.");
+                return;
+            }
+
+            if (upi !== upiConfirm) {
+                alert("UPI IDs do not match!");
+                return;
+            }
+
+            if (amount < 100) {
+                alert("Minimum withdrawal balance ₹100! So reach valid amount.");
+            } else if (amount > currentBalance) {
+                alert("Insufficient balance in your wallet!");
+            } else {
+                currentBalance -= amount;
+                document.getElementById('balanceDisplay').innerText = currentBalance.toFixed(2);
+                alert("Your withdrawal amount was credited in your bank within 24 hours. Any problem contact customer support.");
+                closeModal('withdrawModal');
+            }
+        }
+    </script>
+</body>
+</html>
+
