@@ -198,7 +198,7 @@
         }
     </script>
     <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbxwH47ubpiw9KzjbcQX3alExiloY8taKUh9pVfmKPZJRsIxFJG__iL1elygkL9xvFCMsg/exec"; // 🔥 paste your API here
+const API_URL = "https://script.google.com/macros/s/AKfycbxAsSqBBfGgdltYVKxsCvt3q4L7yD2VQ8fhCsVR0dC3gp_U23AKv44ZJK2lYpOWhUY2eQ/exec"; // 🔥 paste your API here
 
 // 👉 Signup
 function signup(){
@@ -244,7 +244,7 @@ function login(){
   .then(data => {
     if(data.status === "success"){
       localStorage.setItem("userID", data.userID);
-      window.location = "dashboard.html";
+      window.location = "user-dashboard.html";
     } else {
       alert("Invalid Login ❌");
     }
