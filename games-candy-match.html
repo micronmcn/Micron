@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Candy Match 3</title>
+    <style>
+        :root {
+            --bg-color: #fce4ec;
+            --header-bg: #ff8a65;
+            --cell-bg: rgba(255, 255, 255, 0.3);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Arial', sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            touch-action: none; /* Prevents scrolling while playing */
+        }
+
+        /* --- Header & UI --- */
+        header {
+            background: var(--header-bg);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .stats { font-weight: bold; font-size: 1.2rem; }
+
+        .settings-container { position: relative; }
+
+        #settingsBtn {
+            background: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: none;
+            flex-direction: column;
+            width: 150px;
+            overflow: hidden;
+        }
+
+        .dropdown.show { display: flex; }
+
+        .dropdown-item {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            color: #333;
+            cursor: pointer;
+        }
+
+        /* --- Game Board --- */
+        #game-container {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            width: 100vw;
+            height: 100vw;
+            max-width: 500px;
+            max-height: 500px;
+            background: var(--cell-bg);
+            border: 4px solid #fff;
+            border-radius: 12px;
+            gap: 2px;
+            padding: 2px;
+        }
+
+        .cell {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .candy {
+            width: 85%;
+            height: 85%;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Candy Visuals based on the image */
+        .candy-swirl { background-image: radial-gradient(circle, #ff00ff, #800080); border-radius: 50%; border: 3px solid #fff; }
+        .candy-blue { background-image: radial-gradient(circle, #00d2ff, #3a7bd5); border-radius: 50%; }
+        .candy-red { background-image: linear-gradient(135deg, #ff5f6d, #ffc371); border-radius: 50%; }
+        .candy-orange { background-image: radial-gradient(circle, #ff9966, #ff5e62); border-radius: 50%; }
+        .candy-green { background-image: radial-gradient(circle, #99ff66, #009933); border-radius: 10px; }
+
+        .hidden { opacity: 0; transform: scale(0); }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="stats">Level: <span id="level">1</span></div>
+    <div class="stats">Score: <span id="score">0</span></div>
+    <div class="settings-container">
+        <button id="settingsBtn">⚙️</button>
+        <div id="dropdownMenu" class="dropdown">
+            <div class="dropdown-item" onclick="toggleSetting('music')">Music <span>On</span></div>
+            <div class="dropdown-item" onclick="toggleSetting('sound')">Sound <span>On</span></div>
+        </div>
+    </div>
+</header>
+
+<div id="game-container">
+    <div class="grid" id="grid"></div>
+</div>
+
+<script>
+    const gridDisplay = document.getElementById('grid');
+    const scoreDisplay = document.getElementById('score');
+    const settingsBtn = document.getElementById('settingsBtn');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    
+    const width = 8;
+    const candyTypes = ['candy-swirl', 'candy-blue', 'candy-red', 'candy-orange', 'candy-green'];
+    let cells = [];
+    let score = 0;
+
+    // --- Core Logic ---
+
+    function createBoard() {
+        for (let i = 0; i < width * width; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.setAttribute('draggable', true);
+            cell.setAttribute('id', i);
+            
+            let randomCandy = candyTypes[Math.floor(Math.random() * candyTypes.length)];
+            const candy = document.createElement('div');
+            candy.classList.add('candy', randomCandy);
+            
+            cell.appendChild(candy);
+            gridDisplay.appendChild(cell);
+            cells.push(cell);
+        }
+    }
+
+    // Drag & Swap Logic
+    let colorBeingDragged, colorBeingReplaced;
+    let cellIdBeingDragged, cellIdBeingReplaced;
+
+    gridDisplay.addEventListener('dragstart', (e) => {
+        if (!e.target.classList.contains('candy')) return;
+        colorBeingDragged = e.target.classList[1];
+        cellIdBeingDragged = parseInt(e.target.parentElement.id);
+    });
+
+    gridDisplay.addEventListener('dragover', (e) => e.preventDefault());
+
+    gridDisplay.addEventListener('drop', (e) => {
+        let targetCell = e.target.classList.contains('cell') ? e.target : e.target.parentElement;
+        cellIdBeingReplaced = parseInt(targetCell.id);
+        colorBeingReplaced = targetCell.firstChild.classList[1];
+
+        // Valid Move Check (Adjacent only)
+        const validMoves = [
+            cellIdBeingDragged - 1, cellIdBeingDragged - width,
+            cellIdBeingDragged + 1, cellIdBeingDragged + width
+        ];
+
+        if (validMoves.includes(cellIdBeingReplaced)) {
+            cells[cellIdBeingDragged].firstChild.className = `candy ${colorBeingReplaced}`;
+            cells[cellIdBeingReplaced].firstChild.className = `candy ${colorBeingDragged}`;
+            
+            // Check for matches after swap
+            if (!checkMatches()) {
+                // Revert if no match
+                setTimeout(() => {
+                    cells[cellIdBeingDragged].firstChild.className = `candy ${colorBeingDragged}`;
+                    cells[cellIdBeingReplaced].firstChild.className = `candy ${colorBeingReplaced}`;
+                }, 200);
+            }
+        }
+    });
+
+    // Check for Matches
+    function checkMatches() {
+        let hasMatch = false;
+        // Check Rows
+        for (let i = 0; i < 64; i++) {
+            let rowOfThree = [i, i + 1, i + 2];
+            let decidedColor = cells[i].firstChild.classList[1];
+            const isRowEnd = i % width > width - 3;
+
+            if (isRowEnd) continue;
+
+            if (rowOfThree.every(index => cells[index].firstChild.classList.contains(decidedColor) && decidedColor !== '')) {
+                score += 30;
+                scoreDisplay.innerHTML = score;
+                rowOfThree.forEach(index => cells[index].firstChild.className = 'candy');
+                hasMatch = true;
+            }
+        }
+        // Check Columns
+        for (let i = 0; i < 48; i++) {
+            let colOfThree = [i, i + width, i + width * 2];
+            let decidedColor = cells[i].firstChild.classList[1];
+
+            if (colOfThree.every(index => cells[index].firstChild.classList.contains(decidedColor) && decidedColor !== '')) {
+                score += 30;
+                scoreDisplay.innerHTML = score;
+                colOfThree.forEach(index => cells[index].firstChild.className = 'candy');
+                hasMatch = true;
+            }
+        }
+        if (hasMatch) {
+            setTimeout(moveDown, 300);
+        }
+        return hasMatch;
+    }
+
+    // Gravity / Move Down
+    function moveDown() {
+        for (let i = 0; i < 56; i++) {
+            if (cells[i + width].firstChild.classList.length === 1) {
+                cells[i + width].firstChild.className = cells[i].firstChild.className;
+                cells[i].firstChild.className = 'candy';
+            }
+        }
+        // Refill top row
+        for (let i = 0; i < width; i++) {
+            if (cells[i].firstChild.classList.length === 1) {
+                let randomCandy = candyTypes[Math.floor(Math.random() * candyTypes.length)];
+                cells[i].firstChild.className = `candy ${randomCandy}`;
+            }
+        }
+        // Recursive check for cascading matches
+        setTimeout(checkMatches, 200);
+    }
+
+    // --- UI Interactions ---
+
+    settingsBtn.addEventListener('click', () => {
+        dropdownMenu.classList.toggle('show');
+    });
+
+    window.onclick = (e) => {
+        if (!e.target.matches('#settingsBtn')) {
+            dropdownMenu.classList.remove('show');
+        }
+    };
+
+    function toggleSetting(type) {
+        const item = event.currentTarget.querySelector('span');
+        item.innerText = item.innerText === 'On' ? 'Off' : 'On';
+    }
+
+    createBoard();
+    // Initial check to clear pre-existing matches
+    setTimeout(checkMatches, 500);
+
+</script>
+</body>
+</html>
+
