@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Micron | Online Courses</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .grad-bg { background: linear-gradient(90deg, #f59e0b 0%, #ea580c 100%); }
+        .grad-text { 
+            background: linear-gradient(90deg, #f59e0b 0%, #ea580c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="text-2xl font-bold grad-text">MICRON</div>
+            </div>
+
+            <div class="relative">
+                <button id="menuBtn" class="p-2 hover:bg-gray-100 rounded-full transition">
+                    <i class="fas fa-ellipsis-v text-gray-600 text-xl"></i>
+                </button>
+                <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-xl py-2">
+                    <a href="#" class="block px-4 py-2 hover:bg-orange-50">My Profile</a>
+                    <a href="#" class="block px-4 py-2 hover:bg-orange-50">Notifications</a>
+                    <a href="#" class="block px-4 py-2 hover:bg-orange-50">Settings</a>
+                    <hr class="my-1">
+                    <a href="#" class="block px-4 py-2 text-red-500 hover:bg-red-50">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="grad-bg py-12 px-4">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div class="text-white">
+                    <nav class="text-sm mb-2 opacity-90">
+                        Home > <span class="font-semibold">Courses</span>
+                    </nav>
+                    <div class="relative inline-block w-64">
+                        <select id="categorySelect" class="w-full bg-white text-gray-800 py-3 px-4 rounded-lg appearance-none cursor-pointer focus:outline-none shadow-lg">
+                            <option value="">Select Category</option>
+                            <option value="web">Web Development</option>
+                            <option value="design">Graphic Design</option>
+                            <option value="marketing">Digital Marketing</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative w-full md:w-96">
+                    <input type="text" id="searchInput" placeholder="Search for courses..." class="w-full py-3 px-5 rounded-full focus:outline-none shadow-lg">
+                    <button id="searchBtn" class="absolute right-2 top-1 bottom-1 px-5 bg-gray-800 text-white rounded-full hover:bg-black transition">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="container mx-auto px-4 py-12">
+        <h2 class="text-2xl font-bold mb-8 text-gray-800">All Courses</h2>
+        
+        <div id="courseGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow border border-gray-100">
+                <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80" alt="Web Dev" class="w-full h-48 object-cover">
+                <div class="p-5">
+                    <h3 class="font-bold text-lg mb-2">Full-Stack Web Development</h3>
+                    <p class="text-gray-600 text-sm mb-4">Master React, Node, and MongoDB from scratch.</p>
+                    <button onclick="redirectToCourse()" class="w-full py-2 grad-bg text-white font-semibold rounded-lg hover:opacity-90 transition">View Course</button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow border border-gray-100">
+                <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=600&q=80" alt="Design" class="w-full h-48 object-cover">
+                <div class="p-5">
+                    <h3 class="font-bold text-lg mb-2">UI/UX Design Essentials</h3>
+                    <p class="text-gray-600 text-sm mb-4">Learn Figma, Adobe XD and design principles.</p>
+                    <button onclick="redirectToCourse()" class="w-full py-2 grad-bg text-white font-semibold rounded-lg hover:opacity-90 transition">View Course</button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow border border-gray-100">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80" alt="Marketing" class="w-full h-48 object-cover">
+                <div class="p-5">
+                    <h3 class="font-bold text-lg mb-2">Digital Marketing Strategy</h3>
+                    <p class="text-gray-600 text-sm mb-4">SEO, SEM, and Social Media Growth Hacking.</p>
+                    <button onclick="redirectToCourse()" class="w-full py-2 grad-bg text-white font-semibold rounded-lg hover:opacity-90 transition">View Course</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-white border-t border-gray-200 pt-10 pb-6">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex gap-6 text-gray-600 text-sm">
+                    <button onclick="showModal('Privacy Policy')" class="hover:text-orange-600">Privacy & Policy</button>
+                    <span class="text-gray-300">|</span>
+                    <button onclick="showModal('Terms & Conditions')" class="hover:text-orange-600">Terms & Conditions</button>
+                </div>
+                
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-orange-500"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-orange-500"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-orange-500"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center text-gray-500 text-sm">
+                &copy; 2026 Micron | All Rights Reserved
+            </div>
+        </div>
+    </footer>
+
+    <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] px-4">
+        <div class="bg-white p-8 rounded-xl max-w-lg w-full relative">
+            <h2 id="modalTitle" class="text-2xl font-bold mb-4"></h2>
+            <p class="text-gray-600 mb-6">This is where the related details for the selected policy or terms would appear. Micron ensures all user data is protected and services are delivered according to standard regulations.</p>
+            <button onclick="closeModal()" class="grad-bg text-white px-6 py-2 rounded-lg">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Toggle 3-dot Menu
+        const menuBtn = document.getElementById('menuBtn');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        
+        menuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        window.onclick = () => dropdownMenu.classList.add('hidden');
+
+        // Search/Category Functionality Simulation
+        function filterCourses() {
+            alert('Filtering results based on selection...');
+        }
+
+        document.getElementById('searchBtn').addEventListener('click', filterCourses);
+        document.getElementById('categorySelect').addEventListener('change', filterCourses);
+
+        // View Course Redirect
+        function redirectToCourse() {
+            window.location.href = '#course-overview'; // Simulating redirect
+            alert('Redirecting to Course Overview Page...');
+        }
+
+        // Modal Logic
+        function showModal(title) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
+
