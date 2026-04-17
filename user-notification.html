@@ -4,307 +4,215 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Micron Notifications</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
-            --primary-gradient: linear-gradient(135deg, #ff8c00, #ffdb01);
-            --text-dark: #333;
-            --bg-light: #f9f9f9;
-            --white: #ffffff;
+        .bg-gradient-brand {
+            background: linear-gradient(135deg, #FF8C00, #FFD700);
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        .text-gradient-brand {
+            background: linear-gradient(135deg, #FF8C00, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-
-        body {
-            background-color: var(--bg-light);
-            color: var(--text-dark);
+        .modal-active {
+            display: flex !important;
         }
-
-        /* --- Header --- */
-        header {
-            background: var(--white);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 5%;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo {
-            font-weight: bold;
-            font-size: 1.5rem;
-            color: #ff8c00;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .menu-container {
-            position: relative;
-        }
-
-        .three-dot-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 5px 10px;
-            border-radius: 50%;
-            transition: background 0.3s;
-        }
-
-        .three-dot-btn:hover { background: #eee; }
-
-        .dropdown-menu {
-            position: absolute;
-            right: 0;
-            top: 40px;
-            background: var(--white);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border-radius: 8px;
+        #undo-banner {
             display: none;
-            min-width: 150px;
-            overflow: hidden;
         }
-
-        .dropdown-menu a {
-            display: block;
-            padding: 12px 20px;
-            text-decoration: none;
-            color: var(--text-dark);
-            font-size: 0.9rem;
-        }
-
-        .dropdown-menu a:hover { background: var(--bg-light); color: #ff8c00; }
-
-        /* --- Hero Section --- */
-        .hero {
-            background: var(--white);
-            padding: 2rem 5%;
-            border-bottom: 1px solid #eee;
-        }
-
-        .breadcrumb {
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        .breadcrumb span { color: #ff8c00; font-weight: 600; }
-
-        /* --- Notification List --- */
-        .container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 0 20px;
-        }
-
-        .notification-card {
-            background: var(--white);
-            margin-bottom: 15px;
-            padding: 20px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.2s;
-            border-left: 5px solid #ff8c00;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-        }
-
-        .notification-card:hover { transform: translateY(-2px); }
-
-        .notif-info h4 { margin-bottom: 5px; }
-        .notif-time { font-size: 0.8rem; color: #888; }
-
-        /* --- Popup Modal --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-
-        .modal {
-            background: var(--white);
-            padding: 30px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        .btn-group {
-            margin-top: 20px;
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .btn-clear { background: var(--primary-gradient); color: white; }
-        .btn-undo { background: #eee; color: #333; }
-
-        /* --- Footer --- */
-        footer {
-            background: var(--white);
-            padding: 3rem 5% 1rem;
-            margin-top: 50px;
-            text-align: center;
-            border-top: 1px solid #eee;
-        }
-
-        .footer-links a {
-            text-decoration: none;
-            color: #666;
-            margin: 0 15px;
-            font-size: 0.9rem;
-        }
-
-        .footer-links a:hover { color: #ff8c00; }
-
-        .copyright {
-            margin-top: 20px;
-            font-size: 0.8rem;
-            color: #999;
-        }
-
-        .show { display: block !important; }
-        .flex { display: flex !important; }
     </style>
 </head>
-<body>
+<body class="bg-gray-50 font-sans">
 
-    <header>
-        <div class="logo">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="orange"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
-            MICRON
-        </div>
-        <div class="menu-container">
-            <button class="three-dot-btn" onclick="toggleMenu()">⋮</button>
-            <div class="dropdown-menu" id="dropdownMenu">
-                <a href="#">Profile Settings</a>
-                <a href="#">Account Info</a>
-                <a href="#">Help Center</a>
-                <a href="#">Logout</a>
+    <header class="bg-white border-b sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-gradient-brand rounded-lg flex items-center justify-center text-white font-bold">M</div>
+                <span class="text-xl font-bold tracking-tight text-gray-800">MICRON</span>
+            </div>
+
+            <div class="relative">
+                <button onclick="toggleMenu()" class="p-2 hover:bg-gray-100 rounded-full transition">
+                    <i class="fa-solid fa-ellipsis-vertical text-gray-600 text-xl"></i>
+                </button>
+                <div id="nav-menu" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-xl py-2">
+                    <a href="#" class="block px-4 py-2 hover:bg-orange-50 text-gray-700">Profile Settings</a>
+                    <a href="#" class="block px-4 py-2 hover:bg-orange-50 text-gray-700">Account Security</a>
+                    <a href="#" class="block px-4 py-2 hover:bg-orange-50 text-gray-700">Preferences</a>
+                </div>
             </div>
         </div>
     </header>
 
-    <section class="hero">
-        <div class="breadcrumb">
-            Home > <span>Notification</span>
+    <section class="bg-white border-b shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between">
+            <nav class="flex items-center text-sm font-medium">
+                <span class="text-gray-400">Home</span>
+                <i class="fa-solid fa-chevron-right mx-2 text-xs text-gray-300"></i>
+                <span class="text-orange-600">Notifications</span>
+            </nav>
+            <button id="clear-btn" onclick="startClearProcess()" class="px-4 py-2 text-sm font-semibold text-orange-600 hover:bg-orange-50 border border-orange-200 rounded-full transition">
+                Clear All
+            </button>
         </div>
-        <h1 style="margin-top: 10px;">Your Notifications</h1>
     </section>
 
-    <div class="container">
-        <div class="notification-card" onclick="openPopup('New security alert')">
-            <div class="notif-info">
-                <h4>Security Alert</h4>
-                <p>New login detected from Chrome.</p>
-            </div>
-            <span class="notif-time">1 min ago</span>
+    <main class="max-w-2xl mx-auto px-4 py-8 min-h-[60vh]">
+        <div id="undo-banner" class="mb-4 p-4 bg-gray-800 text-white rounded-lg flex justify-between items-center animate-bounce">
+            <span>Notifications cleared successfully.</span>
+            <button onclick="undoDelete()" class="font-bold text-yellow-400 hover:text-yellow-300">UNDO</button>
         </div>
 
-        <div class="notification-card" onclick="openPopup('Update successful')">
-            <div class="notif-info">
-                <h4>System Update</h4>
-                <p>Version 2.0.4 has been installed.</p>
+        <div id="selection-bar" class="hidden mb-4 p-3 bg-orange-100 border border-orange-200 rounded-lg flex justify-between items-center">
+            <span class="text-orange-800 font-medium">Select notifications to delete</span>
+            <div class="flex gap-2">
+                <button onclick="confirmDelete()" class="px-3 py-1 bg-red-500 text-white text-xs rounded shadow">Confirm Delete</button>
+                <button onclick="cancelSelection()" class="px-3 py-1 bg-white text-gray-600 text-xs rounded border shadow">Cancel</button>
             </div>
-            <span class="notif-time">1 hour ago</span>
         </div>
 
-        <div class="notification-card" onclick="openPopup('Billing reminder')">
-            <div class="notif-info">
-                <h4>Billing</h4>
-                <p>Your subscription expires soon.</p>
+        <div id="notification-container" class="space-y-4">
             </div>
-            <span class="notif-time">1 day ago</span>
-        </div>
+    </main>
 
-        <div class="notification-card" onclick="openPopup('Monthly Report')">
-            <div class="notif-info">
-                <h4>Monthly Report</h4>
-                <p>Your March stats are ready.</p>
-            </div>
-            <span class="notif-time">1 month ago</span>
-        </div>
-
-        <div class="notification-card" onclick="openPopup('Welcome anniversary')">
-            <div class="notif-info">
-                <h4>Anniversary</h4>
-                <p>You've been with Micron for 1 year!</p>
-            </div>
-            <span class="notif-time">1 year ago</span>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal">
-            <h3 id="modalTitle">Notification Action</h3>
-            <p style="margin-top: 10px; color: #666;">What would you like to do with this message?</p>
-            <div class="btn-group">
-                <button class="btn btn-clear" onclick="closePopup()">Clear Notification</button>
-                <button class="btn btn-undo" onclick="closePopup()">Undo</button>
+    <div id="detail-modal" class="hidden fixed inset-0 bg-black/50 items-center justify-center z-[100] p-4">
+        <div class="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
+            <div class="h-2 bg-gradient-brand"></div>
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 id="modal-title" class="text-xl font-bold text-gray-800"></h3>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+                </div>
+                <p id="modal-time" class="text-xs text-orange-500 font-semibold mb-3 uppercase tracking-wider"></p>
+                <p id="modal-desc" class="text-gray-600 leading-relaxed mb-6"></p>
+                <button onclick="closeModal()" class="w-full py-3 bg-gradient-brand text-white font-bold rounded-xl shadow-lg">Close</button>
             </div>
         </div>
     </div>
 
-    <footer>
-        <div class="footer-links">
-            <a href="javascript:alert('Privacy Policy Details')">Privacy & Policy</a> | 
-            <a href="javascript:alert('Terms & Conditions Details')">Terms & Conditions</a> |
-            <a href="#">Support</a> |
-            <a href="#">Careers</a>
+    <footer class="bg-white border-t mt-12 py-10">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="flex flex-wrap justify-center gap-6 mb-6 text-sm font-medium text-gray-500">
+                <a href="javascript:void(0)" onclick="alert('Privacy Policy Details')" class="hover:text-orange-500">Privacy & Policy</a>
+                <a href="javascript:void(0)" onclick="alert('Terms & Conditions Details')" class="hover:text-orange-500">Terms & Conditions</a>
+                <a href="#" class="hover:text-orange-500">Help Center</a>
+                <a href="#" class="hover:text-orange-500">Contact Us</a>
+            </div>
+            <p class="text-gray-400 text-xs">&copy; 2026 Micron | All Rights Reserved</p>
         </div>
-        <p class="copyright">&copy; 2026 Micron | All Rights Reserved</p>
     </footer>
 
     <script>
-        // Toggle 3-dot menu
-        function toggleMenu() {
-            document.getElementById('dropdownMenu').classList.toggle('show');
-        }
+        // Sample Data
+        let notifications = [
+            { id: 1, title: "System Update", time: "1min ago", detail: "A new system security patch has been successfully applied to your Micron account." },
+            { id: 2, title: "New Login Detected", time: "1hour ago", detail: "We noticed a login to your account from a new Chrome browser on Windows." },
+            { id: 3, title: "Subscription Renewed", time: "1day ago", detail: "Your annual Micron Pro subscription has been renewed automatically. Receipt sent to email." },
+            { id: 4, title: "Spring Sale", time: "1month ago", detail: "Get 50% off on all Micron hardware accessories during our annual Spring event!" },
+            { id: 5, title: "Account Created", time: "1year ago", detail: "Welcome to the Micron family! Your account was officially registered on this date." }
+        ];
 
-        // Close menu if clicking outside
-        window.onclick = function(event) {
-            if (!event.target.matches('.three-dot-btn')) {
-                var dropdowns = document.getElementsByClassName("dropdown-menu");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    dropdowns[i].classList.remove('show');
-                }
+        let deletedBackup = [];
+
+        // Render Notifications
+        function renderNotifications(isSelectionMode = false) {
+            const container = document.getElementById('notification-container');
+            container.innerHTML = '';
+
+            if (notifications.length === 0) {
+                container.innerHTML = `<div class="text-center py-20 text-gray-400">No notifications found</div>`;
+                return;
             }
+
+            notifications.forEach(n => {
+                const item = document.createElement('div');
+                item.className = "bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition cursor-pointer flex items-center gap-4 group";
+                
+                let content = `
+                    <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-500 group-hover:bg-gradient-brand group-hover:text-white transition">
+                        <i class="fa-solid fa-bell"></i>
+                    </div>
+                    <div class="flex-1" onclick="${isSelectionMode ? '' : `openModal(${n.id})`}">
+                        <h4 class="font-bold text-gray-800">${n.title}</h4>
+                        <p class="text-xs text-gray-400">${n.time}</p>
+                    </div>
+                `;
+
+                if (isSelectionMode) {
+                    content = `<input type="checkbox" class="w-5 h-5 accent-orange-500" value="${n.id}">` + content;
+                }
+
+                item.innerHTML = content;
+                container.appendChild(item);
+            });
         }
 
-        // Notification Popup Logic
-        const modal = document.getElementById('modalOverlay');
-        const modalTitle = document.getElementById('modalTitle');
-
-        function openPopup(title) {
-            modalTitle.innerText = title;
-            modal.classList.add('flex');
+        // Logic Functions
+        function toggleMenu() {
+            document.getElementById('nav-menu').classList.toggle('hidden');
         }
 
-        function closePopup() {
-            modal.classList.remove('flex');
+        function openModal(id) {
+            const n = notifications.find(x => x.id === id);
+            document.getElementById('modal-title').innerText = n.title;
+            document.getElementById('modal-time').innerText = n.time;
+            document.getElementById('modal-desc').innerText = n.detail;
+            document.getElementById('detail-modal').classList.add('modal-active');
+        }
+
+        function closeModal() {
+            document.getElementById('detail-modal').classList.remove('modal-active');
+        }
+
+        function startClearProcess() {
+            document.getElementById('selection-bar').classList.remove('hidden');
+            renderNotifications(true);
+        }
+
+        function cancelSelection() {
+            document.getElementById('selection-bar').classList.add('hidden');
+            renderNotifications(false);
+        }
+
+        function confirmDelete() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            const idsToDelete = Array.from(checkboxes).map(cb => parseInt(cb.value));
+            
+            if (idsToDelete.length === 0) {
+                alert("Please select notifications to delete.");
+                return;
+            }
+
+            deletedBackup = notifications.filter(n => idsToDelete.includes(n.id));
+            notifications = notifications.filter(n => !idsToDelete.includes(n.id));
+            
+            document.getElementById('selection-bar').classList.add('hidden');
+            document.getElementById('undo-banner').style.display = 'flex';
+            renderNotifications();
+
+            // Hide undo banner after 10 seconds
+            setTimeout(() => {
+                document.getElementById('undo-banner').style.display = 'none';
+            }, 10000);
+        }
+
+        function undoDelete() {
+            notifications = [...notifications, ...deletedBackup];
+            notifications.sort((a, b) => a.id - b.id); // Simple sort to keep order
+            deletedBackup = [];
+            document.getElementById('undo-banner').style.display = 'none';
+            renderNotifications();
+        }
+
+        // Initialize
+        renderNotifications();
+
+        // Close dropdown when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.closest('.relative')) {
+                document.getElementById('nav-menu').classList.add('hidden');
+            }
         }
     </script>
 </body>
