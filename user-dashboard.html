@@ -219,36 +219,5 @@
             }
         }
     </script>
-    <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbx-h1FWMLN1guQPUuOGx-os7HuiCWI2_ZJAQw3cVmFpN3pjB5CzD8za5iFHVmlgUnIx/exec";
-
-// check login
-let userID = localStorage.getItem("email");
-if(!userID){
-  window.location = "index.html";
-}
-
-// load user
-fetch(API_URL, {
-  method: "POST",
-  body: JSON.stringify({
-    action: "getUser",
-    userID: userID
-  })
-})
-.then(res => res.json())
-.then(user => {
-  localStorage.setItem("userData", JSON.stringify(user));
-
-  document.getElementById("name").innerText = user.data.profile.fullName;
-  document.getElementById("coins").innerText = user.data.wallet.balance;
-});
-
-// logout
-function logout(){
-  localStorage.clear();
-  window.location = "index.html";
-}
-</script>
 </body>
 </html>
