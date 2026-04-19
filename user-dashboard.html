@@ -183,7 +183,7 @@
                     <input type="email" placeholder="Email" required class="w-full border p-2 rounded-lg text-sm">
                     <input type="tel" placeholder="Contact Number" required class="w-full border p-2 rounded-lg text-sm">
                     <input type="text" placeholder="Referral Code (Optional)" class="w-full border p-2 rounded-lg text-sm">
-                    <input type="text" placeholder="Transaction ID" class="w-full border p-2 rounded-lg text-sm">
+                    <input type="text" id="transId" placeholder="Transaction ID (UTR Number)" required class="w-full border p-2 rounded-lg text-sm">
                     <button type="submit" class="w-full btn-gradient py-3 rounded-xl font-bold mt-4">Pay & Subscribe</button>
                     <button type="button" onclick="toggleModal('subscribeModal')" class="w-full text-gray-500 text-sm">Cancel</button>
                 </form>
@@ -235,20 +235,25 @@
         }
     </script>
     <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzv3wqj8QUHbLEIA8LtbzTJGpdIqlyR3m6R5Nz6-K4X9a3vMtRhwvySVgu7wZgAbtvPCg/exec"; // Replace with your Deployed URL
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytbW4Es2IVs_9Aa9JqKZKw5x6nMSDkgFjQ4fhiEQeI9X8nZY2EPKYFguDoqOI5JAndDQ/exec";
 
-async function loadDashboardData(email) {
+async function loadDashboardData() {
+    const user = JSON.parse(localStorage.getItem("micronUser"));
+    if (!user) return window.location.href = "index.html";
+
+    document.getElementById('userName').innerText = user.name;
+
     try {
-        const response = await fetch(`${SCRIPT_URL}?action=getDashboard&email=${email}`);
+        const response = await fetch(`${SCRIPT_URL}?action=getDashboard&email=${user.email}`);
         const data = await response.json();
 
-        // 1. Update Stats
-        const statsContainers = document.querySelectorAll('.grid.grid-cols-3 p.text-xl');
-        statsContainers[0].innerText = data.stats.courses;
-        statsContainers[1].innerText = `₹${data.stats.earnings}`;
-        statsContainers[2].innerText = data.stats.certs;
+        // Populate Stats
+        const statsUI = document.querySelectorAll('.grid.grid-cols-3 p.text-xl');
+        statsUI[0].innerText = data.stats.courses;
+        statsUI[1].innerText = `$${data.stats.earnings}`;
+        statsUI[2].innerText = data.stats.certs;
 
-        // 2. Update News Marquee
+        // Populate News Marquee
         const marquee = document.querySelector('.marquee');
         if (data.news.length > 0) {
             marquee.innerHTML = data.news.map(n => `
@@ -257,59 +262,33 @@ async function loadDashboardData(email) {
                 </span>
             `).join('');
         }
-
-        // 3. Update Notification Dot
-        const dot = document.querySelector('.bg-red-500');
-        dot.style.display = data.notifications > 0 ? 'block' : 'none';
-
-    } catch (e) { console.error("Data Load Error:", e); }
+    } catch (e) { console.error("Sync Error:", e); }
 }
 
-// Subscription Form Submission
 async function handleSubscription(e) {
     e.preventDefault();
-    const btn = e.target.querySelector('button[type="submit"]');
-    btn.innerText = "Processing...";
-
     const user = JSON.parse(localStorage.getItem("micronUser"));
     const formData = {
         name: e.target.elements[0].value,
         email: e.target.elements[1].value,
         tel: e.target.elements[2].value,
-        ref: e.target.elements[3].value
+        ref: e.target.elements[3].value,
+        transId: document.getElementById('transId').value // New field
     };
 
-    try {
-        const response = await fetch(`${SCRIPT_URL}?action=subscribe`, {
-            method: 'POST',
-            body: JSON.stringify(formData)
-        });
-        const result = await response.json();
-        if (result.result === "success") {
-            document.getElementById('formContent').classList.add('hidden');
-            document.getElementById('successContent').classList.remove('hidden');
-        }
-    } catch (err) { alert("Subscription Failed"); }
-    btn.innerText = "Pay & Subscribe";
-}
-
-window.onload = function() {
-    lucide.createIcons();
-    const user = JSON.parse(localStorage.getItem("micronUser"));
-    if (!user) {
-        window.location.href = "index.html";
-        return;
+    const response = await fetch(`${SCRIPT_URL}?action=subscribe`, {
+        method: 'POST',
+        body: JSON.stringify(formData)
+    });
+    const result = await response.json();
+    if (result.result === "success") {
+        document.getElementById('formContent').classList.add('hidden');
+        document.getElementById('successContent').classList.remove('hidden');
     }
-    document.getElementById('userName').innerText = user.name;
-    loadDashboardData(user.email); // Fetch from Sheets
-};
-
-function logout() {
-    localStorage.removeItem("micronUser");
-    window.location.href = "index.html";
 }
 
-document.querySelector('[data-lucide="log-out"]').parentElement.onclick = logout;
+window.onload = loadDashboardData;
+
 
     </script>
 </body>
