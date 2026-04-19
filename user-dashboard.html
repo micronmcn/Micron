@@ -245,7 +245,7 @@ async function loadDashboardData(email) {
         // 1. Update Stats
         const statsContainers = document.querySelectorAll('.grid.grid-cols-3 p.text-xl');
         statsContainers[0].innerText = data.stats.courses;
-        statsContainers[1].innerText = `$${data.stats.earnings}`;
+        statsContainers[1].innerText = `₹${data.stats.earnings}`;
         statsContainers[2].innerText = data.stats.certs;
 
         // 2. Update News Marquee
