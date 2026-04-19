@@ -215,5 +215,17 @@
             }
         }
     </script>
+    <script>
+        window.onload = function() {
+    const user = JSON.parse(localStorage.getItem("micronUser"));
+    if (!user) {
+        window.location.href = "index.html";
+    } else {
+        // Now use user.email to fetch specific ProfileExtra or Notification data
+        console.log("Loading data for: " + user.email);
+    }
+        }
+          
+    </script>
 </body>
 </html>
