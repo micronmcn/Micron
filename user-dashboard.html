@@ -234,28 +234,82 @@
         }
     </script>
     <script>
-    lucide.createIcons();
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzAa9awtuiYVK0kshFbB-YOsOawLtfJGPbaPgFss8BYWWysiFDwib0GYxFQX0lxD2kjNg/exec"; // Replace with your Deployed URL
 
-    // DYNAMIC USER LOADING
-    window.onload = function() {
-        const user = JSON.parse(localStorage.getItem("micronUser"));
-        if(!user) {
-            window.location.href = "index.html"; // Redirect if not logged in
-            return;
+async function loadDashboardData(email) {
+    try {
+        const response = await fetch(`${SCRIPT_URL}?action=getDashboard&email=${email}`);
+        const data = await response.json();
+
+        // 1. Update Stats
+        const statsContainers = document.querySelectorAll('.grid.grid-cols-3 p.text-xl');
+        statsContainers[0].innerText = data.stats.courses;
+        statsContainers[1].innerText = `$${data.stats.earnings}`;
+        statsContainers[2].innerText = data.stats.certs;
+
+        // 2. Update News Marquee
+        const marquee = document.querySelector('.marquee');
+        if (data.news.length > 0) {
+            marquee.innerHTML = data.news.map(n => `
+                <span class="flex items-center gap-2 italic text-sm">
+                    <img src="${n.img || 'https://via.placeholder.com/20'}" class="rounded-full w-5 h-5"> ${n.text}
+                </span>
+            `).join('');
         }
-        // Update Dashboard UI with user data
-        document.getElementById('userName').innerText = user.name;
+
+        // 3. Update Notification Dot
+        const dot = document.querySelector('.bg-red-500');
+        dot.style.display = data.notifications > 0 ? 'block' : 'none';
+
+    } catch (e) { console.error("Data Load Error:", e); }
+}
+
+// Subscription Form Submission
+async function handleSubscription(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.innerText = "Processing...";
+
+    const user = JSON.parse(localStorage.getItem("micronUser"));
+    const formData = {
+        name: e.target.elements[0].value,
+        email: e.target.elements[1].value,
+        tel: e.target.elements[2].value,
+        ref: e.target.elements[3].value
     };
 
-    function logout() {
-        localStorage.removeItem("micronUser");
+    try {
+        const response = await fetch(`${SCRIPT_URL}?action=subscribe`, {
+            method: 'POST',
+            body: JSON.stringify(formData)
+        });
+        const result = await response.json();
+        if (result.result === "success") {
+            document.getElementById('formContent').classList.add('hidden');
+            document.getElementById('successContent').classList.remove('hidden');
+        }
+    } catch (err) { alert("Subscription Failed"); }
+    btn.innerText = "Pay & Subscribe";
+}
+
+window.onload = function() {
+    lucide.createIcons();
+    const user = JSON.parse(localStorage.getItem("micronUser"));
+    if (!user) {
         window.location.href = "index.html";
+        return;
     }
+    document.getElementById('userName').innerText = user.name;
+    loadDashboardData(user.email); // Fetch from Sheets
+};
 
-    // Attach logout to your Exit button
-    document.querySelector('[data-lucide="log-out"]').parentElement.onclick = logout;
+function logout() {
+    localStorage.removeItem("micronUser");
+    window.location.href = "index.html";
+}
 
-    // ... (Keep your existing modal/dropdown functions)
+document.querySelector('[data-lucide="log-out"]').parentElement.onclick = logout;
+
     </script>
 </body>
 </html>
