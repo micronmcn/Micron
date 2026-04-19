@@ -347,16 +347,5 @@
             alert('Profile updated successfully!');
         };
     </script>
-    <script>
-let user = JSON.parse(localStorage.getItem("userData"));
-
-if(!user){
-  window.location = "index.html";
-}
-
-document.getElementById("name").innerText = user.data.profile.fullName;
-document.getElementById("email").innerText = user.data.profile.email;
-document.getElementById("contact").innerText = user.data.profile.contact;
- </script>
 </body>
 </html>
