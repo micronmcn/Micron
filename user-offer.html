@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Micron - Exclusive Offers</title>
+    <style>
+        :root {
+            --primary-orange: #FF9800;
+            --light-bg: #F8F9FD;
+            --text-dark: #333;
+            --card-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            margin: 0;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 22px;
+            color: #1A237E;
+            letter-spacing: 1px;
+        }
+
+        .greeting h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .greeting span {
+            color: var(--primary-orange);
+        }
+
+        .offer-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            box-shadow: var(--card-shadow);
+            position: relative;
+        }
+
+        .offer-title {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge {
+            background: #E8F5E9;
+            color: #2E7D32;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #FF9800, #FFB74D);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            width: 70%;
+            height: 8px;
+            background: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 50%; /* Example: 10/20 referrals */
+            height: 100%;
+            background: var(--primary-orange);
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .links {
+            margin-bottom: 10px;
+        }
+
+        .links a {
+            color: #3F51B5;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="logo">MICRON</div>
+        <div style="font-size: 24px;">⋮</div>
+    </header>
+
+    <div class="greeting">
+        <h1>Hi, <span>User123</span></h1>
+        <p style="color: #666; margin-top: -10px;">Your Exclusive Offers</p>
+    </div>
+
+    <div class="offer-card">
+        <div class="offer-title">
+            <span>🎓 Unlimited Courses</span>
+            <span class="badge">ACTIVE</span>
+        </div>
+        <p class="description">One-time subscription unlocked. Access all AI and technical courses forever + 20 initial referral slots.</p>
+        <a href="#" class="btn">Start Learning</a>
+    </div>
+
+    <div class="offer-card">
+        <div class="offer-title">👥 Referral Bonus</div>
+        <p class="description">Complete your first 20 referrals to unlock Premium Partner status.</p>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <span style="font-weight: bold; font-size: 14px;">10 / 20</span>
+        </div>
+        <br>
+        <a href="#" class="btn">Refer & Earn</a>
+    </div>
+
+    <div class="offer-card" style="border: 2px dashed var(--primary-orange);">
+        <div class="offer-title">📜 Certificate Reward</div>
+        <p class="description"><strong>Get More Referrals!</strong> For every course you complete, get a certificate and receive <strong>+2 extra referral slots</strong> automatically.</p>
+        <div style="text-align: center; font-size: 13px; color: var(--primary-orange);">
+            1 Certificate = 2 New Slots
+        </div>
+    </div>
+
+    <footer>
+        <div class="links">
+            <a href="#">Privacy & Policy</a> | <a href="#">Terms & Conditions</a>
+        </div>
+        <p>© 2026 Micron | All Rights Reserved</p>
+    </footer>
+</div>
+
+</body>
+</html>
+
