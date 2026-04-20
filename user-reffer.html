@@ -186,6 +186,20 @@
             }
         }
     </script>
+    <script>
+        async function loadReferral() {
+    const user = JSON.parse(localStorage.getItem("micronUser"));
+    const response = await fetch(`${SCRIPT_URL}?action=getReferralData&email=${user.email}`);
+    const data = await response.json();
+
+    document.getElementById('refCode').innerText = data.code;
+    document.getElementById('shareLink').value = `https://yourdomain.com/signup.html?ref=${data.code}`;
+    
+    // Update Stats
+    document.getElementById('totalRefs').innerText = data.stats.total;
+        }
+        
+    </script>
 </body>
   </html>
 
