@@ -339,18 +339,19 @@
         }
     </script>
     <script>
-    let user = JSON.parse(localStorage.getItem("userData"));
+    async function loadWallet() {
+    const user = JSON.parse(localStorage.getItem("micronUser"));
+    const response = await fetch(`${SCRIPT_URL}?action=getWalletData&email=${user.email}`);
+    const data = await response.json();
+    
+    document.getElementById('balanceDisplay').innerText = data.balance;
+    // Fill Account Form
+    document.getElementById('bankHolder').value = data.account.holder;
+    // Render Transaction Table
+    const txnList = data.transactions.map(t => `<li>${t.desc}: $${t.amt} (${t.type})</li>`).join('');
+    document.getElementById('transactionContainer').innerHTML = txnList;
+}
 
-user.data.wallet.balance += 50;
-
-fetch(API_URL, {
-  method: "POST",
-  body: JSON.stringify({
-    action: "updateUser",
-    userID: user.userID,
-    data: user.data
-  })
-});
  </script>
 </body>
 </html>
