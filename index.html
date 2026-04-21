@@ -198,78 +198,44 @@
         }
     </script>
     <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyeBIJW0t-Nx_mPekFKdkQvyQ60m2uRcvTT01P1kno2JJmJng8Bv1zsc2B0G6ywr6lt6A/exec"; // The same URL from your Apps Script
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzDalD6oRKmrmmi6U13H1rcOBdedb-D8g0Bfc82CKwCAdu56HtRyEFSBWNrdAEd8U6gMA/exec";
 
-// --- 1. SIGNUP LOGIC ---
-async function handleSignup(e) {
-    e.preventDefault();
-    const btn = e.target.querySelector('button');
-    btn.disabled = true;
-    btn.innerText = "Creating Account...";
-
-    const formData = {
-        fullName: document.getElementById('reg-name').value,
-        dob: document.getElementById('reg-dob').value,
-        email: document.getElementById('reg-email').value,
-        contact: document.getElementById('reg-phone').value,
-        referral: document.getElementById('reg-ref').value || "None",
-        password: document.getElementById('reg-pass').value
+async function submitSignup() {
+    const inputs = document.querySelectorAll('#signupForm input');
+    const data = {
+        action: 'signup',
+        fullName: inputs[0].value,
+        dob: inputs[1].value,
+        email: inputs[2].value,
+        contact: inputs[3].value,
+        referral: inputs[4].value,
+        password: inputs[5].value
     };
 
-    try {
-        const response = await fetch(`${SCRIPT_URL}?action=signup`, {
-            method: 'POST',
-            body: JSON.stringify(formData)
-        });
-        const result = await response.json();
-
-        if (result.result === "success") {
-            alert("Account Created! Please Login.");
-            showLogin(); // Function to toggle UI to login form
-        } else {
-            alert("Error: " + result.error);
-        }
-    } catch (err) {
-        alert("Server Connection Failed.");
-    } finally {
-        btn.disabled = false;
-        btn.innerText = "Sign Up";
+    const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
+    const result = await response.json();
+    if(result.status === 'success') {
+        document.getElementById('signupForm').classList.add('hidden');
+        document.getElementById('successMsg').classList.remove('hidden');
     }
 }
 
-// --- 2. LOGIN LOGIC ---
-async function handleLogin(e) {
-    e.preventDefault();
-    const btn = e.target.querySelector('button');
-    btn.disabled = true;
-    btn.innerText = "Authenticating...";
-
-    const loginData = {
-        userId: document.getElementById('login-email').value,
-        password: document.getElementById('login-pass').value
+async function handleLogin() {
+    const inputs = document.querySelectorAll('section input');
+    const data = {
+        action: 'login',
+        email: inputs[0].value,
+        password: inputs[1].value
     };
 
-    try {
-        const response = await fetch(`${SCRIPT_URL}?action=login`, {
-            method: 'POST',
-            body: JSON.stringify(loginData)
-        });
-        const result = await response.json();
-
-        if (result.result === "success") {
-            // CRITICAL: Save user session data
-            localStorage.setItem("micronUser", JSON.stringify(result.user));
-            
-            // Redirect to the Dashboard
-            window.location.href = "user-dashboard.html";
-        } else {
-            alert("Invalid Email or Password");
-        }
-    } catch (err) {
-        alert("Login Failed. Check your internet.");
-    } finally {
-        btn.disabled = false;
-        btn.innerText = "Login";
+    const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
+    const result = await response.json();
+    
+    if(result.status === 'success') {
+        localStorage.setItem('micronUser', JSON.stringify(result));
+        window.location.href = "user-dashboard.html";
+    } else {
+        alert("Invalid Login Credentials");
     }
 }
 
