@@ -187,17 +187,30 @@
         }
     </script>
     <script>
-        async function loadReferral() {
+        async function loadReferralData() {
     const user = JSON.parse(localStorage.getItem("micronUser"));
-    const response = await fetch(`${SCRIPT_URL}?action=getReferralData&email=${user.email}`);
-    const data = await response.json();
+    const res = await fetch(`${SCRIPT_URL}?action=getReferrals&email=${user.email}`);
+    const data = await res.json();
 
-    document.getElementById('refCode').innerText = data.code;
-    document.getElementById('shareLink').value = `https://yourdomain.com/signup.html?ref=${data.code}`;
-    
-    // Update Stats
-    document.getElementById('totalRefs').innerText = data.stats.total;
-        }
+    // 1. Set Code and Link
+    document.getElementById('myRefCode').innerText = data.code;
+    document.getElementById('copyLink').value = `https://micron-app.com/signup.html?ref=${data.code}`;
+
+    // 2. Set Stats (From Referral Stats Sheet)
+    document.getElementById('totalRefs').innerText = data.stats[1];
+    document.getElementById('pendingRewards').innerText = `$${data.stats[2]}`;
+
+    // 3. Render Recent Referrals Table
+    const historyBody = document.getElementById('referralTableBody');
+    historyBody.innerHTML = data.recent.map(row => `
+        <tr class="border-b">
+            <td class="p-3 text-sm">${row[1]}</td>
+            <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs">${row[2]}</span></td>
+            <td class="p-3 text-xs text-gray-500">${new Date(row[3]).toLocaleDateString()}</td>
+        </tr>
+    `).join('');
+}
+
         
     </script>
 </body>
