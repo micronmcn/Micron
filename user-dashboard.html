@@ -237,31 +237,48 @@
         }
     </script>
     <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFojWv0Ig7hUOLxF0bHJDQk4Mhm7R73Gb6c88DXFrsiMxljgF-NYEgFS5qpjuxwXQV0A/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzDalD6oRKmrmmi6U13H1rcOBdedb-D8g0Bfc82CKwCAdu56HtRyEFSBWNrdAEd8U6gMA/exec";
+const userData = JSON.parse(localStorage.getItem('micronUser'));
 
 window.onload = async () => {
-    const user = JSON.parse(localStorage.getItem("micronUser"));
-    if (!user) return window.location.href = "index.html";
-
-    try {
-        const res = await fetch(`${SCRIPT_URL}?action=getDashboard&email=${user.email}`);
-        const data = await res.json();
-
-        // Update Stats UI
-        document.getElementById('stat-courses').innerText = data.stats.c;
-        document.getElementById('stat-earnings').innerText = `$${data.stats.e}`;
-        document.getElementById('stat-certs').innerText = data.stats.cert;
-
-        // Update News Marquee
-        const newsHtml = data.news.map(item => `
-            <span class="flex items-center gap-2 italic text-sm">
-                <img src="${item[1]}" class="rounded-full w-5 h-5"> ${item[0]}
-            </span>
-        `).join('');
-        document.querySelector('.marquee').innerHTML = newsHtml;
-
-    } catch (err) { console.error("Sync Error:", err); }
+    if(!userData) { window.location.href = "index.html"; return; }
+    document.getElementById('userName').innerText = userData.user;
+    
+    // Fetch Stats and News
+    const response = await fetch(`${SCRIPT_URL}?action=getDashboard&email=${userData.email}`);
+    const data = await response.json();
+    
+    // Update Stats
+    const statsContainers = document.querySelectorAll('.grid.grid-cols-3 p.text-xl');
+    statsContainers[0].innerText = data.stats[0];
+    statsContainers[1].innerText = "₹" + data.stats[1];
+    statsContainers[2].innerText = data.stats[2];
+    
+    // Update News Marquee
+    const marquee = document.querySelector('.marquee');
+    marquee.innerHTML = data.news.map(n => `
+        <span class="flex items-center gap-2 italic text-sm">
+            <img src="${n.img}" class="rounded-full w-5 h-5"> ${n.headline}
+        </span>
+    `).join('');
 };
+
+async function handleSubscription(e) {
+    e.preventDefault();
+    const form = e.target;
+    const data = {
+        action: 'subscribe',
+        name: form[0].value,
+        email: form[1].value,
+        contact: form[2].value,
+        referral: form[3].value,
+        transId: form[4].value
+    };
+
+    await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
+    document.getElementById('formContent').classList.add('hidden');
+    document.getElementById('successContent').classList.remove('hidden');
+}
 
     </script>
 </body>
