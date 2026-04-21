@@ -216,108 +216,41 @@
         }
     </script>
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzJp8kF70oGHnstQh_9InUYvMpVZyuCV5h2gneT6Eikpcq92vJKzPRPrs81UfkvQj-mmA/exec";
-let notifications = [];
-let userEmail = "";
-
-// 1. Check Login and Fetch Data
-window.onload = async function() {
+        async function loadNotifications() {
     const user = JSON.parse(localStorage.getItem("micronUser"));
-    if (!user) {
-        window.location.href = "index.html";
-        return;
-    }
-    userEmail = user.email;
-    await fetchNotifications();
-};
-
-async function fetchNotifications() {
     const container = document.getElementById('notification-container');
-    container.innerHTML = `<div class="text-center py-20 text-gray-400">Loading notifications...</div>`;
     
     try {
-        const response = await fetch(`${SCRIPT_URL}?action=getNotifications&email=${userEmail}`);
-        notifications = await response.json();
-        renderNotifications();
-    } catch (e) {
-        container.innerHTML = `<div class="text-center py-20 text-red-400">Error loading data</div>`;
-    }
-}
+        const res = await fetch(`${SCRIPT_URL}?action=getNotifications&email=${user.email}`);
+        const list = await res.json();
 
-function renderNotifications(isSelectionMode = false) {
-    const container = document.getElementById('notification-container');
-    container.innerHTML = '';
-
-    if (notifications.length === 0) {
-        container.innerHTML = `<div class="text-center py-20 text-gray-400">No notifications found</div>`;
-        return;
-    }
-
-    notifications.forEach(n => {
-        const item = document.createElement('div');
-        item.className = "bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition cursor-pointer flex items-center gap-4 group";
-        
-        let content = `
-            <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-500 group-hover:bg-gradient-brand group-hover:text-white transition">
-                <i class="fa-solid fa-bell"></i>
-            </div>
-            <div class="flex-1" onclick="${isSelectionMode ? '' : `openModal(${n.id})`}">
-                <h4 class="font-bold text-gray-800">${n.title}</h4>
-                <p class="text-xs text-gray-400">${n.time}</p>
-            </div>
-        `;
-
-        if (isSelectionMode) {
-            content = `<input type="checkbox" class="w-5 h-5 accent-orange-500" value="${n.id}">` + content;
+        if (list.length === 0) {
+            container.innerHTML = `<div class="text-center p-10 text-gray-400">No new notifications</div>`;
+            return;
         }
 
-        item.innerHTML = content;
-        container.appendChild(item);
-    });
+        container.innerHTML = list.map(note => `
+            <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm mb-3">
+                <div class="flex justify-between items-start">
+                    <h4 class="font-bold text-gray-800">${note.title}</h4>
+                    <span class="text-[10px] text-orange-500 font-bold uppercase">${formatDate(note.date)}</span>
+                </div>
+                <p class="text-sm text-gray-600 mt-1">${note.msg}</p>
+            </div>
+        `).join('');
+
+    } catch (err) { container.innerHTML = "Failed to load notifications."; }
 }
 
-// 2. Clear from Google Sheets
-async function confirmDelete() {
-    const btn = document.querySelector("#selection-bar button");
-    btn.innerText = "Processing...";
-
-    try {
-        const response = await fetch(`${SCRIPT_URL}?action=clearNotifications`, {
-            method: 'POST',
-            body: JSON.stringify({ email: userEmail })
-        });
-        const result = await response.json();
-        
-        if (result.result === "success") {
-            notifications = [];
-            document.getElementById('selection-bar').classList.add('hidden');
-            document.getElementById('undo-banner').style.display = 'flex';
-            renderNotifications();
-        }
-    } catch (e) {
-        alert("Failed to clear notifications");
-    }
-    btn.innerText = "Confirm Delete";
+// Simple date formatter
+function formatDate(dateStr) {
+    if (!dateStr) return "Now";
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
 }
 
-// Keep existing UI functions (toggleMenu, openModal, closeModal, etc.)
-function toggleMenu() { document.getElementById('nav-menu').classList.toggle('hidden'); }
-function openModal(id) {
-    const n = notifications.find(x => x.id === id);
-    document.getElementById('modal-title').innerText = n.title;
-    document.getElementById('modal-time').innerText = n.time;
-    document.getElementById('modal-desc').innerText = n.detail;
-    document.getElementById('detail-modal').classList.add('modal-active');
-}
-function closeModal() { document.getElementById('detail-modal').classList.remove('modal-active'); }
-function startClearProcess() { 
-    document.getElementById('selection-bar').classList.remove('hidden'); 
-    renderNotifications(true); 
-}
-function cancelSelection() { 
-    document.getElementById('selection-bar').classList.add('hidden'); 
-    renderNotifications(false); 
-}
+window.onload = loadNotifications;
+
           
     </script>
 </body>
