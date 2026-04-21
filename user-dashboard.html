@@ -237,60 +237,31 @@
         }
     </script>
     <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwx7wmNr1-vVLc7b3-C6WzDTox55fr1C2vt3yVP5x3RvNVtoa4-taE14izyPrtl3Ulo5w/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFojWv0Ig7hUOLxF0bHJDQk4Mhm7R73Gb6c88DXFrsiMxljgF-NYEgFS5qpjuxwXQV0A/exec";
 
-async function loadDashboardData() {
+window.onload = async () => {
     const user = JSON.parse(localStorage.getItem("micronUser"));
     if (!user) return window.location.href = "index.html";
 
-    document.getElementById('userName').innerText = user.name;
-
     try {
-        const response = await fetch(`${SCRIPT_URL}?action=getDashboard&email=${user.email}`);
-        const data = await response.json();
+        const res = await fetch(`${SCRIPT_URL}?action=getDashboard&email=${user.email}`);
+        const data = await res.json();
 
-        // Populate Stats
-        const statsUI = document.querySelectorAll('.grid.grid-cols-3 p.text-xl');
-        statsUI[0].innerText = data.stats.courses;
-        statsUI[1].innerText = `$${data.stats.earnings}`;
-        statsUI[2].innerText = data.stats.certs;
+        // Update Stats UI
+        document.getElementById('stat-courses').innerText = data.stats.c;
+        document.getElementById('stat-earnings').innerText = `$${data.stats.e}`;
+        document.getElementById('stat-certs').innerText = data.stats.cert;
 
-        // Populate News Marquee
-        const marquee = document.querySelector('.marquee');
-        if (data.news.length > 0) {
-            marquee.innerHTML = data.news.map(n => `
-                <span class="flex items-center gap-2 italic text-sm">
-                    <img src="${n.img || 'https://via.placeholder.com/20'}" class="rounded-full w-5 h-5"> ${n.text}
-                </span>
-            `).join('');
-        }
-    } catch (e) { console.error("Sync Error:", e); }
-}
+        // Update News Marquee
+        const newsHtml = data.news.map(item => `
+            <span class="flex items-center gap-2 italic text-sm">
+                <img src="${item[1]}" class="rounded-full w-5 h-5"> ${item[0]}
+            </span>
+        `).join('');
+        document.querySelector('.marquee').innerHTML = newsHtml;
 
-async function handleSubscription(e) {
-    e.preventDefault();
-    const user = JSON.parse(localStorage.getItem("micronUser"));
-    const formData = {
-        name: e.target.elements[0].value,
-        email: e.target.elements[1].value,
-        tel: e.target.elements[2].value,
-        ref: e.target.elements[3].value,
-        transId: document.getElementById('transId').value // New field
-    };
-
-    const response = await fetch(`${SCRIPT_URL}?action=subscribe`, {
-        method: 'POST',
-        body: JSON.stringify(formData)
-    });
-    const result = await response.json();
-    if (result.result === "success") {
-        document.getElementById('formContent').classList.add('hidden');
-        document.getElementById('successContent').classList.remove('hidden');
-    }
-}
-
-window.onload = loadDashboardData;
-
+    } catch (err) { console.error("Sync Error:", err); }
+};
 
     </script>
 </body>
