@@ -4,111 +4,191 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Micron | Innovation Redefined</title>
+
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
 .gradient-btn {
-    background: linear-gradient(90deg, #FF8C00 0%, #FFD700 100%);
+  background: linear-gradient(90deg, #FF8C00 0%, #FFD700 100%);
+  transition: transform 0.2s, opacity 0.2s;
+}
+.gradient-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
 }
 .modal {
-    display: none;
-    position: fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background: rgba(0,0,0,0.5);
-    justify-content:center;
-    align-items:center;
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
 }
-.modal.active { display:flex; }
-.dropdown { display:none; position:absolute; right:0; top:100%; background:#fff; }
-.dropdown.active { display:block; }
+.modal.active { display: flex; }
+.dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: white;
+  width: 150px;
+}
+.dropdown.active { display: block; }
 </style>
+
 </head>
 
-<body class="bg-gray-50">
+<body class="bg-gray-50 font-sans text-gray-800">
 
-<header class="bg-white shadow p-4 flex justify-between">
-<h1 class="font-bold text-xl">MICRON</h1>
+<!-- HEADER -->
+<header class="bg-white shadow-sm sticky top-0 z-50">
+<div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
+<span class="text-2xl font-bold">MICRO<span class="text-orange-500">N</span></span>
 
-<div class="flex gap-3 relative">
-<button onclick="toggleModal('signupModal')" class="gradient-btn px-4 py-2 text-white rounded">Signup</button>
-<button onclick="toggleDropdown()">☰</button>
+<div class="flex items-center gap-4 relative">
+<button onclick="toggleModal('signupModal')" class="gradient-btn text-white px-5 py-2 rounded-full text-sm">Sign Up</button>
 
-<div id="menuDropdown" class="dropdown border p-2">
-<a href="user-dashboard.html">Dashboard</a>
+<button onclick="toggleDropdown()" class="p-2">⋮</button>
+
+<div id="menuDropdown" class="dropdown rounded-md py-2">
+<a href="#" class="block px-4 py-2 hover:bg-gray-100 text-sm">Our Services</a>
+<a href="#" class="block px-4 py-2 hover:bg-gray-100 text-sm">Help Center</a>
+<a href="#" class="block px-4 py-2 hover:bg-gray-100 text-sm">Careers</a>
+<a href="user-dashboard.html" class="block px-4 py-2 hover:bg-gray-100 text-sm">User</a>
+</div>
 </div>
 </div>
 </header>
 
-<section class="text-center py-16">
-<h2 class="text-4xl font-bold">Welcome to Micron</h2>
-<p class="text-gray-600 mt-3">Learn • Earn • Grow</p>
-<button onclick="toggleModal('signupModal')" class="gradient-btn mt-6 px-6 py-3 text-white rounded">Get Started</button>
+<!-- HERO -->
+<section class="bg-white py-20 px-4 border-b text-center">
+<h1 class="text-5xl font-extrabold mb-6">The Future of Digital Infrastructure</h1>
+
+<p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+Micron provides cutting-edge solutions for modern enterprises looking to scale efficiently.
+Our platform integrates seamless automation with robust security protocols for global teams.
+Experience the next generation of cloud management and data processing today.
+</p>
+
+<button onclick="toggleModal('signupModal')" class="gradient-btn text-white px-10 py-4 rounded-lg font-bold text-lg">
+Get Start
+</button>
+</section>
+
+<!-- ABOUT -->
+<section class="py-16 max-w-7xl mx-auto px-4 text-center">
+<h2 class="text-3xl font-bold mb-6">What is Micron?</h2>
+
+<p class="text-gray-600 max-w-3xl mx-auto">
+Micron is a comprehensive digital ecosystem designed to bridge the gap between complex backend technology and intuitive user experiences.
+We specialize in high-performance computing modules that adapt to your specific business needs in real-time.
+Our technology stack is built on the principles of sustainability, speed, and uncompromising data integrity.
+By leveraging advanced AI-driven diagnostics, we help companies reduce operational overhead by up to 40%.
+Ultimately, Micron is more than a tool; it is a strategic partner in your digital transformation journey.
+</p>
+</section>
+
+<!-- WHY -->
+<section class="py-16 bg-gray-100 text-center">
+<h2 class="text-3xl font-bold mb-6">Why Choose Us</h2>
+
+<p class="text-gray-600 max-w-3xl mx-auto">
+We offer unparalleled reliability with a 99.9% uptime guarantee backed by top-tier global data centers.
+Our dedicated support team is available 24/7 to ensure your operations never skip a beat.
+We prioritize your data security with end-to-end encryption and multi-factor authentication protocols.
+Our interface is designed with user-centricity at its core, making complex tasks simple.
+Plus, our scalable pricing ensures you only pay for what you use.
+</p>
+</section>
+
+<!-- MISSION / VISION -->
+<section class="py-16 max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-12">
+<div>
+<h3 class="text-2xl font-bold mb-4 border-l-4 border-orange-500 pl-4">Our Mission</h3>
+<p class="text-gray-600">
+To democratize access to high-end digital infrastructure for startups and enterprises alike.
+We simplify complexity through innovation and human-centric design.
+</p>
+</div>
+
+<div>
+<h3 class="text-2xl font-bold mb-4 border-l-4 border-yellow-500 pl-4">Our Vision</h3>
+<p class="text-gray-600">
+To become the global standard for integrated cloud solutions.
+We envision technology solving real-world challenges seamlessly.
+</p>
+</div>
 </section>
 
 <!-- LOGIN -->
-<section class="max-w-md mx-auto bg-white p-6 rounded shadow">
-<h3 class="text-xl font-bold mb-4 text-center">Login</h3>
+<section class="py-16 bg-white border-t">
+<div class="max-w-md mx-auto px-4">
+<div class="bg-gray-50 p-8 rounded-xl shadow border">
 
-<input id="loginEmail" type="email" placeholder="Email" class="w-full border p-2 mb-3">
-<input id="loginPassword" type="password" placeholder="Password" class="w-full border p-2 mb-3">
+<h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
 
-<button onclick="handleLogin()" class="gradient-btn w-full py-2 text-white rounded">Login</button>
+<input id="loginEmail" type="email" placeholder="Email" class="w-full p-3 border rounded mb-3">
+<input id="loginPass" type="password" placeholder="Password" class="w-full p-3 border rounded mb-3">
+
+<button onclick="handleLogin()" class="w-full gradient-btn text-white py-3 rounded-md">
+Login
+</button>
+
+</div>
+</div>
 </section>
 
 <!-- SIGNUP MODAL -->
 <div id="signupModal" class="modal">
-<div class="bg-white p-6 rounded w-96">
+<div class="bg-white p-8 rounded-xl w-full max-w-md">
 
-<h3 class="text-xl font-bold mb-4">Signup</h3>
+<h2 class="text-xl font-bold mb-4">Create Account</h2>
 
 <input id="name" placeholder="Full Name" class="w-full border p-2 mb-2">
 <input id="dob" type="date" class="w-full border p-2 mb-2">
 <input id="email" placeholder="Email" class="w-full border p-2 mb-2">
 <input id="contact" placeholder="Contact" class="w-full border p-2 mb-2">
-<input id="ref" placeholder="Referral Code" class="w-full border p-2 mb-2">
-<input id="pass" type="password" placeholder="Password" class="w-full border p-2 mb-3">
+<input id="ref" placeholder="Referral" class="w-full border p-2 mb-2">
+<input id="pass" type="password" placeholder="Password" class="w-full border p-2 mb-2">
 
-<button onclick="submitSignup()" class="gradient-btn w-full py-2 text-white rounded">Register</button>
+<button onclick="signup()" class="gradient-btn text-white w-full py-2">Register</button>
 
 </div>
 </div>
 
 <script>
-const API_URL = "YOUR_WEB_APP_URL";
+const API = "https://script.google.com/macros/s/AKfycbyoSdke-c9-dzPX5-0SYpmaA0BJpoJwDc9Y-3smo_UBStCzfyWjmubDNQREbOurK_6a/exec"; // 🔴 Replace with Apps Script URL
 
-// UI
 function toggleModal(id){
 document.getElementById(id).classList.toggle("active");
 }
+
 function toggleDropdown(){
 document.getElementById("menuDropdown").classList.toggle("active");
 }
 
 // SIGNUP
-async function submitSignup(){
+async function signup(){
 const data = {
 action:"signup",
-fullName: document.getElementById("name").value,
-dob: document.getElementById("dob").value,
-email: document.getElementById("email").value,
-contact: document.getElementById("contact").value,
-referral: document.getElementById("ref").value,
-password: document.getElementById("pass").value
+fullName: name.value,
+dob: dob.value,
+email: email.value,
+contact: contact.value,
+referral: ref.value,
+password: pass.value
 };
 
-const res = await fetch(API_URL,{
+let res = await fetch(API,{
 method:"POST",
-body: JSON.stringify(data)
+body:JSON.stringify(data)
 });
 
-const result = await res.json();
-
-if(result.status==="success"){
-alert("Signup Success");
-toggleModal('signupModal');
-}else{
-alert("Error");
+let json = await res.json();
+if(json.status==="success"){
+alert("Signup Successful");
+toggleModal("signupModal");
 }
 }
 
@@ -116,32 +196,23 @@ alert("Error");
 async function handleLogin(){
 const data = {
 action:"login",
-email: document.getElementById("loginEmail").value,
-password: document.getElementById("loginPassword").value
+email: loginEmail.value,
+password: loginPass.value
 };
 
-const res = await fetch(API_URL,{
+let res = await fetch(API,{
 method:"POST",
-body: JSON.stringify(data)
+body:JSON.stringify(data)
 });
 
-const result = await res.json();
+let json = await res.json();
 
-if(result.status==="success"){
-localStorage.setItem("user", result.email);
-localStorage.setItem("name", result.user);
-
-// redirect
+if(json.status==="success"){
+localStorage.setItem("userEmail",json.email);
+localStorage.setItem("userName",json.user);
 window.location.href="user-dashboard.html";
 }else{
-alert(result.message);
-}
-}
-
-// CLOSE DROPDOWN
-window.onclick = function(e){
-if(!e.target.closest('.relative')){
-document.getElementById("menuDropdown").classList.remove("active");
+alert("Invalid Login");
 }
 }
 </script>
