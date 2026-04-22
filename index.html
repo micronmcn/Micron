@@ -1,244 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Micron | Innovation Redefined</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .gradient-btn {
-            background: linear-gradient(90deg, #FF8C00 0%, #FFD700 100%);
-            transition: transform 0.2s, opacity 0.2s;
-        }
-        .gradient-btn:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal.active { display: flex; }
-        .dropdown {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 100%;
-            background: white;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-            border: 1px solid #eee;
-            width: 150px;
-        }
-        .dropdown.active { display: block; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Micron | Innovation Redefined</title>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+.gradient-btn {
+    background: linear-gradient(90deg, #FF8C00 0%, #FFD700 100%);
+}
+.modal {
+    display: none;
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background: rgba(0,0,0,0.5);
+    justify-content:center;
+    align-items:center;
+}
+.modal.active { display:flex; }
+.dropdown { display:none; position:absolute; right:0; top:100%; background:#fff; }
+.dropdown.active { display:block; }
+</style>
 </head>
-<body class="bg-gray-50 font-sans text-gray-800">
 
-    <header class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
-            <div class="flex items-center">
-                <span class="text-2xl font-bold tracking-tighter text-gray-900">MICRO<span class="text-orange-500">N</span></span>
-            </div>
-            <div class="flex items-center gap-4 relative">
-                <button onclick="toggleModal('signupModal')" class="gradient-btn text-white px-5 py-2 rounded-full font-semibold text-sm">Sign Up</button>
-                <button onclick="toggleDropdown()" class="text-gray-600 p-2 hover:bg-gray-100 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
-                </button>
-                <div id="menuDropdown" class="dropdown rounded-md py-2 mt-2">
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 text-sm">Our Services</a>
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 text-sm">Help Center</a>
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 text-sm">Careers</a>
-                    <a href="user-dashboard.html" class="block px-4 py-2 hover:bg-gray-100 text-sm">User</a>
-                </div>
-            </div>
-        </div>
-    </header>
+<body class="bg-gray-50">
 
-    <section class="bg-white py-20 px-4 border-b">
-        <div class="max-w-4xl mx-auto text-center">
-            <h1 class="text-5xl font-extrabold mb-6">The Future of Digital Infrastructure</h1>
-            <p class="text-xl text-gray-600 mb-8 leading-relaxed">
-                Micron provides cutting-edge solutions for modern enterprises looking to scale efficiently. 
-                Our platform integrates seamless automation with robust security protocols for global teams.
-                Experience the next generation of cloud management and data processing today.
-            </p>
-            <button onclick="toggleModal('signupModal')" class="gradient-btn text-white px-10 py-4 rounded-lg font-bold text-lg">Get Start</button>
-        </div>
-    </section>
+<header class="bg-white shadow p-4 flex justify-between">
+<h1 class="font-bold text-xl">MICRON</h1>
 
-    <section class="py-16 max-w-7xl mx-auto px-4">
-        <h2 class="text-3xl font-bold mb-6 text-center">What is Micron?</h2>
-        <p class="text-gray-600 leading-relaxed text-center max-w-3xl mx-auto">
-            Micron is a comprehensive digital ecosystem designed to bridge the gap between complex backend technology and intuitive user experiences. We specialize in high-performance computing modules that adapt to your specific business needs in real-time. Our technology stack is built on the principles of sustainability, speed, and uncompromising data integrity. By leveraging advanced AI-driven diagnostics, we help companies reduce operational overhead by up to 40%. Ultimately, Micron is more than a tool; it is a strategic partner in your digital transformation journey.
-        </p>
-    </section>
+<div class="flex gap-3 relative">
+<button onclick="toggleModal('signupModal')" class="gradient-btn px-4 py-2 text-white rounded">Signup</button>
+<button onclick="toggleDropdown()">☰</button>
 
-    <section class="py-16 bg-gray-100">
-        <div class="max-w-7xl mx-auto px-4">
-            <h2 class="text-3xl font-bold mb-6 text-center">Why Choose Us</h2>
-            <p class="text-gray-600 leading-relaxed text-center max-w-3xl mx-auto">
-                We offer unparalleled reliability with a 99.9% uptime guarantee backed by top-tier global data centers. Our dedicated support team is available 24/7 to ensure your operations never skip a beat, regardless of time zone. We prioritize your data security with end-to-end encryption and multi-factor authentication protocols standard across all plans. Our interface is designed with user-centricity at its core, making complex tasks simple for everyone on your team. Plus, our scalable pricing model ensures that you only pay for the resources you actually use.
-            </p>
-        </div>
-    </section>
+<div id="menuDropdown" class="dropdown border p-2">
+<a href="user-dashboard.html">Dashboard</a>
+</div>
+</div>
+</header>
 
-    <section class="py-16 max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-12">
-        <div>
-            <h3 class="text-2xl font-bold mb-4 border-l-4 border-orange-500 pl-4">Our Mission</h3>
-            <p class="text-gray-600">To democratize access to high-end digital infrastructure for startups and enterprises alike. We strive to simplify the complexities of the digital world through innovative software and human-centric design. Our goal is to empower every developer and entrepreneur to build without limits.</p>
-        </div>
-        <div>
-            <h3 class="text-2xl font-bold mb-4 border-l-4 border-yellow-500 pl-4">Our Vision</h3>
-            <p class="text-gray-600">To become the global standard for integrated cloud solutions by the end of the decade. We envision a world where technology works invisibly in the background to solve humanity's greatest challenges. Innovation, integrity, and impact are the pillars that guide our future roadmap.</p>
-        </div>
-    </section>
+<section class="text-center py-16">
+<h2 class="text-4xl font-bold">Welcome to Micron</h2>
+<p class="text-gray-600 mt-3">Learn • Earn • Grow</p>
+<button onclick="toggleModal('signupModal')" class="gradient-btn mt-6 px-6 py-3 text-white rounded">Get Started</button>
+</section>
 
-    <section class="py-16 bg-white border-t">
-        <div class="max-w-md mx-auto px-4">
-            <div class="bg-gray-50 p-8 rounded-xl shadow-inner border">
-                <h2 class="text-2xl font-bold mb-6 text-center">Login to Dashboard</h2>
-                <div class="space-y-4">
-                    <input type="text" placeholder="User ID" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400">
-                    <input type="password" placeholder="Password" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400">
-                    <button onclick="handleLogin()" class="w-full gradient-btn text-white py-3 rounded-md font-bold">Login</button>
-                    <div class="flex flex-col gap-2 text-center mt-4 text-sm">
-                        <button onclick="toggleModal('forgotModal')" class="text-orange-600 hover:underline">Forgot Password?</button>
-                        <p>Do you have not account? <button onclick="toggleModal('signupModal')" class="text-orange-600 font-bold hover:underline">Signup</button></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- LOGIN -->
+<section class="max-w-md mx-auto bg-white p-6 rounded shadow">
+<h3 class="text-xl font-bold mb-4 text-center">Login</h3>
 
-    <footer class="bg-white border-t py-12 px-4">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="flex gap-6 text-sm font-medium text-gray-500">
-                <a href="#" onclick="alert('Privacy Policy Details')" class="hover:text-orange-500">Privacy & Policy</a>
-                <a href="#" onclick="alert('Terms & Conditions Details')" class="hover:text-orange-500">Terms & Conditions</a>
-            </div>
-            <div class="flex gap-6 text-sm text-gray-400">
-                <a href="#" class="hover:text-gray-600">Facebook</a>
-                <a href="#" class="hover:text-gray-600">Twitter</a>
-                <a href="#" class="hover:text-gray-600">LinkedIn</a>
-            </div>
-            <p class="text-sm text-gray-500 font-semibold">&copy;2026 Micron | All Rights Reserved</p>
-        </div>
-    </footer>
+<input id="loginEmail" type="email" placeholder="Email" class="w-full border p-2 mb-3">
+<input id="loginPassword" type="password" placeholder="Password" class="w-full border p-2 mb-3">
 
-    <div id="signupModal" class="modal">
-        <div class="bg-white p-8 rounded-2xl w-full max-w-md mx-4 relative">
-            <button onclick="toggleModal('signupModal')" class="absolute top-4 right-4 text-gray-400">&times;</button>
-            <div id="signupForm">
-                <h2 class="text-2xl font-bold mb-6">Create Account</h2>
-                <div class="space-y-4">
-                    <input type="text" placeholder="Full Name" class="w-full p-2 border-b focus:border-orange-500 outline-none">
-                    <input type="date" placeholder="Date of Birth" class="w-full p-2 border-b focus:border-orange-500 outline-none">
-                    <input type="email" placeholder="Email" class="w-full p-2 border-b focus:border-orange-500 outline-none">
-                    <input type="tel" placeholder="Contact" class="w-full p-2 border-b focus:border-orange-500 outline-none">
-                    <input type="text" placeholder="Referral Code" class="w-full p-2 border-b focus:border-orange-500 outline-none">
-                    <input type="password" placeholder="Set Password" class="w-full p-2 border-b focus:border-orange-500 outline-none">
-                    <button onclick="submitSignup()" class="w-full gradient-btn text-white py-3 rounded-lg mt-4 font-bold">Register</button>
-                </div>
-            </div>
-            <div id="successMsg" class="hidden text-center py-10">
-                <div class="text-green-500 text-5xl mb-4">✓</div>
-                <h2 class="text-2xl font-bold mb-4">Successfully Registered!</h2>
-                <button onclick="toggleModal('signupModal')" class="gradient-btn text-white px-8 py-2 rounded-md">Done</button>
-            </div>
-        </div>
-    </div>
+<button onclick="handleLogin()" class="gradient-btn w-full py-2 text-white rounded">Login</button>
+</section>
 
-    <div id="forgotModal" class="modal">
-        <div class="bg-white p-8 rounded-2xl w-full max-w-sm mx-4 text-center">
-            <h2 class="text-xl font-bold mb-4">Reset Password</h2>
-            <p class="text-sm text-gray-500 mb-6">Enter your email address to receive a reset link.</p>
-            <input type="email" placeholder="Enter Email" class="w-full p-2 border rounded mb-4 outline-none">
-            <button onclick="toggleModal('forgotModal')" class="gradient-btn text-white px-6 py-2 rounded-md w-full">Send Link</button>
-        </div>
-    </div>
+<!-- SIGNUP MODAL -->
+<div id="signupModal" class="modal">
+<div class="bg-white p-6 rounded w-96">
 
-    <script>
-        function toggleModal(id) {
-            const modal = document.getElementById(id);
-            modal.classList.toggle('active');
-            // Reset signup form if closing
-            if(id === 'signupModal') {
-                document.getElementById('signupForm').classList.remove('hidden');
-                document.getElementById('successMsg').classList.add('hidden');
-            }
-        }
+<h3 class="text-xl font-bold mb-4">Signup</h3>
 
-        function toggleDropdown() {
-            document.getElementById('menuDropdown').classList.toggle('active');
-        }
+<input id="name" placeholder="Full Name" class="w-full border p-2 mb-2">
+<input id="dob" type="date" class="w-full border p-2 mb-2">
+<input id="email" placeholder="Email" class="w-full border p-2 mb-2">
+<input id="contact" placeholder="Contact" class="w-full border p-2 mb-2">
+<input id="ref" placeholder="Referral Code" class="w-full border p-2 mb-2">
+<input id="pass" type="password" placeholder="Password" class="w-full border p-2 mb-3">
 
-        function submitSignup() {
-            document.getElementById('signupForm').classList.add('hidden');
-            document.getElementById('successMsg').classList.remove('hidden');
-        }
+<button onclick="submitSignup()" class="gradient-btn w-full py-2 text-white rounded">Register</button>
 
-        function handleLogin() {
-            alert("Redirecting to User Dashboard...");
-            window.location.reload(); 
-        }
+</div>
+</div>
 
-        // Close dropdown when clicking outside
-        window.onclick = function(event) {
-            if (!event.target.closest('.relative')) {
-                document.getElementById('menuDropdown').classList.remove('active');
-            }
-        }
-    </script>
-    <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbye4V9dut0vcvD2KyZnsfVt4UYAxxOOUeAtJ13vt1O88vTLhnXbER9oZhlvGXq-K2qpew/exec";
+<script>
+const API_URL = "YOUR_WEB_APP_URL";
 
-async function submitSignup() {
-    const inputs = document.querySelectorAll('#signupForm input');
-    const data = {
-        action: 'signup',
-        fullName: inputs[0].value,
-        dob: inputs[1].value,
-        email: inputs[2].value,
-        contact: inputs[3].value,
-        referral: inputs[4].value,
-        password: inputs[5].value
-    };
-
-    const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
-    const result = await response.json();
-    if(result.status === 'success') {
-        document.getElementById('signupForm').classList.add('hidden');
-        document.getElementById('successMsg').classList.remove('hidden');
-    }
+// UI
+function toggleModal(id){
+document.getElementById(id).classList.toggle("active");
+}
+function toggleDropdown(){
+document.getElementById("menuDropdown").classList.toggle("active");
 }
 
-async function handleLogin() {
-    const inputs = document.querySelectorAll('section input');
-    const data = {
-        action: 'login',
-        email: inputs[0].value,
-        password: inputs[1].value
-    };
+// SIGNUP
+async function submitSignup(){
+const data = {
+action:"signup",
+fullName: document.getElementById("name").value,
+dob: document.getElementById("dob").value,
+email: document.getElementById("email").value,
+contact: document.getElementById("contact").value,
+referral: document.getElementById("ref").value,
+password: document.getElementById("pass").value
+};
 
-    const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
-    const result = await response.json();
-    
-    if(result.status === 'success') {
-        localStorage.setItem('micronUser', JSON.stringify(result));
-        window.location.href = "user-dashboard.html";
-    } else {
-        alert("Invalid Login Credentials");
-    }
+const res = await fetch(API_URL,{
+method:"POST",
+body: JSON.stringify(data)
+});
+
+const result = await res.json();
+
+if(result.status==="success"){
+alert("Signup Success");
+toggleModal('signupModal');
+}else{
+alert("Error");
+}
 }
 
-    </script>
+// LOGIN
+async function handleLogin(){
+const data = {
+action:"login",
+email: document.getElementById("loginEmail").value,
+password: document.getElementById("loginPassword").value
+};
+
+const res = await fetch(API_URL,{
+method:"POST",
+body: JSON.stringify(data)
+});
+
+const result = await res.json();
+
+if(result.status==="success"){
+localStorage.setItem("user", result.email);
+localStorage.setItem("name", result.user);
+
+// redirect
+window.location.href="user-dashboard.html";
+}else{
+alert(result.message);
+}
+}
+
+// CLOSE DROPDOWN
+window.onclick = function(e){
+if(!e.target.closest('.relative')){
+document.getElementById("menuDropdown").classList.remove("active");
+}
+}
+</script>
+
 </body>
 </html>
