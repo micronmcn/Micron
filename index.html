@@ -173,6 +173,43 @@
             <button onclick="toggleModal('forgotModal')" class="gradient-btn text-white px-6 py-2 rounded-md w-full">Send Link</button>
         </div>
     </div>
+    <script>
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+            // Reset signup form if opening it
+            if(id === 'signupModal') {
+                document.getElementById('signupForm').style.display = 'block';
+                document.getElementById('successMessage').style.display = 'none';
+            }
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function showSuccess() {
+            document.getElementById('signupForm').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+        }
+
+        function handleLogin() {
+            const id = document.getElementById('loginId').value;
+            const pass = document.getElementById('loginPass').value;
+            if(id && pass) {
+                alert("Redirecting to User Dashboard...");
+                // window.location.href = "dashboard.html"; 
+            } else {
+                alert("Please enter credentials");
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.className === 'modal') {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzq0B5Tlne_3hZQPmy0N1xhizIFY_iAra9FDTewo5GOlKXbrVY8vzL_-AKEQ8tQAQ/exec";
