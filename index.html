@@ -39,9 +39,8 @@
         }
         .dropdown.active { display: block; }
         
-        /* Ensures the logo maintains its aspect ratio */
         .logo-img {
-            height: 40px; /* Adjust this to change logo size */
+            height: 40px;
             width: auto;
         }
     </style>
@@ -51,7 +50,7 @@
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
             <div class="flex items-center">
-                <a href="/">
+                <a href="#">
                     <img src="https://via.placeholder.com/150x40?text=MICRON" alt="Micron Logo" class="logo-img">
                 </a>
             </div>
@@ -64,7 +63,7 @@
                     <a href="#" class="block px-4 py-2 hover:bg-gray-100 text-sm">Our Services</a>
                     <a href="#" class="block px-4 py-2 hover:bg-gray-100 text-sm">Help Center</a>
                     <a href="#" class="block px-4 py-2 hover:bg-gray-100 text-sm">Careers</a>
-                    <a href="user-dashboard.html" class="block px-4 py-2 hover:bg-gray-100 text-sm">User</a>
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 text-sm">User</a>
                 </div>
             </div>
         </div>
@@ -114,8 +113,8 @@
             <div class="bg-gray-50 p-8 rounded-xl shadow-inner border">
                 <h2 class="text-2xl font-bold mb-6 text-center">Login to Dashboard</h2>
                 <div class="space-y-4">
-                    <input type="text" placeholder="User ID" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400">
-                    <input type="password" placeholder="Password" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400">
+                    <input type="text" id="loginUser" placeholder="User ID" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400">
+                    <input type="password" id="loginPass" placeholder="Password" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400">
                     <button onclick="handleLogin()" class="w-full gradient-btn text-white py-3 rounded-md font-bold">Login</button>
                     <div class="flex flex-col gap-2 text-center mt-4 text-sm">
                         <button onclick="toggleModal('forgotModal')" class="text-orange-600 hover:underline">Forgot Password?</button>
@@ -143,7 +142,7 @@
 
     <div id="signupModal" class="modal">
         <div class="bg-white p-8 rounded-2xl w-full max-w-md mx-4 relative">
-            <button onclick="toggleModal('signupModal')" class="absolute top-4 right-4 text-gray-400">&times;</button>
+            <button onclick="toggleModal('signupModal')" class="absolute top-4 right-4 text-gray-400 text-2xl">&times;</button>
             <div id="signupForm">
                 <h2 class="text-2xl font-bold mb-6">Create Account</h2>
                 <div class="space-y-4">
@@ -153,23 +152,25 @@
                     <input type="tel" placeholder="Contact" class="w-full p-2 border-b focus:border-orange-500 outline-none">
                     <input type="text" placeholder="Referral Code" class="w-full p-2 border-b focus:border-orange-500 outline-none">
                     <input type="password" placeholder="Set Password" class="w-full p-2 border-b focus:border-orange-500 outline-none">
-                    <button onclick="submitSignup()" class="w-full gradient-btn text-white py-3 rounded-lg mt-4 font-bold">Register</button>
+                    <button type="button" onclick="handleRegister()" class="w-full gradient-btn text-white py-3 rounded-lg mt-4 font-bold">Register</button>
                 </div>
             </div>
             <div id="successMsg" class="hidden text-center py-10">
                 <div class="text-green-500 text-5xl mb-4">✓</div>
                 <h2 class="text-2xl font-bold mb-4">Successfully Registered!</h2>
+                <p class="text-gray-500 mb-6">You can now login to your dashboard.</p>
                 <button onclick="toggleModal('signupModal')" class="gradient-btn text-white px-8 py-2 rounded-md">Done</button>
             </div>
         </div>
     </div>
 
     <div id="forgotModal" class="modal">
-        <div class="bg-white p-8 rounded-2xl w-full max-w-sm mx-4 text-center">
+        <div class="bg-white p-8 rounded-2xl w-full max-w-sm mx-4 text-center relative">
+            <button onclick="toggleModal('forgotModal')" class="absolute top-4 right-4 text-gray-400 text-2xl">&times;</button>
             <h2 class="text-xl font-bold mb-4">Reset Password</h2>
             <p class="text-sm text-gray-500 mb-6">Enter your email address to receive a reset link.</p>
             <input type="email" placeholder="Enter Email" class="w-full p-2 border rounded mb-4 outline-none">
-            <button onclick="toggleModal('forgotModal')" class="gradient-btn text-white px-6 py-2 rounded-md w-full">Send Link</button>
+            <button onclick="alert('Reset link sent to your email!')" class="gradient-btn text-white px-6 py-2 rounded-md w-full">Send Link</button>
         </div>
     </div>
 
@@ -177,9 +178,13 @@
         function toggleModal(id) {
             const modal = document.getElementById(id);
             modal.classList.toggle('active');
-            if(id === 'signupModal') {
-                document.getElementById('signupForm').classList.remove('hidden');
-                document.getElementById('successMsg').classList.add('hidden');
+            
+            // If we are closing the signup modal, reset its state for next time
+            if(id === 'signupModal' && !modal.classList.contains('active')) {
+                setTimeout(() => {
+                    document.getElementById('signupForm').classList.remove('hidden');
+                    document.getElementById('successMsg').classList.add('hidden');
+                }, 300);
             }
         }
 
@@ -187,11 +192,31 @@
             document.getElementById('menuDropdown').classList.toggle('active');
         }
 
+        // Logic for the Register Button
+        function handleRegister() {
+            // Show the success message UI
+            document.getElementById('signupForm').classList.add('hidden');
+            document.getElementById('successMsg').classList.remove('hidden');
+        }
+
+        // Logic for the Login Button
+        function handleLogin() {
+            const user = document.getElementById('loginUser').value;
+            if(user) {
+                alert("Logging in as " + user + "... Redirecting to dashboard.");
+                // In a real app, window.location.href = "user-dashboard.html"
+            } else {
+                alert("Please enter your User ID");
+            }
+        }
+
         // Close dropdown when clicking outside
         window.onclick = function(event) {
             if (!event.target.closest('.relative')) {
-                const dropdown = document.getElementById('menuDropdown');
-                if (dropdown) dropdown.classList.remove('active');
+                const drop = document.getElementById('menuDropdown');
+                if (drop && drop.classList.contains('active')) {
+                    drop.classList.remove('active');
+                }
             }
         }
     </script>
