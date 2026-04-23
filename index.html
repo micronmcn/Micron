@@ -222,54 +222,81 @@
     </script>
     <script>
 
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyYbBQ5CyRJJkrLaw2HyXOcS0ZvIB4rBLrvfdH2Kcq9ynvKQIwfH3wY9wft7dkOuqUg/exec";
+        <script>
+    // Replace this URL with your published Google Apps Script URL
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyYbBQ5CyRJJkrLaw2HyXOcS0ZvIB4rBLrvfdH2Kcq9ynvKQIwfH3wY9wft7dkOuqUg/exec";
 
-        async function submitSignup() {
-            const inputs = document.querySelectorAll('#signupForm input');
-            const data = {
-                action: 'signup',
-                fullName: inputs[0].value,
-                dob: inputs[1].value,
-                email: inputs[2].value,
-                contact: inputs[3].value,
-                referral: inputs[4].value,
-                password: inputs[5].value
-            };
+    // Handle Signup Registration
+    async function handleRegister() {
+        const signupForm = document.getElementById('signupForm');
+        const inputs = signupForm.querySelectorAll('input');
+        
+        const data = {
+            action: 'signup',
+            fullName: inputs[0].value,
+            dob: inputs[1].value,
+            email: inputs[2].value,
+            contact: inputs[3].value,
+            referral: inputs[4].value,
+            password: inputs[5].value
+        };
 
-            try {
-                const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
-                const result = await response.json();
-                if(result.status === 'success') {
-                    document.getElementById('signupForm').classList.add('hidden');
-                    document.getElementById('successMsg').classList.remove('hidden');
-                }
-            } catch (error) {
-                console.error("Error during signup:", error);
-            }
+        // Basic validation
+        if(!data.email || !data.password) {
+            alert("Please fill in required fields.");
+            return;
         }
 
-        async function handleLogin() {
-            const inputs = document.querySelectorAll('section input');
-            const data = {
-                action: 'login',
-                email: inputs[0].value,
-                password: inputs[1].value
-            };
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
 
-            try {
-                const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
-                const result = await response.json();
-                
-                if(result.status === 'success') {
-                    localStorage.setItem('micronUser', JSON.stringify(result));
-                    window.location.href = "user-dashboard.html";
-                } else {
-                    alert("Invalid Login Credentials");
-                }
-            } catch (error) {
-                console.error("Error during login:", error);
+            if (result.status === 'success') {
+                document.getElementById('signupForm').classList.add('hidden');
+                document.getElementById('successMsg').classList.remove('hidden');
+            } else {
+                alert("Error: " + result.message);
             }
+        } catch (error) {
+            console.error("Submission failed:", error);
+            alert("Could not connect to the server.");
         }
+    }
+
+    // Handle Login
+    async function handleLogin() {
+        const email = document.getElementById('loginUser').value;
+        const password = document.getElementById('loginPass').value;
+
+        const data = {
+            action: 'login',
+            email: email,
+            password: password
+        };
+
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                // Store user data locally
+                localStorage.setItem('micronUser', JSON.stringify(result));
+                window.location.href = "user-dashboard.html";
+            } else {
+                alert("Invalid Login Credentials");
+            }
+        } catch (error) {
+            alert("Login failed. Check your connection.");
+        }
+    }
+</script>
+
     </script>
 </body>
 </html>
