@@ -39,11 +39,10 @@
         }
         .dropdown.active { display: block; }
         
-        /* Ensures the logo scales correctly */
-        .header-logo {
-            height: 40px;
+        /* Ensures the logo maintains its aspect ratio */
+        .logo-img {
+            height: 40px; /* Adjust this to change logo size */
             width: auto;
-            object-fit: contain;
         }
     </style>
 </head>
@@ -52,8 +51,8 @@
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
             <div class="flex items-center">
-                <a href="index.html">
-                    <img src="https://via.placeholder.com/150x50/FFFFFF/FF8C00?text=MICRON" alt="Micron Logo" class="header-logo">
+                <a href="/">
+                    <img src="https://via.placeholder.com/150x40?text=MICRON" alt="Micron Logo" class="logo-img">
                 </a>
             </div>
             <div class="flex items-center gap-4 relative">
@@ -173,152 +172,77 @@
             <button onclick="toggleModal('forgotModal')" class="gradient-btn text-white px-6 py-2 rounded-md w-full">Send Link</button>
         </div>
     </div>
-    
+
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzq0B5Tlne_3hZQPmy0N1xhizIFY_iAra9FDTewo5GOlKXbrVY8vzL_-AKEQ8tQAQ/exec";
-
-async function submitSignup() {
-    // Select all inputs from the signup modal
-    const inputs = document.querySelectorAll('#signupModal input');
-    
-    // Validate that required fields aren't empty
-    if (!inputs[0].value || !inputs[2].value || !inputs[5].value) {
-        alert("Please fill in Name, Email, and Password.");
-        return;
-    }
-
-    const data = {
-        action: 'signup',
-        fullName: inputs[0].value,
-        dob: inputs[1].value,
-        email: inputs[2].value,
-        contact: inputs[3].value,
-        referral: inputs[4].value,
-        password: inputs[5].value
-    };
-
-    try {
-        // We use 'no-cors' mode only if the script doesn't return a response, 
-        // but since our Apps Script returns JSON, we use default mode.
-        const response = await fetch(SCRIPT_URL, {
-            method: 'POST',
-            body: JSON.stringify(data)
-        });
-
-        const result = await response.json();
-
-        if (result.status === 'success') {
-            document.getElementById('signupForm').classList.add('hidden');
-            document.getElementById('successMsg').classList.remove('hidden');
-        } else {
-            alert("Registration failed. Please try again.");
-        }
-    } catch (error) {
-        console.error("Signup Error:", error);
-         <script>
-
         function toggleModal(id) {
-
             const modal = document.getElementById(id);
-
             modal.classList.toggle('active');
-
-            // Reset signup form if closing
-
             if(id === 'signupModal') {
-
                 document.getElementById('signupForm').classList.remove('hidden');
-
                 document.getElementById('successMsg').classList.add('hidden');
-
             }
-
         }
-
-
 
         function toggleDropdown() {
-
             document.getElementById('menuDropdown').classList.toggle('active');
-
         }
-
-
-
-        function submitSignup() {
-
-            document.getElementById('signupForm').classList.add('hidden');
-
-            document.getElementById('successMsg').classList.remove('hidden');
-
-        }
-
-
-
-        function handleLogin() {
-
-            alert("Redirecting to User Dashboard...");
-
-            window.location.reload(); 
-
-        }
-
-
 
         // Close dropdown when clicking outside
-
         window.onclick = function(event) {
-
             if (!event.target.closest('.relative')) {
-
-                document.getElementById('menuDropdown').classList.remove('active');
-
+                const dropdown = document.getElementById('menuDropdown');
+                if (dropdown) dropdown.classList.remove('active');
             }
         }
 
-    </script>
-    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzq0B5Tlne_3hZQPmy0N1xhizIFY_iAra9FDTewo5GOlKXbrVY8vzL_-AKEQ8tQAQ/exec";
 
-alert("Connection Error. Check your internet or Script URL.");
-    }
-}
+        async function submitSignup() {
+            const inputs = document.querySelectorAll('#signupForm input');
+            const data = {
+                action: 'signup',
+                fullName: inputs[0].value,
+                dob: inputs[1].value,
+                email: inputs[2].value,
+                contact: inputs[3].value,
+                referral: inputs[4].value,
+                password: inputs[5].value
+            };
 
-async function handleLogin() {
-    // Select inputs from the Login section (User ID and Password)
-    const loginInputs = document.querySelectorAll('section input');
-    
-    const data = {
-        action: 'login',
-        email: loginInputs[0].value,
-        password: loginInputs[1].value
-    };
-
-    if (!data.email || !data.password) {
-        alert("Please enter both Email and Password.");
-        return;
-    }
-
-    try {
-        const response = await fetch(SCRIPT_URL, {
-            method: 'POST',
-            body: JSON.stringify(data)
-        });
-
-        const result = await response.json();
-        
-        if (result.status === 'success') {
-            // Store user info in local storage to use on the dashboard
-            localStorage.setItem('micronUser', JSON.stringify(result));
-            window.location.href = "user-dashboard.html";
-        } else {
-            alert("Invalid Login Credentials. Please check your email and password.");
+            try {
+                const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
+                const result = await response.json();
+                if(result.status === 'success') {
+                    document.getElementById('signupForm').classList.add('hidden');
+                    document.getElementById('successMsg').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error("Error during signup:", error);
+            }
         }
-    } catch (error) {
-        console.error("Login Error:", error);
-        alert("Could not connect to the server.");
-    }
-}
 
+        async function handleLogin() {
+            const inputs = document.querySelectorAll('section input');
+            const data = {
+                action: 'login',
+                email: inputs[0].value,
+                password: inputs[1].value
+            };
+
+            try {
+                const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
+                const result = await response.json();
+                
+                if(result.status === 'success') {
+                    localStorage.setItem('micronUser', JSON.stringify(result));
+                    window.location.href = "user-dashboard.html";
+                } else {
+                    alert("Invalid Login Credentials");
+                }
+            } catch (error) {
+                console.error("Error during login:", error);
+            }
+        }
     </script>
 </body>
 </html>
