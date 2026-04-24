@@ -197,11 +197,18 @@
         }
     </script>
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-xNvjK0mcV5z-KQmR1YGImy0la9Zc6LdCaVARjPAsQQBRW-ZWKYoEQSh2WXz4wUiI/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwsTPyA20fa7qCugN6s2cwKNZuzQCiIIhIpb2GyLpzN7S3QtpYSTvQ9gzyvOOK-zAWY/exec"; // PASTE URL HERE
 
-async function handleRegister() {
-    const formData = {
-        action: "register",
+function toggleModal(id) {
+    const modal = document.getElementById(id);
+    modal.classList.toggle('active');
+}
+
+async function submitSignup() {
+    const btn = event.target;
+    btn.innerText = "Registering...";
+    
+    const data = {
         fullName: document.querySelector('input[placeholder="Full Name"]').value,
         dob: document.querySelector('input[placeholder="Date of Birth"]').value,
         email: document.querySelector('input[placeholder="Email"]').value,
@@ -210,36 +217,36 @@ async function handleRegister() {
         password: document.querySelector('input[placeholder="Set Password"]').value
     };
 
-    const response = await fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify(formData)
-    });
-    
-    const result = await response.json();
-    if(result.success) {
-        document.getElementById('signupForm').classList.add('hidden');
-        document.getElementById('successMsg').classList.remove('hidden');
-    }
+    try {
+        const response = await fetch(SCRIPT_URL + "?action=signup", { method: 'POST', body: JSON.stringify(data) });
+        const result = await response.json();
+        if(result.result === "success") {
+            localStorage.setItem("micronUser", JSON.stringify(result.user));
+            document.getElementById('signupForm').classList.add('hidden');
+            document.getElementById('successMsg').classList.remove('hidden');
+            setTimeout(() => window.location.href = "user-dashboard.html", 1500);
+        } else { alert("User already exists or Error occurred."); }
+    } catch(e) { console.error(e); }
+    btn.innerText = "Register";
 }
 
 async function handleLogin() {
-    const email = document.getElementById('loginUser').value;
-    const pass = document.getElementById('loginPass').value;
+    const userId = document.querySelector('input[placeholder="User ID"]').value;
+    const pass = document.querySelector('input[placeholder="Password"]').value;
 
-    const response = await fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify({ action: "login", email: email, password: pass })
-    });
-
-    const result = await response.json();
-    if(result.success) {
-        localStorage.setItem('micronUser', JSON.stringify(result));
-        window.location.href = "user-dashboard.html";
-    } else {
-        alert(result.message);
-    }
+    try {
+        const response = await fetch(SCRIPT_URL + "?action=login", { 
+            method: 'POST', 
+            body: JSON.stringify({userId: userId, password: pass}) 
+        });
+        const result = await response.json();
+        if(result.result === "success") {
+            localStorage.setItem("micronUser", JSON.stringify(result.user));
+            window.location.href = "user-dashboard.html";
+        } else { alert("Invalid Credentials"); }
+    } catch(e) { alert("Server Error"); }
 }
-
+        
     </script>
 </body>
 </html>
