@@ -1,3 +1,5 @@
+Index.html
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -221,81 +223,48 @@
         }
     </script>
     <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-xNvjK0mcV5z-KQmR1YGImy0la9Zc6LdCaVARjPAsQQBRW-ZWKYoEQSh2WXz4wUiI/exec";
 
-        <script>
-    // Replace this URL with your published Google Apps Script URL
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyYbBQ5CyRJJkrLaw2HyXOcS0ZvIB4rBLrvfdH2Kcq9ynvKQIwfH3wY9wft7dkOuqUg/exec";
+async function handleRegister() {
+    const formData = {
+        action: "register",
+        fullName: document.querySelector('input[placeholder="Full Name"]').value,
+        dob: document.querySelector('input[placeholder="Date of Birth"]').value,
+        email: document.querySelector('input[placeholder="Email"]').value,
+        contact: document.querySelector('input[placeholder="Contact"]').value,
+        referral: document.querySelector('input[placeholder="Referral Code"]').value,
+        password: document.querySelector('input[placeholder="Set Password"]').value
+    };
 
-    // Handle Signup Registration
-    async function handleRegister() {
-        const signupForm = document.getElementById('signupForm');
-        const inputs = signupForm.querySelectorAll('input');
-        
-        const data = {
-            action: 'signup',
-            fullName: inputs[0].value,
-            dob: inputs[1].value,
-            email: inputs[2].value,
-            contact: inputs[3].value,
-            referral: inputs[4].value,
-            password: inputs[5].value
-        };
-
-        // Basic validation
-        if(!data.email || !data.password) {
-            alert("Please fill in required fields.");
-            return;
-        }
-
-        try {
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: JSON.stringify(data)
-            });
-            const result = await response.json();
-
-            if (result.status === 'success') {
-                document.getElementById('signupForm').classList.add('hidden');
-                document.getElementById('successMsg').classList.remove('hidden');
-            } else {
-                alert("Error: " + result.message);
-            }
-        } catch (error) {
-            console.error("Submission failed:", error);
-            alert("Could not connect to the server.");
-        }
+    const response = await fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify(formData)
+    });
+    
+    const result = await response.json();
+    if(result.success) {
+        document.getElementById('signupForm').classList.add('hidden');
+        document.getElementById('successMsg').classList.remove('hidden');
     }
+}
 
-    // Handle Login
-    async function handleLogin() {
-        const email = document.getElementById('loginUser').value;
-        const password = document.getElementById('loginPass').value;
+async function handleLogin() {
+    const email = document.getElementById('loginUser').value;
+    const pass = document.getElementById('loginPass').value;
 
-        const data = {
-            action: 'login',
-            email: email,
-            password: password
-        };
+    const response = await fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "login", email: email, password: pass })
+    });
 
-        try {
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: JSON.stringify(data)
-            });
-            const result = await response.json();
-
-            if (result.status === 'success') {
-                // Store user data locally
-                localStorage.setItem('micronUser', JSON.stringify(result));
-                window.location.href = "user-dashboard.html";
-            } else {
-                alert("Invalid Login Credentials");
-            }
-        } catch (error) {
-            alert("Login failed. Check your connection.");
-        }
+    const result = await response.json();
+    if(result.success) {
+        localStorage.setItem('micronUser', JSON.stringify(result));
+        window.location.href = "user-dashboard.html";
+    } else {
+        alert(result.message);
     }
-</script>
+}
 
     </script>
 </body>
