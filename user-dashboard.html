@@ -27,22 +27,14 @@
             100% { transform: translateX(-100%); }
         }
         .hidden { display: none; }
-        
-        /* Ensures the logo fits perfectly in the header */
-        .header-logo {
-            height: 40px;
-            width: auto;
-            object-fit: contain;
-        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans">
 
-    <header class="bg-white shadow-sm sticky top-0 z-50 px-4 py-2 flex justify-between items-center">
+    <header class="bg-white shadow-sm sticky top-0 z-50 px-4 py-3 flex justify-between items-center">
         <div class="flex items-center">
-            <a href="index.html">
-                <img src="https://via.placeholder.com/150x50/FFFFFF/FF8C00?text=MICRON" alt="Micron Logo" class="header-logo">
-            </a>
+            <div class="h-10 w-10 bg-orange-500 rounded-lg flex items-center justify-center text-white font-bold">M</div>
+            <span class="ml-2 font-bold text-xl text-gray-800">MICRON</span>
         </div>
         
         <div class="flex items-center gap-3">
@@ -58,9 +50,9 @@
                     <a href="#" class="block px-4 py-2 hover:bg-gray-100 text-sm">Community Guidelines</a>
                     <a href="#" class="block px-4 py-2 hover:bg-gray-100 text-sm">About Micron</a>
                     <a href="user-wallet.html" class="block px-4 py-2 hover:bg-gray-100 text-sm">Wallet</a>
-                    <a href="user-reffer.html" class="block px-4 py-2 hover:bg-gray-100 text-sm">Refer</a>
-                    <a href="user-playlist.html" class="block px-4 py-2 hover:bg-gray-100 text-sm">Playlist</a>
-                    <a href="user-offer.html" class="block px-4 py-2 hover:bg-gray-100 text-sm">Offers</a>
+                    <a href="user-reffer.html" class="block px-4 py-2 hover:bg-gray-100 text-sm">Reffer</a>
+                    <a href="user-playlist.html" class="block px-4 py-2 hover:bg-gray-100 text-sm">Reffer</a>
+                    <a href="user-offer.html" class="block px-4 py-2 hover:bg-gray-100 text-sm">Reffer</a>
                 </div>
             </div>
         </div>
@@ -72,12 +64,14 @@
             <p class="text-gray-500 text-xs">Welcome back to your dashboard</p>
         </div>
         <div class="flex gap-4">
+          <!-- Bell Icon (Notifications Page) -->
           <div class="relative">
             <a href="user-notification.html">
              <i data-lucide="bell" class="text-gray-600 cursor-pointer"></i>
              <span class="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
             </a>
           </div>
+           <!-- User Icon (Profile Page) -->
            <a href="user-profile.html">
             <i data-lucide="circle-user" class="text-gray-600 cursor-pointer"></i>
            </a>
@@ -112,49 +106,48 @@
     </div>
 
     <div class="grid grid-cols-2 gap-4 p-4">
-      <a href="user-courses.html">
-        <button class="btn-gradient p-4 rounded-2xl flex flex-col items-center gap-2 shadow-lg w-full">
-          <i data-lucide="graduation-cap"></i>
-          <span>Courses</span>
-        </button>
-      </a>
+  <a href="user-courses.html">
+    <button class="btn-gradient p-4 rounded-2xl flex flex-col items-center gap-2 shadow-lg w-full">
+      <i data-lucide="graduation-cap"></i>
+      <span>Courses</span>
+    </button>
+  </a>
 
-      <a href="user-games.html">
-        <button class="btn-gradient p-4 rounded-2xl flex flex-col items-center gap-2 shadow-lg w-full">
-          <i data-lucide="gamepad-2"></i>
-          <span>Games</span>
-        </button>
-      </a>
+  <a href="user-games.html">
+    <button class="btn-gradient p-4 rounded-2xl flex flex-col items-center gap-2 shadow-lg w-full">
+      <i data-lucide="gamepad-2"></i>
+      <span>Games</span>
+    </button>
+  </a>
 
-      <a href="user-ai-resume-cv.html">
-        <button class="btn-gradient p-4 rounded-2xl flex flex-col items-center gap-2 shadow-lg w-full">
-          <i data-lucide="file-text"></i>
-          <span>AI Resume/CV</span>
-        </button>
-      </a>
+  <a href="user-ai-resume-cv.html">
+    <button class="btn-gradient p-4 rounded-2xl flex flex-col items-center gap-2 shadow-lg w-full">
+      <i data-lucide="file-text"></i>
+      <span>AI Resume/CV</span>
+    </button>
+  </a>
 
-      <a href="user-career-guidance.html">
-        <button class="btn-gradient p-4 rounded-2xl flex flex-col items-center gap-2 shadow-lg w-full">
-          <i data-lucide="compass"></i>
-          <span>Guidance</span>
-        </button>
-      </a>
+  <a href="user-career-guidance.html">
+    <button class="btn-gradient p-4 rounded-2xl flex flex-col items-center gap-2 shadow-lg w-full">
+      <i data-lucide="compass"></i>
+      <span>Guidance</span>
+    </button>
+  </a>
     </div>
-
     <div class="grid grid-cols-4 gap-2 px-4 pb-6">
-        <button onclick="location.href='user-playlist.html'" class="flex flex-col items-center p-2 bg-white rounded-lg border text-[10px]">
+        <button class="flex flex-col items-center p-2 bg-white rounded-lg border text-[10px]">
             <i data-lucide="play-circle" class="w-5 text-orange-500"></i> Playlist
         </button>
         <button class="flex flex-col items-center p-2 bg-white rounded-lg border text-[10px]">
             <i data-lucide="video" class="w-5 text-orange-500"></i> Videos
         </button>
-        <button onclick="location.href='user-wallet.html'" class="flex flex-col items-center p-2 bg-white rounded-lg border text-[10px]">
+        <button class="flex flex-col items-center p-2 bg-white rounded-lg border text-[10px]">
             <i data-lucide="wallet" class="w-5 text-orange-500"></i> Wallet
         </button>
-        <button onclick="location.href='user-reffer.html'" class="flex flex-col items-center p-2 bg-white rounded-lg border text-[10px]">
+        <button class="flex flex-col items-center p-2 bg-white rounded-lg border text-[10px]">
             <i data-lucide="share-2" class="w-5 text-orange-500"></i> Refer
         </button>
-        <button onclick="location.href='user-offer.html'" class="flex flex-col items-center p-2 bg-white rounded-lg border text-[10px]">
+        <button class="flex flex-col items-center p-2 bg-white rounded-lg border text-[10px]">
             <i data-lucide="tag" class="w-5 text-orange-500"></i> Offers
         </button>
         <button class="flex flex-col items-center p-2 bg-white rounded-lg border text-[10px]">
@@ -163,7 +156,7 @@
         <button class="flex flex-col items-center p-2 bg-white rounded-lg border text-[10px]">
             <i data-lucide="settings" class="w-5 text-orange-500"></i> Settings
         </button>
-        <button onclick="localStorage.clear(); window.location.href='index.html'" class="flex flex-col items-center p-2 bg-white rounded-lg border text-[10px]">
+        <button class="flex flex-col items-center p-2 bg-white rounded-lg border text-[10px]">
             <i data-lucide="log-out" class="w-5 text-gray-400"></i> Exit
         </button>
     </div>
@@ -210,11 +203,14 @@
     </div>
 
     <script>
+        // Initialize Icons
         lucide.createIcons();
 
+        // Toggle UI Elements
         function toggleModal(id) {
             const modal = document.getElementById(id);
             modal.classList.toggle('hidden');
+            // Reset form if opening
             if(!modal.classList.contains('hidden')) {
                 document.getElementById('formContent').classList.remove('hidden');
                 document.getElementById('successContent').classList.add('hidden');
@@ -225,55 +221,42 @@
             document.getElementById(id).classList.toggle('hidden');
         }
 
-        window.onclick = function(event) {
-            if (!event.target.closest('.relative')) {
-                const drop = document.getElementById('menuDropdown');
-                if(drop) drop.classList.add('hidden');
-            }
-        }
-
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzq0B5Tlne_3hZQPmy0N1xhizIFY_iAra9FDTewo5GOlKXbrVY8vzL_-AKEQ8tQAQ/exec";
-        const userData = JSON.parse(localStorage.getItem('micronUser'));
-
-        window.onload = async () => {
-            if(!userData) { window.location.href = "index.html"; return; }
-            document.getElementById('userName').innerText = userData.user;
-            
-            try {
-                const response = await fetch(`${SCRIPT_URL}?action=getDashboard&email=${userData.email}`);
-                const data = await response.json();
-                
-                const statsContainers = document.querySelectorAll('.grid.grid-cols-3 p.text-xl');
-                statsContainers[0].innerText = data.stats[0];
-                statsContainers[1].innerText = "₹" + data.stats[1];
-                statsContainers[2].innerText = data.stats[2];
-                
-                const marquee = document.querySelector('.marquee');
-                marquee.innerHTML = data.news.map(n => `
-                    <span class="flex items-center gap-2 italic text-sm">
-                        <img src="${n.img}" class="rounded-full w-5 h-5"> ${n.headline}
-                    </span>
-                `).join('');
-            } catch(e) { console.error("Error loading dashboard data"); }
-        };
-
-        async function handleSubscription(e) {
+        // Form Logic
+        function handleSubscription(e) {
             e.preventDefault();
-            const form = e.target;
-            const data = {
-                action: 'subscribe',
-                name: form[0].value,
-                email: form[1].value,
-                contact: form[2].value,
-                referral: form[3].value,
-                transId: form[4].value
-            };
-
-            await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
             document.getElementById('formContent').classList.add('hidden');
             document.getElementById('successContent').classList.remove('hidden');
             lucide.createIcons();
         }
+
+        // Close dropdown when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.closest('.relative')) {
+                document.getElementById('menuDropdown').classList.add('hidden');
+            }
+        }
+    </script>
+    <script>
+        async function loadDashboard() {
+    const user = JSON.parse(localStorage.getItem('micronUser'));
+    if(!user) window.location.href = "index.html";
+    
+    document.getElementById('userName').innerText = user.name;
+
+    // Fetch Stats
+    const statsRes = await fetch(`${SCRIPT_URL}?action=getStats&email=${user.email}`);
+    const stats = await statsRes.json();
+    // Update the UI IDs (you'll need to add IDs to your 0, ₹0 text elements)
+    document.getElementById('stat-courses').innerText = stats.courses;
+    document.getElementById('stat-earnings').innerText = "₹" + stats.earnings;
+
+    // Fetch News
+    const newsRes = await fetch(`${SCRIPT_URL}?action=getNews`);
+    const news = await newsRes.json();
+    // Dynamically build marquee string here...
+}
+window.onload = loadDashboard;
+        
     </script>
 </body>
-</html>
+</html
