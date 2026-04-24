@@ -197,54 +197,49 @@
         }
     </script>
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby8fe-IzgJIbVVZMniFzVTOrTBqtFBXl_RXl8nnNtH4Zv99B79M_1Qe27My0G1Kqlvd/exec"; // PASTE URL HERE
-
-function toggleModal(id) {
-    const modal = document.getElementById(id);
-    modal.classList.toggle('active');
-}
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfWVnf8Hx18GPmo6WE4kCo_uxzmm0EBevy7T5zNySOZji9zkJFdiDBJ-3zypBIorrx/exec";
 
 async function submitSignup() {
-    const btn = event.target;
-    btn.innerText = "Registering...";
-    
+    const inputs = document.querySelectorAll('#signupModal input');
     const data = {
-        fullName: document.querySelector('input[placeholder="Full Name"]').value,
-        dob: document.querySelector('input[placeholder="Date of Birth"]').value,
-        email: document.querySelector('input[placeholder="Email"]').value,
-        contact: document.querySelector('input[placeholder="Contact"]').value,
-        referral: document.querySelector('input[placeholder="Referral Code"]').value,
-        password: document.querySelector('input[placeholder="Set Password"]').value
+        fullName: inputs[0].value,
+        dob: Array.from(inputs).find(i => i.type === 'date').value,
+        email: inputs[2].value,
+        contact: inputs[3].value,
+        referral: inputs[4].value,
+        password: inputs[5].value
     };
 
     try {
-        const response = await fetch(SCRIPT_URL + "?action=signup", { method: 'POST', body: JSON.stringify(data) });
-        const result = await response.json();
-        if(result.result === "success") {
-            localStorage.setItem("micronUser", JSON.stringify(result.user));
-            document.getElementById('signupForm').classList.add('hidden');
-            document.getElementById('successMsg').classList.remove('hidden');
-            setTimeout(() => window.location.href = "user-dashboard.html", 1500);
-        } else { alert("User already exists or Error occurred."); }
-    } catch(e) { console.error(e); }
-    btn.innerText = "Register";
-}
-
-async function handleLogin() {
-    const userId = document.querySelector('input[placeholder="User ID"]').value;
-    const pass = document.querySelector('input[placeholder="Password"]').value;
-
-    try {
-        const response = await fetch(SCRIPT_URL + "?action=login", { 
-            method: 'POST', 
-            body: JSON.stringify({userId: userId, password: pass}) 
+        const response = await fetch(`${SCRIPT_URL}?action=signup`, {
+            method: 'POST',
+            body: JSON.stringify(data)
         });
         const result = await response.json();
         if(result.result === "success") {
-            localStorage.setItem("micronUser", JSON.stringify(result.user));
+            document.getElementById('signupForm').classList.add('hidden');
+            document.getElementById('successMsg').classList.remove('hidden');
+        }
+    } catch (e) { alert("Registration failed. Try again."); }
+}
+
+async function handleLogin() {
+    const inputs = document.querySelectorAll('section input');
+    const data = { userId: inputs[0].value, password: inputs[1].value };
+
+    try {
+        const response = await fetch(`${SCRIPT_URL}?action=login`, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+        const res = await response.json();
+        if(res.result === "success") {
+            localStorage.setItem('micronUser', JSON.stringify(res.user));
             window.location.href = "user-dashboard.html";
-        } else { alert("Invalid Credentials"); }
-    } catch(e) { alert("Server Error"); }
+        } else {
+            alert("Invalid Login Details");
+        }
+    } catch (e) { alert("Login Error"); }
 }
         
     </script>
