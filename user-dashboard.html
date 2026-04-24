@@ -91,15 +91,15 @@
     <div class="grid grid-cols-3 gap-3 p-4">
         <div class="bg-white p-3 rounded-xl shadow-sm border text-center">
             <p class="text-xs text-gray-500 uppercase">Courses</p>
-            <p class="text-xl font-bold text-orange-600">12</p>
+            <p class="text-xl font-bold text-orange-600">0</p>
         </div>
         <div class="bg-white p-3 rounded-xl shadow-sm border text-center">
             <p class="text-xs text-gray-500 uppercase">Earnings</p>
-            <p class="text-xl font-bold text-green-600">$450</p>
+            <p class="text-xl font-bold text-green-600">0</p>
         </div>
         <div class="bg-white p-3 rounded-xl shadow-sm border text-center">
             <p class="text-xs text-gray-500 uppercase">Certificates</p>
-            <p class="text-xl font-bold text-blue-600">05</p>
+            <p class="text-xl font-bold text-blue-600">0</p>
         </div>
     </div>
 
@@ -250,7 +250,7 @@ async function loadDashboardData() {
         // Populate Stats
         const statsUI = document.querySelectorAll('.grid.grid-cols-3 p.text-xl');
         statsUI[0].innerText = data.stats.courses;
-        statsUI[1].innerText = `$${data.stats.earnings}`;
+        statsUI[1].innerText = `₹${data.stats.earnings}`;
         statsUI[2].innerText = data.stats.certs;
 
         // Populate News Marquee
