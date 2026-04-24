@@ -235,59 +235,89 @@
         }
     </script>
     <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby8fe-IzgJIbVVZMniFzVTOrTBqtFBXl_RXl8nnNtH4Zv99B79M_1Qe27My0G1Kqlvd/exec";
-
-async function loadDashboardData() {
-    const user = JSON.parse(localStorage.getItem("micronUser"));
-    if (!user) return window.location.href = "index.html";
-
-    document.getElementById('userName').innerText = user.name;
-
-    try {
-        const response = await fetch(`${SCRIPT_URL}?action=getDashboard&email=${user.email}`);
-        const data = await response.json();
-
-        // Populate Stats
-        const statsUI = document.querySelectorAll('.grid.grid-cols-3 p.text-xl');
-        statsUI[0].innerText = data.stats.courses;
-        statsUI[1].innerText = `₹${data.stats.earnings}`;
-        statsUI[2].innerText = data.stats.certs;
-
-        // Populate News Marquee
-        const marquee = document.querySelector('.marquee');
-        if (data.news.length > 0) {
-            marquee.innerHTML = data.news.map(n => `
-                <span class="flex items-center gap-2 italic text-sm">
-                    <img src="${n.img || 'https://via.placeholder.com/20'}" class="rounded-full w-5 h-5"> ${n.text}
-                </span>
-            `).join('');
+<script>
+    // Replace this with your actual Google Web App URL after deploying
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwa_5V8GQ-XZJzvqFzwIQVw52wDa39qTHlWsVEGMJtZDGe2HxeAcE5gl5V30u1J3UwQ/exec";
+    
+    // 1. Fetch Dashboard Data on Load
+    document.addEventListener('DOMContentLoaded', () => {
+        const userEmail = localStorage.getItem('userEmail'); // Assumes email was saved during login
+        const userName = localStorage.getItem('userName');
+        
+        if (!userEmail) {
+            alert("Session expired. Please login again.");
+            window.location.href = "login.html"; // Redirect if no session
+            return;
         }
-    } catch (e) { console.error("Sync Error:", e); }
-}
 
-async function handleSubscription(e) {
-    e.preventDefault();
-    const user = JSON.parse(localStorage.getItem("micronUser"));
-    const formData = {
-        name: e.target.elements[0].value,
-        email: e.target.elements[1].value,
-        tel: e.target.elements[2].value,
-        ref: e.target.elements[3].value,
-        transId: document.getElementById('transId').value // New field
-    };
+        document.getElementById('userName').innerText = userName;
 
-    const response = await fetch(`${SCRIPT_URL}?action=subscribe`, {
-        method: 'POST',
-        body: JSON.stringify(formData)
+        fetch(`${WEB_APP_URL}?action=getDashboard&email=${userEmail}`)
+            .then(response => response.json())
+            .then(data => {
+                // Update Stats
+                document.querySelectorAll('.grid-cols-3 p.text-xl')[0].innerText = data.stats.courses;
+                document.querySelectorAll('.grid-cols-3 p.text-xl')[1].innerText = data.stats.earnings;
+                document.querySelectorAll('.grid-cols-3 p.text-xl')[2].innerText = data.stats.certs;
+
+                // Update News Marquee
+                const marquee = document.querySelector('.marquee');
+                marquee.innerHTML = data.news.map(item => `
+                    <span class="flex items-center gap-2 italic text-sm">
+                        <img src="${item.img}" class="rounded-full w-5 h-5" onerror="this.src='https://via.placeholder.com/20'"> 
+                        ${item.text}
+                    </span>
+                `).join('');
+
+                // Update Notification Dot
+                const navBadge = document.querySelector('.relative .bg-red-500');
+                if(data.notifications === 0) navBadge.classList.add('hidden');
+            })
+            .catch(err => console.error("Error loading dashboard:", err));
     });
-    const result = await response.json();
-    if (result.result === "success") {
-        document.getElementById('formContent').classList.add('hidden');
-        document.getElementById('successContent').classList.remove('hidden');
-    }
-}
 
-window.onload = loadDashboardData;
+    // 2. Handle Subscription Post
+    async function handleSubscription(e) {
+        e.preventDefault();
+        const btn = e.target.querySelector('button[type="submit"]');
+        btn.innerText = "Processing...";
+        btn.disabled = true;
+
+        const formData = {
+            action: "subscribe",
+            name: e.target[0].value,
+            email: e.target[1].value,
+            tel: e.target[2].value,
+            ref: e.target[3].value,
+            transId: e.target[4].value
+        };
+
+        try {
+            // Using no-cors if needed, but since res() returns JSON, standard fetch is better
+            const response = await fetch(WEB_APP_URL + "?action=subscribe", {
+                method: "POST",
+                body: JSON.stringify(formData)
+            });
+            
+            const result = await response.json();
+            
+            if (result.result === "success") {
+                document.getElementById('formContent').classList.add('hidden');
+                document.getElementById('successContent').classList.remove('hidden');
+                lucide.createIcons();
+            } else {
+                alert("Submission failed: " + result.error);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Connection Error. Please check your internet.");
+        } finally {
+            btn.innerText = "Pay & Subscribe";
+            btn.disabled = false;
+        }
+    }
+</script>
+
 
     </script>
 </body>
