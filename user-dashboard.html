@@ -51,8 +51,6 @@
                     <a href="#" class="block px-4 py-2 hover:bg-gray-100 text-sm">About Micron</a>
                     <a href="user-wallet.html" class="block px-4 py-2 hover:bg-gray-100 text-sm">Wallet</a>
                     <a href="user-reffer.html" class="block px-4 py-2 hover:bg-gray-100 text-sm">Reffer</a>
-                    <a href="user-playlist.html" class="block px-4 py-2 hover:bg-gray-100 text-sm">Reffer</a>
-                    <a href="user-offer.html" class="block px-4 py-2 hover:bg-gray-100 text-sm">Reffer</a>
                 </div>
             </div>
         </div>
@@ -93,15 +91,15 @@
     <div class="grid grid-cols-3 gap-3 p-4">
         <div class="bg-white p-3 rounded-xl shadow-sm border text-center">
             <p class="text-xs text-gray-500 uppercase">Courses</p>
-            <p class="text-xl font-bold text-orange-600">0</p>
+            <p class="text-xl font-bold text-orange-600">12</p>
         </div>
         <div class="bg-white p-3 rounded-xl shadow-sm border text-center">
             <p class="text-xs text-gray-500 uppercase">Earnings</p>
-            <p class="text-xl font-bold text-green-600">₹0</p>
+            <p class="text-xl font-bold text-green-600">$450</p>
         </div>
         <div class="bg-white p-3 rounded-xl shadow-sm border text-center">
             <p class="text-xs text-gray-500 uppercase">Certificates</p>
-            <p class="text-xl font-bold text-blue-600">0</p>
+            <p class="text-xl font-bold text-blue-600">05</p>
         </div>
     </div>
 
@@ -185,7 +183,6 @@
                     <input type="email" placeholder="Email" required class="w-full border p-2 rounded-lg text-sm">
                     <input type="tel" placeholder="Contact Number" required class="w-full border p-2 rounded-lg text-sm">
                     <input type="text" placeholder="Referral Code (Optional)" class="w-full border p-2 rounded-lg text-sm">
-                    <input type="text" id="transId" placeholder="Transaction ID (UTR Number)" required class="w-full border p-2 rounded-lg text-sm">
                     <button type="submit" class="w-full btn-gradient py-3 rounded-xl font-bold mt-4">Pay & Subscribe</button>
                     <button type="button" onclick="toggleModal('subscribeModal')" class="w-full text-gray-500 text-sm">Cancel</button>
                 </form>
@@ -237,26 +234,81 @@
         }
     </script>
     <script>
-        async function loadDashboard() {
-    const user = JSON.parse(localStorage.getItem('micronUser'));
-    if(!user) window.location.href = "index.html";
-    
-    document.getElementById('userName').innerText = user.name;
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwsTPyA20fa7qCugN6s2cwKNZuzQCiIIhIpb2GyLpzN7S3QtpYSTvQ9gzyvOOK-zAWY/exec"; // Replace with your Deployed URL
 
-    // Fetch Stats
-    const statsRes = await fetch(`${SCRIPT_URL}?action=getStats&email=${user.email}`);
-    const stats = await statsRes.json();
-    // Update the UI IDs (you'll need to add IDs to your 0, ₹0 text elements)
-    document.getElementById('stat-courses').innerText = stats.courses;
-    document.getElementById('stat-earnings').innerText = "₹" + stats.earnings;
+async function loadDashboardData(email) {
+    try {
+        const response = await fetch(`${SCRIPT_URL}?action=getDashboard&email=${email}`);
+        const data = await response.json();
 
-    // Fetch News
-    const newsRes = await fetch(`${SCRIPT_URL}?action=getNews`);
-    const news = await newsRes.json();
-    // Dynamically build marquee string here...
+        // 1. Update Stats
+        const statsContainers = document.querySelectorAll('.grid.grid-cols-3 p.text-xl');
+        statsContainers[0].innerText = data.stats.courses;
+        statsContainers[1].innerText = `$${data.stats.earnings}`;
+        statsContainers[2].innerText = data.stats.certs;
+
+        // 2. Update News Marquee
+        const marquee = document.querySelector('.marquee');
+        if (data.news.length > 0) {
+            marquee.innerHTML = data.news.map(n => `
+                <span class="flex items-center gap-2 italic text-sm">
+                    <img src="${n.img || 'https://via.placeholder.com/20'}" class="rounded-full w-5 h-5"> ${n.text}
+                </span>
+            `).join('');
+        }
+
+        // 3. Update Notification Dot
+        const dot = document.querySelector('.bg-red-500');
+        dot.style.display = data.notifications > 0 ? 'block' : 'none';
+
+    } catch (e) { console.error("Data Load Error:", e); }
 }
-window.onload = loadDashboard;
-        
-    </script>
+
+// Subscription Form Submission
+async function handleSubscription(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.innerText = "Processing...";
+
+    const user = JSON.parse(localStorage.getItem("micronUser"));
+    const formData = {
+        name: e.target.elements[0].value,
+        email: e.target.elements[1].value,
+        tel: e.target.elements[2].value,
+        ref: e.target.elements[3].value
+    };
+
+    try {
+        const response = await fetch(`${SCRIPT_URL}?action=subscribe`, {
+            method: 'POST',
+            body: JSON.stringify(formData)
+        });
+        const result = await response.json();
+        if (result.result === "success") {
+            document.getElementById('formContent').classList.add('hidden');
+            document.getElementById('successContent').classList.remove('hidden');
+        }
+    } catch (err) { alert("Subscription Failed"); }
+    btn.innerText = "Pay & Subscribe";
+}
+
+window.onload = function() {
+    lucide.createIcons();
+    const user = JSON.parse(localStorage.getItem("micronUser"));
+    if (!user) {
+        window.location.href = "index.html";
+        return;
+    }
+    document.getElementById('userName').innerText = user.name;
+    loadDashboardData(user.email); // Fetch from Sheets
+};
+
+function logout() {
+    localStorage.removeItem("micronUser");
+    window.location.href = "index.html";
+}
+
+document.querySelector('[data-lucide="log-out"]').parentElement.onclick = logout;
+
 </body>
-</html
+</html>
