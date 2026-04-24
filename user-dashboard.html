@@ -235,90 +235,59 @@
         }
     </script>
     <script>
-<script>
-    // Replace this with your actual Google Web App URL after deploying
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwa_5V8GQ-XZJzvqFzwIQVw52wDa39qTHlWsVEGMJtZDGe2HxeAcE5gl5V30u1J3UwQ/exec";
+       const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfWVnf8Hx18GPmo6WE4kCo_uxzmm0EBevy7T5zNySOZji9zkJFdiDBJ-3zypBIorrx/exec";
+const user = JSON.parse(localStorage.getItem('micronUser'));
+
+// Protect Page
+if(!user) { window.location.href = "index.html"; }
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('userName').innerText = user.name;
+    loadDashboardData();
+});
+
+async function loadDashboardData() {
+    const resp = await fetch(`${SCRIPT_URL}?action=getDashboard&email=${user.email}`);
+    const data = await resp.json();
     
-    // 1. Fetch Dashboard Data on Load
-    document.addEventListener('DOMContentLoaded', () => {
-        const userEmail = localStorage.getItem('userEmail'); // Assumes email was saved during login
-        const userName = localStorage.getItem('userName');
-        
-        if (!userEmail) {
-            alert("Session expired. Please login again.");
-            window.location.href = "index.html"; // Redirect if no session
-            return;
-        }
+    // Update Stats UI
+    const statsDivs = document.querySelectorAll('.grid-cols-3 p.text-xl');
+    statsDivs[0].innerText = data.stats.courses;
+    statsDivs[1].innerText = data.stats.earnings;
+    statsDivs[2].innerText = data.stats.certs;
 
-        document.getElementById('userName').innerText = userName;
+    // Update News Marquee
+    const marquee = document.querySelector('.marquee');
+    marquee.innerHTML = data.news.map(n => `
+        <span class="flex items-center gap-2 italic text-sm">
+            <img src="${n.img}" class="rounded-full w-5 h-5"> ${n.text}
+        </span>
+    `).join('');
+}
 
-        fetch(`${WEB_APP_URL}?action=getDashboard&email=${userEmail}`)
-            .then(response => response.json())
-            .then(data => {
-                // Update Stats
-                document.querySelectorAll('.grid-cols-3 p.text-xl')[0].innerText = data.stats.courses;
-                document.querySelectorAll('.grid-cols-3 p.text-xl')[1].innerText = data.stats.earnings;
-                document.querySelectorAll('.grid-cols-3 p.text-xl')[2].innerText = data.stats.certs;
+async function handleSubscription(e) {
+    e.preventDefault();
+    const form = e.target;
+    const data = {
+        name: form.elements[0].value,
+        email: form.elements[1].value,
+        tel: form.elements[2].value,
+        ref: form.elements[3].value,
+        transId: document.getElementById('transId').value
+    };
 
-                // Update News Marquee
-                const marquee = document.querySelector('.marquee');
-                marquee.innerHTML = data.news.map(item => `
-                    <span class="flex items-center gap-2 italic text-sm">
-                        <img src="${item.img}" class="rounded-full w-5 h-5" onerror="this.src='https://via.placeholder.com/20'"> 
-                        ${item.text}
-                    </span>
-                `).join('');
-
-                // Update Notification Dot
-                const navBadge = document.querySelector('.relative .bg-red-500');
-                if(data.notifications === 0) navBadge.classList.add('hidden');
-            })
-            .catch(err => console.error("Error loading dashboard:", err));
+    const response = await fetch(`${SCRIPT_URL}?action=subscribe`, {
+        method: 'POST',
+        body: JSON.stringify(data)
     });
-
-    // 2. Handle Subscription Post
-    async function handleSubscription(e) {
-        e.preventDefault();
-        const btn = e.target.querySelector('button[type="submit"]');
-        btn.innerText = "Processing...";
-        btn.disabled = true;
-
-        const formData = {
-            action: "subscribe",
-            name: e.target[0].value,
-            email: e.target[1].value,
-            tel: e.target[2].value,
-            ref: e.target[3].value,
-            transId: e.target[4].value
-        };
-
-        try {
-            // Using no-cors if needed, but since res() returns JSON, standard fetch is better
-            const response = await fetch(WEB_APP_URL + "?action=subscribe", {
-                method: "POST",
-                body: JSON.stringify(formData)
-            });
-            
-            const result = await response.json();
-            
-            if (result.result === "success") {
-                document.getElementById('formContent').classList.add('hidden');
-                document.getElementById('successContent').classList.remove('hidden');
-                lucide.createIcons();
-            } else {
-                alert("Submission failed: " + result.error);
-            }
-        } catch (error) {
-            console.error("Error:", error);
-            alert("Connection Error. Please check your internet.");
-        } finally {
-            btn.innerText = "Pay & Subscribe";
-            btn.disabled = false;
-        }
+    
+    const result = await response.json();
+    if(result.result === "success") {
+        document.getElementById('formContent').classList.add('hidden');
+        document.getElementById('successContent').classList.remove('hidden');
     }
-</script>
-
-
+        }
+        
     </script>
 </body>
 </html>
