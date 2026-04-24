@@ -235,59 +235,104 @@
         }
     </script>
     <script>
-       const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfWVnf8Hx18GPmo6WE4kCo_uxzmm0EBevy7T5zNySOZji9zkJFdiDBJ-3zypBIorrx/exec";
+       // REPLACE THIS WITH YOUR DEPLOYED WEB APP URL
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz1pdL9fPYaIS1ANZvf-dVo16STFMDL-xt1UwEMGF0c96P89c5Q9NaAcQr7N7mWlMl_/exec";
+
+// Initialize Icons
+lucide.createIcons();
+
+// Retrieve user from LocalStorage
 const user = JSON.parse(localStorage.getItem('micronUser'));
 
-// Protect Page
-if(!user) { window.location.href = "index.html"; }
+// Security: If no user data, kick back to login
+if (!user) {
+    window.location.href = "index.html";
+}
 
+// Run when page loads
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('userName').innerText = user.name;
     loadDashboardData();
 });
 
+// Fetch Stats and News from Sheets
 async function loadDashboardData() {
-    const resp = await fetch(`${SCRIPT_URL}?action=getDashboard&email=${user.email}`);
-    const data = await resp.json();
-    
-    // Update Stats UI
-    const statsDivs = document.querySelectorAll('.grid-cols-3 p.text-xl');
-    statsDivs[0].innerText = data.stats.courses;
-    statsDivs[1].innerText = data.stats.earnings;
-    statsDivs[2].innerText = data.stats.certs;
+    try {
+        const response = await fetch(`${SCRIPT_URL}?action=getDashboard&email=${encodeURIComponent(user.email)}`);
+        const data = await response.json();
 
-    // Update News Marquee
-    const marquee = document.querySelector('.marquee');
-    marquee.innerHTML = data.news.map(n => `
-        <span class="flex items-center gap-2 italic text-sm">
-            <img src="${n.img}" class="rounded-full w-5 h-5"> ${n.text}
-        </span>
-    `).join('');
+        // Update Stats UI (the 3 columns)
+        const statsContainers = document.querySelectorAll('.grid-cols-3 p.text-xl');
+        statsContainers[0].innerText = data.stats.courses;
+        statsContainers[1].innerText = data.stats.earnings;
+        statsContainers[2].innerText = data.stats.certs;
+
+        // Update News Marquee
+        const marquee = document.querySelector('.marquee');
+        if (data.news && data.news.length > 0) {
+            marquee.innerHTML = data.news.map(n => `
+                <span class="flex items-center gap-2 italic text-sm">
+                    <img src="${n.img || 'https://via.placeholder.com/20'}" class="rounded-full w-5 h-5"> ${n.text}
+                </span>
+            `).join('');
+        }
+    } catch (error) {
+        console.error("Dashboard Load Error:", error);
+    }
 }
 
+// Handle Subscription Form Submission
 async function handleSubscription(e) {
     e.preventDefault();
-    const form = e.target;
-    const data = {
-        name: form.elements[0].value,
-        email: form.elements[1].value,
-        tel: form.elements[2].value,
-        ref: form.elements[3].value,
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.innerText = "Processing...";
+    btn.disabled = true;
+
+    // Capture values from the form inputs
+    const formData = {
+        name: e.target.elements[0].value,
+        email: e.target.elements[1].value,
+        tel: e.target.elements[2].value,
+        ref: e.target.elements[3].value,
         transId: document.getElementById('transId').value
     };
 
-    const response = await fetch(`${SCRIPT_URL}?action=subscribe`, {
-        method: 'POST',
-        body: JSON.stringify(data)
-    });
-    
-    const result = await response.json();
-    if(result.result === "success") {
+    try {
+        const response = await fetch(`${SCRIPT_URL}?action=subscribe`, {
+            method: 'POST',
+            mode: 'no-cors', // Use no-cors for simple App Script triggers or handling redirects
+            body: JSON.stringify(formData)
+        });
+
+        // Note: With 'no-cors', we can't read the response body, 
+        // so we assume success if the request sends without error.
         document.getElementById('formContent').classList.add('hidden');
         document.getElementById('successContent').classList.remove('hidden');
+        lucide.createIcons();
+    } catch (error) {
+        alert("Subscription Failed: " + error.message);
+        btn.innerText = "Pay & Subscribe";
+        btn.disabled = false;
     }
-        }
-        
+}
+
+// UI Toggles
+function toggleModal(id) {
+    const modal = document.getElementById(id);
+    modal.classList.toggle('hidden');
+}
+
+function toggleDropdown(id) {
+    document.getElementById(id).classList.toggle('hidden');
+}
+
+window.onclick = function(event) {
+    if (!event.target.closest('.relative')) {
+        const dropdown = document.getElementById('menuDropdown');
+        if (dropdown) dropdown.classList.add('hidden');
+    }
+}
+
     </script>
 </body>
 </html>
