@@ -235,33 +235,21 @@
         }
     </script>
     <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyFgvZJNTPdFUMl45oSjfbkLuKMp5pnz0tUD3vSpz49Saue2H9X3l5NQJlCb3s6vpRI/exec";
-
-async function submitSignup() {
-    const payload = {
-        action: 'signup',
-        fullName: document.querySelector('[placeholder="Full Name"]').value,
-        dob: document.querySelector('[placeholder="Date of Birth"]').value,
-        email: document.querySelector('[placeholder="Email"]').value,
-        contact: document.querySelector('[placeholder="Contact"]').value,
-        referral: document.querySelector('[placeholder="Referral Code"]').value,
-        password: document.querySelector('[placeholder="Set Password"]').value
-    };
-
+        async function loadDashboard() {
+    const userEmail = localStorage.getItem('userEmail'); // Set this during login
     const res = await fetch(WEB_APP_URL, {
         method: 'POST',
-        body: JSON.stringify(payload)
+        body: JSON.stringify({ action: 'getDashboard', email: userEmail })
     });
-    const result = await res.json();
-
-    if(result.success) {
-        document.getElementById('signupForm').classList.add('hidden');
-        document.getElementById('successMsg').classList.remove('hidden');
-    } else {
-        alert(result.message);
+    const data = await res.json();
+    
+    if(data.success) {
+        // Update Stats UI
+        document.getElementById('coursesCount').innerText = data.stats.courses;
+        document.getElementById('earningsCount').innerText = data.stats.earnings;
+        // Map News to Marquee...
     }
 }
-
     </script>
 </body>
 </html>
