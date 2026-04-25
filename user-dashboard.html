@@ -235,101 +235,30 @@
         }
     </script>
     <script>
-       // REPLACE THIS WITH YOUR DEPLOYED WEB APP URL
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz1pdL9fPYaIS1ANZvf-dVo16STFMDL-xt1UwEMGF0c96P89c5Q9NaAcQr7N7mWlMl_/exec";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyFgvZJNTPdFUMl45oSjfbkLuKMp5pnz0tUD3vSpz49Saue2H9X3l5NQJlCb3s6vpRI/exec";
 
-// Initialize Icons
-lucide.createIcons();
-
-// Retrieve user from LocalStorage
-const user = JSON.parse(localStorage.getItem('micronUser'));
-
-// Security: If no user data, kick back to login
-if (!user) {
-    window.location.href = "index.html";
-}
-
-// Run when page loads
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('userName').innerText = user.name;
-    loadDashboardData();
-});
-
-// Fetch Stats and News from Sheets
-async function loadDashboardData() {
-    try {
-        const response = await fetch(`${SCRIPT_URL}?action=getDashboard&email=${encodeURIComponent(user.email)}`);
-        const data = await response.json();
-
-        // Update Stats UI (the 3 columns)
-        const statsContainers = document.querySelectorAll('.grid-cols-3 p.text-xl');
-        statsContainers[0].innerText = data.stats.courses;
-        statsContainers[1].innerText = data.stats.earnings;
-        statsContainers[2].innerText = data.stats.certs;
-
-        // Update News Marquee
-        const marquee = document.querySelector('.marquee');
-        if (data.news && data.news.length > 0) {
-            marquee.innerHTML = data.news.map(n => `
-                <span class="flex items-center gap-2 italic text-sm">
-                    <img src="${n.img || 'https://via.placeholder.com/20'}" class="rounded-full w-5 h-5"> ${n.text}
-                </span>
-            `).join('');
-        }
-    } catch (error) {
-        console.error("Dashboard Load Error:", error);
-    }
-}
-
-// Handle Subscription Form Submission
-async function handleSubscription(e) {
-    e.preventDefault();
-    const btn = e.target.querySelector('button[type="submit"]');
-    btn.innerText = "Processing...";
-    btn.disabled = true;
-
-    // Capture values from the form inputs
-    const formData = {
-        name: e.target.elements[0].value,
-        email: e.target.elements[1].value,
-        tel: e.target.elements[2].value,
-        ref: e.target.elements[3].value,
-        transId: document.getElementById('transId').value
+async function submitSignup() {
+    const payload = {
+        action: 'signup',
+        fullName: document.querySelector('[placeholder="Full Name"]').value,
+        dob: document.querySelector('[placeholder="Date of Birth"]').value,
+        email: document.querySelector('[placeholder="Email"]').value,
+        contact: document.querySelector('[placeholder="Contact"]').value,
+        referral: document.querySelector('[placeholder="Referral Code"]').value,
+        password: document.querySelector('[placeholder="Set Password"]').value
     };
 
-    try {
-        const response = await fetch(`${SCRIPT_URL}?action=subscribe`, {
-            method: 'POST',
-            mode: 'no-cors', // Use no-cors for simple App Script triggers or handling redirects
-            body: JSON.stringify(formData)
-        });
+    const res = await fetch(WEB_APP_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+    });
+    const result = await res.json();
 
-        // Note: With 'no-cors', we can't read the response body, 
-        // so we assume success if the request sends without error.
-        document.getElementById('formContent').classList.add('hidden');
-        document.getElementById('successContent').classList.remove('hidden');
-        lucide.createIcons();
-    } catch (error) {
-        alert("Subscription Failed: " + error.message);
-        btn.innerText = "Pay & Subscribe";
-        btn.disabled = false;
-    }
-}
-
-// UI Toggles
-function toggleModal(id) {
-    const modal = document.getElementById(id);
-    modal.classList.toggle('hidden');
-}
-
-function toggleDropdown(id) {
-    document.getElementById(id).classList.toggle('hidden');
-}
-
-window.onclick = function(event) {
-    if (!event.target.closest('.relative')) {
-        const dropdown = document.getElementById('menuDropdown');
-        if (dropdown) dropdown.classList.add('hidden');
+    if(result.success) {
+        document.getElementById('signupForm').classList.add('hidden');
+        document.getElementById('successMsg').classList.remove('hidden');
+    } else {
+        alert(result.message);
     }
 }
 
