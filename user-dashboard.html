@@ -235,34 +235,99 @@
         }
     </script>
     <script>
-        async function loadDashboard() {
-    const user = JSON.parse(localStorage.getItem('micronUser'));
-    if (!user) { window.location.href = 'index.html'; return; }
-    
-    document.getElementById('userName').innerText = user.name;
+        // 1. Replace this with your actual Web App URL from Google Apps Script
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwZnojaC9FKLAz7Lq5bDpRTw3uKLqb5RI8fK4Ra7OtiB-N08phQraUfg3xU5q80r8TJ/exec";
 
-    const res = await fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'getDashboardData', email: user.email })
-    });
-    const result = await res.json();
-    const { stats, news } = result.data;
+// 2. Initialize Lucide Icons
+lucide.createIcons();
 
-    // Update Stats UI
-    const statElements = document.querySelectorAll('.text-xl.font-bold');
-    statElements[0].innerText = stats[0]; // Courses
-    statElements[1].innerText = stats[1]; // Earnings
-    statElements[2].innerText = stats[2]; // Certificates
+// 3. Load Dashboard Data on Page Load
+async function loadDashboard() {
+    // Get user info saved during login from index.html
+    const userData = JSON.parse(localStorage.getItem('micronUser'));
+
+    // If no user is logged in, redirect back to login page
+    if (!userData || !userData.email) {
+        alert("Session expired. Please login again.");
+        window.location.href = 'index.html';
+        return;
+    }
+
+    // Update the Greeting Name
+    document.getElementById('userName').innerText = userData.name;
+
+    try {
+        // Fetch Stats and News from Google Sheets
+        const response = await fetch(WEB_APP_URL, {
+            method: "POST",
+            body: JSON.stringify({ 
+                action: 'getDashboard', 
+                email: userData.email 
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            updateUI(result.stats, result.news);
+        } else {
+            console.error("Dashboard error:", result.message);
+        }
+    } catch (error) {
+        console.error("Connection Error:", error);
+    }
+}
+
+// 4. Update the UI with fetched data
+function updateUI(stats, news) {
+    // Update Stats (Courses, Earnings, Certificates)
+    // We target the colors specifically to find the right boxes
+    const courseEl = document.querySelector('.text-orange-600');
+    const earningEl = document.querySelector('.text-green-600');
+    const certificateEl = document.querySelector('.text-blue-600');
+
+    if (courseEl) courseEl.innerText = stats.courses || 0;
+    if (earningEl) earningEl.innerText = stats.earnings || 0;
+    if (certificateEl) certificateEl.innerText = stats.certificates || 0;
 
     // Update News Marquee
-    const marquee = document.querySelector('.marquee');
-    marquee.innerHTML = news.map(n => `
-        <span class="flex items-center gap-2 italic text-sm">
-            <img src="${n.img}" class="rounded-full w-5 h-5"> ${n.headline}
-        </span>
-    `).join('');
+    const marqueeContainer = document.querySelector('.marquee');
+    if (news && news.length > 0) {
+        marqueeContainer.innerHTML = news.map(item => `
+            <span class="flex items-center gap-2 italic text-sm">
+                <img src="${item.img || 'https://via.placeholder.com/20'}" class="rounded-full w-5 h-5"> 
+                ${item.headline}
+            </span>
+        `).join('');
+    }
 }
+
+// 5. Logout Function
+function logout() {
+    localStorage.removeItem('micronUser');
+    window.location.href = 'index.html';
+}
+
+// UI Toggle Helpers
+function toggleModal(id) {
+    document.getElementById(id).classList.toggle('hidden');
+}
+
+function toggleDropdown(id) {
+    document.getElementById(id).classList.toggle('hidden');
+}
+
+// Close dropdown when clicking outside
+window.onclick = function(event) {
+    if (!event.target.closest('.relative')) {
+        const dd = document.getElementById('menuDropdown');
+        if (dd) dd.classList.add('hidden');
+    }
+}
+
+// Run the loader
 window.onload = loadDashboard;
+
 
     </script>
 </body>
