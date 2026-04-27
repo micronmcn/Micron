@@ -197,51 +197,26 @@
         }
     </script>
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz1pdL9fPYaIS1ANZvf-dVo16STFMDL-xt1UwEMGF0c96P89c5Q9NaAcQr7N7mWlMl_/exec";
-
-async function submitSignup() {
-    const inputs = document.querySelectorAll('#signupModal input');
-    const data = {
-        fullName: inputs[0].value,
-        dob: Array.from(inputs).find(i => i.type === 'date').value,
-        email: inputs[2].value,
-        contact: inputs[3].value,
-        referral: inputs[4].value,
-        password: inputs[5].value
-    };
-
-    try {
-        const response = await fetch(`${SCRIPT_URL}?action=signup`, {
-            method: 'POST',
-            body: JSON.stringify(data)
-        });
-        const result = await response.json();
-        if(result.result === "success") {
-            document.getElementById('signupForm').classList.add('hidden');
-            document.getElementById('successMsg').classList.remove('hidden');
-        }
-    } catch (e) { alert("Registration failed. Try again."); }
-}
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyKQ7Rk5nY5WnQkaXIvukG4z2rrtbNhJrYP5qC44MVH6PO2XSf_qbkEmnP-ZYho24mt/exec';
 
 async function handleLogin() {
-    const inputs = document.querySelectorAll('section input');
-    const data = { userId: inputs[0].value, password: inputs[1].value };
+    const email = document.querySelector('input[placeholder="User ID"]').value;
+    const password = document.querySelector('input[placeholder="Password"]').value;
 
-    try {
-        const response = await fetch(`${SCRIPT_URL}?action=login`, {
-            method: 'POST',
-            body: JSON.stringify(data)
-        });
-        const res = await response.json();
-        if(res.result === "success") {
-            localStorage.setItem('micronUser', JSON.stringify(res.user));
-            window.location.href = "user-dashboard.html";
-        } else {
-            alert("Invalid Login Details");
-        }
-    } catch (e) { alert("Login Error"); }
+    const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'login', email, password })
+    });
+    const result = await res.json();
+
+    if (result.status === 200) {
+        localStorage.setItem('micronUser', JSON.stringify(result.data));
+        window.location.href = 'user-dashboard.html';
+    } else {
+        alert("Login Failed: " + result.data);
+    }
 }
-        
+
     </script>
 </body>
 </html>
