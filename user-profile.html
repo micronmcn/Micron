@@ -347,5 +347,67 @@
             alert('Profile updated successfully!');
         };
     </script>
+    <script>
+        // 1. Get the email passed from Apps Script
+const userEmailFromUrl = "<?= userEmail ?>"; 
+
+// 2. Run on page load
+window.onload = function() {
+    if (userEmailFromUrl) {
+        google.script.run
+            .withSuccessHandler(populateFields)
+            .getUserProfile(userEmailFromUrl);
+    }
+};
+
+function populateFields(data) {
+    if (!data) {
+        alert("User data not found!");
+        return;
+    }
+    
+    // Fill the inputs (Matching the order of your 'editable' class inputs)
+    const inputs = document.querySelectorAll('.editable');
+    document.getElementById('display-name').innerText = data.name;
+    
+    inputs[0].value = data.name;
+    inputs[1].value = data.dob; // Must be yyyy-mm-dd
+    inputs[2].value = data.email;
+    inputs[3].value = data.contact;
+    inputs[4].value = data.address; // Textarea
+    inputs[5].value = data.qualification;
+    inputs[6].value = data.experience;
+    
+    document.querySelector('.referral-code').innerText = data.referral;
+}
+
+// 3. Handle Save Changes
+document.getElementById('profileForm').onsubmit = function(e) {
+    e.preventDefault();
+    const inputs = document.querySelectorAll('.editable');
+    
+    const updatedData = {
+        name: inputs[0].value,
+        dob: inputs[1].value,
+        email: inputs[2].value,
+        contact: inputs[3].value,
+        address: inputs[4].value,
+        qualification: inputs[5].value,
+        experience: inputs[6].value
+    };
+
+    google.script.run.withSuccessHandler(function(res) {
+        if(res === "Success") {
+            alert("Profile updated successfully!");
+            location.reload(); // Re-locks inputs
+        } else {
+            alert(res);
+        }
+    }).updateProfile(updatedData);
+};
+
+// Keep your existing enableEditing() function below...
+        
+    </script>
 </body>
 </html>
