@@ -69,8 +69,7 @@
              <span class="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
             </a>
           </div>
-           <!-- User Icon (Profile Page) -->
-           <a href="user-profile.html">
+           <a href="javascript:void(0)" onclick="goToProfile()">
             <i data-lucide="circle-user" class="text-gray-600 cursor-pointer"></i>
            </a>
         </div>
@@ -324,10 +323,19 @@ window.onclick = function(event) {
         if (dd) dd.classList.add('hidden');
     }
 }
-
 // Run the loader
 window.onload = loadDashboard;
-
+// Add this inside your <script> in User-dashboard.html
+function goToProfile() {
+    const userData = JSON.parse(localStorage.getItem('micronUser'));
+    if (userData && userData.email) {
+        // Replace with your actual Web App URL
+        const profileUrl = "https://script.google.com/macros/s/AKfycbw5Qztk31sBSVgVISR4wv67IY8arcS74a7qsFnZSJEcEf-NSeWWF0eUC2hiEkwljy97/exec" + encodeURIComponent(userData.email);
+        window.location.href = profileUrl;
+    } else {
+        alert("Please log in first.");
+    }
+}
 
     </script>
 </body>
