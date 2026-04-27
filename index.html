@@ -197,23 +197,95 @@
         }
     </script>
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyKQ7Rk5nY5WnQkaXIvukG4z2rrtbNhJrYP5qC44MVH6PO2XSf_qbkEmnP-ZYho24mt/exec';
+        // 1. Replace this with the URL you get after deploying your Apps Script
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwZnojaC9FKLAz7Lq5bDpRTw3uKLqb5RI8fK4Ra7OtiB-N08phQraUfg3xU5q80r8TJ/exec";
 
+// Helper function to handle all backend requests
+async function apiRequest(action, data) {
+    try {
+        const response = await fetch(WEB_APP_URL, {
+            method: "POST",
+            body: JSON.stringify({ action, data: data, email: data.email || "" }),
+        });
+        return await response.json();
+    } catch (error) {
+        console.error("Error:", error);
+        alert("Connection failed. Please check your internet or Script URL.");
+    }
+}
+
+// --- SIGNUP LOGIC ---
+async function submitSignup() {
+    const data = {
+        fullName: document.querySelector('input[placeholder="Full Name"]').value,
+        dob: document.querySelector('input[placeholder="Date of Birth"]').value,
+        email: document.querySelector('input[placeholder="Email"]').value,
+        contact: document.querySelector('input[placeholder="Contact"]').value,
+        referral: document.querySelector('input[placeholder="Referral Code"]').value,
+        password: document.querySelector('input[placeholder="Set Password"]').value
+    };
+
+    if (!data.email || !data.password) return alert("Please fill required fields.");
+
+    const result = await apiRequest('signup', data);
+    
+    if (result && result.success) {
+        document.getElementById('signupForm').classList.add('hidden');
+        document.getElementById('successMsg').classList.remove('hidden');
+    } else {
+        alert(result.message || "Signup failed");
+    }
+}
+
+// --- LOGIN LOGIC ---
 async function handleLogin() {
     const email = document.querySelector('input[placeholder="User ID"]').value;
     const password = document.querySelector('input[placeholder="Password"]').value;
 
-    const res = await fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'login', email, password })
-    });
-    const result = await res.json();
+    const result = await apiRequest('login', { email, password });
 
-    if (result.status === 200) {
-        localStorage.setItem('micronUser', JSON.stringify(result.data));
+    if (result && result.success) {
+        // Save user session to localStorage for the dashboard to use
+        localStorage.setItem('micronUser', JSON.stringify(result.user));
+        alert("Login successful! Redirecting...");
         window.location.href = 'user-dashboard.html';
     } else {
-        alert("Login Failed: " + result.data);
+        alert(result.message || "Invalid Credentials");
+    }
+}
+
+// --- FORGOT PASSWORD LOGIC ---
+async function submitForgot() {
+    const email = document.querySelector('#forgotModal input[type="email"]').value;
+    if (!email) return alert("Enter your email");
+
+    const result = await apiRequest('forgotPassword', { email });
+    
+    if (result && result.success) {
+        alert("Reset link request sent to admin.");
+        toggleModal('forgotModal');
+    }
+}
+
+// --- UI UTILITIES ---
+function toggleModal(id) {
+    const modal = document.getElementById(id);
+    modal.classList.toggle('active');
+    if(id === 'signupModal') {
+        document.getElementById('signupForm').classList.remove('hidden');
+        document.getElementById('successMsg').classList.add('hidden');
+    }
+}
+
+function toggleDropdown() {
+    document.getElementById('menuDropdown').classList.toggle('active');
+}
+
+// Close dropdown when clicking outside
+window.onclick = function(event) {
+    if (!event.target.closest('.relative')) {
+        const dd = document.getElementById('menuDropdown');
+        if(dd) dd.classList.remove('active');
     }
 }
 
